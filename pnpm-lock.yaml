@@ -11,6 +11,9 @@ importers:
       '@composedb/client':
         specifier: ^0.7.1
         version: 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)
+      '@didtools/pkh-ethereum':
+        specifier: ^0.5.0
+        version: 0.5.0
       '@solidjs/router':
         specifier: ^0.13.2
         version: 0.13.2(solid-js@1.8.15)
@@ -23,6 +26,9 @@ importers:
       datascript:
         specifier: ^1.6.4
         version: 1.6.4
+      did-session:
+        specifier: ^3.1.0
+        version: 3.1.0
       flowbite:
         specifier: ^2.3.0
         version: 2.3.0
@@ -443,6 +449,10 @@ packages:
 
   '@didtools/key-webauthn@2.0.2':
     resolution: {integrity: sha512-MkOqAiRBcRO64PMVfSFAB0SUIJMk+L8QyymE9dknjmfSKgD/ZKz7cw4pFV6IUNin75/DLrlDSfmCIIjYokivvQ==}
+    engines: {node: '>=14.14'}
+
+  '@didtools/key-webcrypto@0.2.0':
+    resolution: {integrity: sha512-5WK2Np0Tb6ApDoK71vYmEGiIdwLKzaEjr5KTK6RXFdl5xJnOYOHGkn4Ohco9D0UsoUGyDZE/ztlXmPQIbzHXQA==}
     engines: {node: '>=14.14'}
 
   '@didtools/pkh-ethereum@0.2.1':
@@ -1594,6 +1604,10 @@ packages:
   did-resolver@4.1.0:
     resolution: {integrity: sha512-S6fWHvCXkZg2IhS4RcVHxwuyVejPR7c+a4Go0xbQ9ps5kILa8viiYQgrM4gfTyeTjJ0ekgJH9gk/BawTpmkbZA==}
 
+  did-session@3.1.0:
+    resolution: {integrity: sha512-EZAQHFqW08m8OuCU66i6qD2X7Xfqn18LwPLsH8qbV2LsyFCx5cyqgzg5UQFxziAQvMbvtXJ3YRNWk/b3bOJiaA==}
+    engines: {node: '>=14.14'}
+
   dids@4.0.4:
     resolution: {integrity: sha512-PKxQP0QFqgeMe0dbL7LCRdPJVhZU2ejj8RWCfJ6vro3a+o5o32cWNM1X6YXpdIWq6G5fTJw9KO2dHj2ZzYDc7w==}
     engines: {node: '>=14.14'}
@@ -2196,6 +2210,10 @@ packages:
 
   key-did-provider-ed25519@3.0.2:
     resolution: {integrity: sha512-4Yw0CeO1hKRaUsh9NIz4tn4Ysr09CdoJItyT0vHjd5iedJ+FvVt7pTbNr7IY0/+8mWvYslutAK5LFrwu5agpsA==}
+    engines: {node: '>=14.14'}
+
+  key-did-provider-ed25519@4.0.2:
+    resolution: {integrity: sha512-bnnRGuuUtylKGMVmgXVSoGccBg87roFi6xy5dQmTgNqnCmrxBBUatYoVimcnA+SGCFqi2qk6B9dD10Ed4rTZPg==}
     engines: {node: '>=14.14'}
 
   key-did-resolver@4.0.0:
@@ -4197,6 +4215,13 @@ snapshots:
       - utf-8-validate
       - zod
 
+  '@didtools/key-webcrypto@0.2.0':
+    dependencies:
+      fast-json-stable-stringify: 2.1.0
+      rpc-utils: 0.6.2
+      uint8arrays: 5.0.3
+      varint: 6.0.0
+
   '@didtools/pkh-ethereum@0.2.1':
     dependencies:
       '@didtools/cacao': 2.1.0
@@ -5809,6 +5834,21 @@ snapshots:
 
   did-resolver@4.1.0: {}
 
+  did-session@3.1.0:
+    dependencies:
+      '@didtools/key-webcrypto': 0.2.0
+      '@stablelib/random': 1.0.2
+      caip: 1.1.1
+      dids: 5.0.2
+      key-did-provider-ed25519: 4.0.2
+      key-did-resolver: 4.0.0
+      uint8arrays: 5.0.3
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+
   dids@4.0.4:
     dependencies:
       '@didtools/cacao': 2.1.0
@@ -6457,6 +6497,20 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       rpc-utils: 0.6.2
       uint8arrays: 4.0.10
+
+  key-did-provider-ed25519@4.0.2:
+    dependencies:
+      '@noble/curves': 1.4.0
+      did-jwt: 7.4.7
+      dids: 5.0.2
+      fast-json-stable-stringify: 2.1.0
+      rpc-utils: 0.6.2
+      uint8arrays: 5.0.3
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
 
   key-did-resolver@4.0.0:
     dependencies:

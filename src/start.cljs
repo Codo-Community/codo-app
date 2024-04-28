@@ -1,11 +1,13 @@
 (ns start
   (:require ["./evm/client.mjs" :as c]
-            ["./evm/util.mjs" :as eu]
+            ["./composedb/auth.mjs" :as a]
             ["flowbite" :as fb]))
 
 (defn start []
-  (println "wallet: " c/wallet-client)
+
   (fb/initFlowbite)
-  )
+
+  (.then (a/init-auth)
+         #(a/authenticate-user)))
 
 (def default start)

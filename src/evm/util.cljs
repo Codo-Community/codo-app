@@ -24,7 +24,7 @@
 (defn add-listener [ethereum event handler]
   (.. js/window.ethereum (on event handler)))
 
-(defn add-accounts-changed [ethereum f]
+(defn add-accounts-changed [f]
   (add-listener js/window.ethereum "accountsChanged" f))
 
 (defn parse-ether [value]

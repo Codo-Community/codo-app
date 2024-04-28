@@ -3,6 +3,8 @@
             [squint.string :as str]
             ["solid-js/store" :refer [createStore]]
             ["./components/user.jsx" :as user]
+            ["./components/evm/transaction_builder.jsx" :as tb]
+            ["./evm/util.mjs" :as eu]
             ["./utils.mjs" :as u]
             ["@solidjs/router" :refer [HashRouter Route]]
             ["./Context.mjs" :refer [AppContext]]))
@@ -42,20 +44,19 @@
 (defn Header []
   (let [ctx (useContext AppContext)
         {:keys [store setStore]} ctx
-        data (if (get-in store [:header :user])
-               (createMemo (fn []
-                             {:user (get-in store [:header :user])}))
-               (fn [] {:user [:user/id 0]}))]
+        data (createMemo (fn []
+                           (get store :header)))
+        user-fn (eu/add-accounts-changed #(user/add-user ctx (first %)))]
     #jsx [:header {}
-     [:nav {:class "border-gray-200 text-gray-900 px-4
+          [:nav {:class "border-gray-200 text-gray-900 px-4
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
                     dark:border-gray-700 dark:text-gray-400"}
-      [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden"}
-       [:span {:class "flex gap-3"}
-        [:a {:draggable "false"
-             :href "#", :class "flex items-center"} "codo"]]
-       [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
-        #jsx [user/User {:ctx ctx :ident (:user (data))}]]]]]))
+           [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden"}
+            [:span {:class "flex gap-3"}
+             [:a {:draggable "false"
+                  :href "#", :class "flex items-center"} "codo"]]
+            [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
+             #jsx [user/User (:user (data))]]]]]))
 
 (defn Counters []
   (let [ctx (useContext AppContext)
@@ -68,19 +69,20 @@
 
 (defn Main [props]
   #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden dark"}
-        #jsx [Header]
+         #jsx [Header]
         props.children])
 
 (defn Root []
   (let [[store setStore] (createStore {:counters [[:counter/id 0]]
                                        :header {:user [:user/id 0]}
                                        :user/id {0 {:user/id 0
-                                                    :user/ethereum-address "0x1123"}}
+                                                    :user/ethereum-address "0x0"}}
                                        :counter/id {0 {:counter/id 0
                                                        :counter/value 1}}})
         ctx {:store store :setStore setStore}]
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
-           [Route {:path "/counter" :component Counters}]]]))
+           [Route {:path "/counter" :component Counters}]
+           [Route {:path "/tb" :component tb/TransactionBuilder}]]]))
 
 (def default Root)
