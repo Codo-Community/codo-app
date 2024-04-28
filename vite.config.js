@@ -4,10 +4,11 @@ import devtools from 'solid-devtools/vite';
 import WindiCSS from 'vite-plugin-windicss';
 
 export default defineConfig({
+  root: 'dist',
   plugins: [WindiCSS({
               scan: {
-                dirs: ['public/js'],
-                fileExtensions: ["js","jsx"],
+                dirs: ["public/js"],
+                fileExtensions: ["js","jsx","mjs"],
               }}),
             devtools({
               autoname: true, // e.g. enable autoname
@@ -18,6 +19,7 @@ export default defineConfig({
     port: 3000,
   },
   build: {
+    outDir: "public/js",
     target: 'esnext',
   },
 });

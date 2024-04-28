@@ -1,11 +1,11 @@
 (ns components.user
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index]]
+  (:require ["solid-js" :refer [createMemo]]
             ["blo" :refer [blo]]))
 
-(defn User [ctx ident]
-  (let [{:keys [store setStore]} ctx.children
-        data (createMemo (if ident #(get-in store ident.children) (fn [] #:user{:id -1
-                                                                                :ethereum-address "0x0"})))]
+(defn User [{:keys [ctx ident]}]
+  (let [{:keys [store setStore]} ctx
+        data (createMemo (if ident #(get-in store ident) (fn [] #:user{:id -1
+                                                                       :ethereum-address "0x0"})))]
     #jsx [:div {:class "flex flex-inline  items-center justify-items-center"}
           [:img {:class "rounded-lg w-11 h-11 rounded-md p-0.5 text-gray-500 hover:bg-gray-100
                          focus:outline-none focus:ring-4 focus:ring-gray-200 dark:text-gray-400

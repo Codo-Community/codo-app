@@ -1,2 +1,2 @@
 {:paths ["src"]
- :output-dir "public/js"}
+ :output-dir "dist"}

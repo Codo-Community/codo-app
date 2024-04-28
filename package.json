@@ -21,9 +21,12 @@
   },
   "dependencies": {
     "@composedb/client": "^0.7.1",
+    "@solidjs/router": "^0.13.2",
     "@thisbeyond/solid-dnd": "^0.7.5",
     "blo": "^1.2.0",
     "datascript": "^1.6.4",
-    "solid-js": "^1.5"
+    "flowbite": "^2.3.0",
+    "solid-js": "^1.5",
+    "viem": "^2.9.28"
   }
 }
