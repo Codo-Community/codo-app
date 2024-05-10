@@ -5,6 +5,7 @@
             ["./components/user.jsx" :as user]
             ["./components/evm/transaction_builder.jsx" :as tb]
             ["./evm/util.mjs" :as eu]
+            ["./normad.mjs" :as norm]
             ["./utils.mjs" :as u]
             ["@solidjs/router" :refer [HashRouter Route]]
             ["./Context.mjs" :refer [AppContext]]))
@@ -73,12 +74,13 @@
         props.children])
 
 (defn Root []
-  (let [[store setStore] (createStore {:counters [[:counter/id 0]]
-                                       :header {:user [:user/id 0]}
-                                       :user/id {0 {:user/id 0
-                                                    :user/ethereum-address "0x0"}}
-                                       :counter/id {0 {:counter/id 0
-                                                       :counter/value 1}}})
+  (let [[store setStore] (norm/normalize-store (createStore {:counters [{:counter/id 0
+                                                                         :counter/value 1}]
+                                                             :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
+                                                                                   :contract [:contract/id :codo]}
+                                                             :header {:user {:user/id 0
+                                                                             :user/ethereum-address "0x0"
+                                                                             :user/leg {:leg/id "left"}}}}))
         ctx {:store store :setStore setStore}]
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}

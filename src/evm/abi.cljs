@@ -2552,7 +2552,7 @@
 (def token-abi (.parse js/JSON token-json))
 
 (defn indexed-abi [abi]
-  (map #(conj {(keyword (str (:type %1) "/id")) (:name %1)} %1) abi))
+  (mapv #(conj {(str (:type %1) "/id") (:name %1)} %1) abi))
 
 (defn indexed-contract [ident abi]
   (conj (indexed-abi abi) ident))
