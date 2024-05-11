@@ -7,7 +7,7 @@ export default defineConfig({
   root: 'dist',
   plugins: [WindiCSS({
               scan: {
-                dirs: ["public/js"],
+                dirs: [""],
                 fileExtensions: ["js","jsx","mjs"],
               }}),
             devtools({

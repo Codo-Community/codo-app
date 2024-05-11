@@ -6,9 +6,11 @@
     [ident-key (get data ident-key)]))
 
 (defn ident? [data]
-  (and (vector? data)
+  (if (vector? data)
+    (if (string? (first data))
+      (and
        (re-find #"/id$" (first data))
-       (= (count data) 2)))
+       (= (count data) 2)))))
 
 #_(get-ident {:casd/id 0 :asd 1})
 
@@ -39,31 +41,39 @@
 
 (defn pull [store entity query]
   (cond
-    (ident? entity) (do (println "get-id " entity)
-                        (pull store (get-in store entity) query))
+    (ident? entity) (pull store (get-in store entity) query)
+
+    (and (> (count entity) 0)
+         (vector? entity)) (mapv (fn [x] (pull store (get-in store x) query)) entity)
+
     (and (> (count query) 1)
-         (vector? query)) (zipmap query (mapv #(pull store entity %) query))
+         (vector? query)) (let [simple-keys (filterv string? query)
+                                not-simple  (filterv #(not (string? %)) query)]
+                            (into (zipmap simple-keys (mapv #(pull store entity %) simple-keys))
+                                  (mapv #(pull store entity %) not-simple)))
+
     (and (= (count query) 1)
          (vector? query)) (pull store entity (first query))
 
     (map? query) (let [nk (first (keys query))
                        data (get entity nk)]
-                   (println "qa: " query)
-                   (println "da: " data)
                    {nk (pull store data (vals query))})
+
     :else (get entity query)))
 
-(let [[store setStore] (normalize-store (createStore {:counters [{:counter/id 0
-                                                                  :counter/value 1}]
-                                                      :header {:something "title"
-                                                               :user {:user/id 0
-                                                                      :user/name "da"
-                                                                      :user/ethereum-address "0x0"
-                                                                      :user/leg {:leg/id "left"}}}}))
-      query {:header [{:user [:user/id :user/name]}]}]
-  (:header (pull store store query)))
+(comment (let [[store setStore] (normalize-store (createStore {:counters [{:counter/id 0
+                                                                           :counter/value 1}
+                                                                          {:counter/id 1
+                                                                           :counter/value 2}]
+                                                               :header {:something "title"
+                                                                        :user {:user/id 0
+                                                                               :user/name "da"
+                                                                               :user/ethereum-address "0x0"
+                                                                               :user/leg {:leg/id "left"}}}}))
+               query [{:counters [:counter/id :counter/value]} {:header [{:user [:user/id :user/name]}]}]]
+           (pull store store query))
 
-(ident? [:asd/id 0 1])
+         (ident? [:asd/id 0 1]))
 
 #_(defn traverse-and-transform [data acc]
     (cond

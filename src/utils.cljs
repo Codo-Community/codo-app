@@ -40,5 +40,25 @@
               {}
               query-vals))))
 
-#_(println "n: " (normalize {:counters {:counter/id 0
-                                      :counter/count 1}}))
+(defn copy-to-clipboard [text-to-copy]
+  (.writeText (.-clipboard js/navigator) text-to-copy))
+
+(defn random-evm []
+  (string/join "0x" (.toString (js/crypto.randomBytes 32) "hex")))
+
+;; local storage
+
+(defn set-item!
+  "Set `key' in browser's localStorage to `val`."
+  [key val]
+  (.setItem (.-localStorage js/window) key val))
+
+(defn get-item
+  "Returns value of `key' from browser's localStorage."
+  [key]
+  (.getItem (.-localStorage js/window) key))
+
+(defn remove-item!
+  "Remove the browser's localStorage value for the given `key`"
+  [key]
+  (.removeItem (.-localStorage js/window) key))

@@ -4,7 +4,7 @@
    ["./contract.jsx" :as c]
    #_[",/inputs.jsx" :as in]
    ["../../evm/abi.mjs" :as abi]
-   ["../../normad.mjs" :refer [add]]
+   ["../../normad.mjs" :as n :refer [add]]
    ["../../Context.mjs" :refer [AppContext]]
    ["../blueprint/dropdown.jsx" :as d]
    #_["./transactions.jsx" :as tr]
@@ -39,14 +39,14 @@
                  (add [store setStore] contract-gen))
         query [:contract {:contracts [:contract/id :contract/name]}]
         data (createMemo (fn []
-                           (get store :transaction-builder)))
-        a (println (data))]
-    #jsx [:div {:class "flex flex-col grid grid-cols-1 md:grid-cols-2 md:justify-center 3xl:grid-cols-3 w-full h-full gap-4 md:gap-0 dark"}
+                           (n/pull store (get store :transaction-builder) query)))
+        a (println "newd " (data))]
+    #jsx [:div {:class "flex flex-col grid grid-cols-1 md:grid-cols-2 md:justify-center 3xl:grid-cols-3 w-full h-full gap-4 md:gap-0"}
           [:div {:class "col-span-full md:col-span-1 3xl:col-span-1 flex flex-col dark:border-gray-600 border-gray-200 px-4"}
            [:h1 {:class "mb-3 font-bold text-lg"} "Contract"]
            (d/dropdown-select "Name" (mapv (fn [c] {:ident [:contract/id (:contract/id c)]
                                                     :value (:contract/name c)}) (:contracts (data))) (fn [x]) (fn [x]) #_contract-select-on-change #_selected-contract "")
-           #_[Contract () contract]]
+           #jsx [c/Contract (:contract (data))]]
 
           #_(dom/div {:class "col-span-full md:col-span-1 3xl:col-span-2 h-full w-full overflow-y-auto flex flex-col items-top"}
               (dom/h1 {:class "mb-3 font-bold text-lg"} "Transactions")

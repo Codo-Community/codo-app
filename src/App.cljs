@@ -69,9 +69,10 @@
             #jsx [Counter c])]))
 
 (defn Main [props]
-  #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden dark"}
-         #jsx [Header]
-        props.children])
+  #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden dark text-gray-900"}
+        #jsx [Header]
+        [:div {:class "flex h-full overflow-hidden dark:text-white bg-[#f3f4f6] dark:bg-gray-700 py-4"}
+         props.children]])
 
 (defn Root []
   (let [[store setStore] (norm/normalize-store (createStore {:counters [{:counter/id 0
