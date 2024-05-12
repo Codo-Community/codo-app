@@ -1,16 +1,12 @@
 (ns co-who.components.evm.transaction-builder
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index]]
-   [clojure.string :as str]
-   ["./contract.jsx" :as c]
-   #_[",/inputs.jsx" :as in]
-   ["../../evm/abi.mjs" :as abi]
-   ["../../normad.mjs" :as n :refer [add]]
-   ["../../Context.mjs" :refer [AppContext]]
-   ["../blueprint/dropdown.jsx" :as d]
-   #_["./transactions.jsx" :as tr]
-   #_[co-who.mutations :as m]
-   #_[co-who.blueprint.input :as i]
-   #_[co-who.blueprint.dropdown :as d]))
+            [clojure.string :as str]
+            ["./contract.jsx" :as c]
+            ["../../evm/abi.mjs" :as abi]
+            ["../../normad.mjs" :as n :refer [add]]
+            ["../../Context.mjs" :refer [AppContext]]
+            ["../blueprint/dropdown.jsx" :as d]
+            ["./transaction.jsx" :as tr]))
 
 ;; simulate a remote
 (def contract-gen
@@ -32,28 +28,39 @@
         (m/merge-component! co-who.app/app (c/contract-comp {} {}) {:target [{[:id :transaction-builder] [{:contract [:mr-who/node]}]}]
                                                                     :action :replace-children}))))
 
+(defn contract-select-on-change [{:keys [store setStore] :as ctx}]
+  (let [m {"Codo" :codo
+           "Codo Governor" :codo-governor}]
+    (fn [e]
+      (setStore :transaction-builder
+                (fn [x]
+                  (assoc-in x [:contract] [:contract/id (get m e.target.value)]))))))
+
 (defn TransactionBuilder []
   (let [ctx (useContext AppContext)
         {:keys [store setStore]} ctx
         norm (do (println "now run long running norm add")
                  (add [store setStore] contract-gen))
-        query [:contract {:contracts [:contract/id :contract/name]}]
+
         data (createMemo (fn []
-                           (n/pull store (get store :transaction-builder) query)))
-        a (println "newd " (data))]
+                           (n/pull store (get store :transaction-builder)
+                                   [:contract {:contracts [:contract/id :contract/name]}
+                                    :transactions])))]
     #jsx [:div {:class "flex flex-col grid grid-cols-1 md:grid-cols-2 md:justify-center 3xl:grid-cols-3 w-full h-full gap-4 md:gap-0"}
           [:div {:class "col-span-full md:col-span-1 3xl:col-span-1 flex flex-col dark:border-gray-600 border-gray-200 px-4"}
            [:h1 {:class "mb-3 font-bold text-lg"} "Contract"]
-           (d/dropdown-select "Name" (mapv (fn [c] {:ident [:contract/id (:contract/id c)]
-                                                    :value (:contract/name c)}) (:contracts (data))) (fn [x]) (fn [x]) #_contract-select-on-change #_selected-contract "")
+           (d/dropdown-select "Name" (mapv (fn [c] {:id (:contract/id c)
+                                                    :value (:contract/name c)}) (:contracts (data)))
+                              (contract-select-on-change ctx) "" #_(second (:contract (data))))
            #jsx [c/Contract (:contract (data))]]
 
-          #_(dom/div {:class "col-span-full md:col-span-1 3xl:col-span-2 h-full w-full overflow-y-auto flex flex-col items-top"}
-              (dom/h1 {:class "mb-3 font-bold text-lg"} "Transactions")
-              (dom/div {:id :list
-                        :class "dark:placeholder-gray-400 w-full dark:border-gray-700 px-4
+          [:div {:class "col-span-full md:col-span-1 3xl:col-span-2 h-full w-full overflow-y-auto flex flex-col items-top"}
+           [:h1 {:class "mb-3 font-bold text-lg"} "Transactions"]
+           [:div {:class "dark:placeholder-gray-400 w-full dark:border-gray-700 px-4
                                     dark:text-white dark:focus:ring-blue-500 text-md overflow-auto"}
-                (dom/div {:class "position-relative overflow-y-auto overflow-x-hidden"}
-                  (for [t transaction-comps]
-                    ((second (tr/transaction-comp t {:local/execute-fn (tr/execute-transaction contract t)
-                                                     :local/remove-fn (tr/remove-evm-transaction t)})))))))]))
+            [:div {:class "position-relative overflow-y-auto overflow-x-hidden"}
+             #jsx [For {:each (:transactions (data))}
+                   (fn [t _]
+                     #jsx [tr/Transaction t {:local/execute-fn (tr/execute-transaction (:contract (data)) t)
+                                             :local/remove-fn (tr/remove-evm-transaction t)}])
+                   ]]]]]))

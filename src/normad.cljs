@@ -71,9 +71,9 @@
                                                                                :user/ethereum-address "0x0"
                                                                                :user/leg {:leg/id "left"}}}}))
                query [{:counters [:counter/id :counter/value]} {:header [{:user [:user/id :user/name]}]}]]
-           (pull store store query))
+           (pull store store [:counters]))
 
-         (ident? [:asd/id 0 1]))
+         (ident? [:asd/id 0]))
 
 #_(defn traverse-and-transform [data acc]
     (cond

@@ -46,6 +46,12 @@
 (defn random-evm []
   (string/join "0x" (.toString (js/crypto.randomBytes 32) "hex")))
 
+(defn drop-false [m]
+  (into {} (filterv (fn [x] (and (not (false? (second x))) (not (nil? (second x))))) m)))
+
+(defn nsd [data ns]
+  (into {} (map (fn [[k v]] [(keyword (str (name ns) "/" (name k))) v]) data)))
+
 ;; local storage
 
 (defn set-item!

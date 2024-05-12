@@ -12,8 +12,8 @@
 
 (defn inc-counter [{:keys [store setStore] :as ctx} id]
   (setStore :counter/id
-              (fn [counters]
-                (update-in counters [id :counter/value] inc))))
+            (fn [counters]
+              (update-in counters [id :counter/value] inc))))
 
 (defn update-fn [{:keys [store setStore] :as ctx} ident f]
   (setStore (first ident)
@@ -71,14 +71,15 @@
 (defn Main [props]
   #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden dark text-gray-900"}
         #jsx [Header]
-        [:div {:class "flex h-full overflow-hidden dark:text-white bg-[#f3f4f6] dark:bg-gray-700 py-4"}
+        [:div {:class "flex h-full overflow-hidden dark:text-white bg-[#f3f4f6] dark:bg-[#101014] py-4"}
          props.children]])
 
 (defn Root []
   (let [[store setStore] (norm/normalize-store (createStore {:counters [{:counter/id 0
                                                                          :counter/value 1}]
                                                              :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
-                                                                                   :contract [:contract/id :codo]}
+                                                                                   :contract [:contract/id :codo]
+                                                                                   :transactions []}
                                                              :header {:user {:user/id 0
                                                                              :user/ethereum-address "0x0"
                                                                              :user/leg {:leg/id "left"}}}}))
