@@ -14,8 +14,7 @@
 
 
 (defn User [ident]
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         data (createMemo (fn []
                            (println "run memo user id " ident.children)
                            (get-in store ident.children)))]

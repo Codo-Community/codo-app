@@ -21,8 +21,7 @@
                 (update thing (second ident) f))))
 
 (defn Counter [ident]
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         data (if ident
                (createMemo (fn []
                              (get-in store ident.children)))
@@ -43,10 +42,8 @@
     (setStore :counters (fn [counters] (conj counters [:counter/id id])))))
 
 (defn Header []
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
-        data (createMemo (fn []
-                           (get store :header)))
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
+        data (createMemo #(get store :header))
         user-fn (eu/add-accounts-changed #(user/add-user ctx (first %)))]
     #jsx [:header {}
           [:nav {:class "border-gray-200 text-gray-900 px-4
@@ -60,10 +57,9 @@
              #jsx [user/User (:user (data))]]]]]))
 
 (defn Counters []
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
-        data (createMemo (fn []
-                           (select-keys store [:counters])))]
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
+
+        data (createMemo #(select-keys store [:counters]))]
     #jsx [For {:each (:counters (data))}
           (fn [c _]
             #jsx [Counter c])]))
@@ -75,15 +71,15 @@
          props.children]])
 
 (defn Root []
-  (let [[store setStore] (norm/normalize-store (createStore {:counters [{:counter/id 0
-                                                                         :counter/value 1}]
-                                                             :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
-                                                                                   :contract [:contract/id :codo]
-                                                                                   :transactions []}
-                                                             :header {:user {:user/id 0
-                                                                             :user/ethereum-address "0x0"
-                                                                             :user/leg {:leg/id "left"}}}}))
-        ctx {:store store :setStore setStore}]
+  (let [[store setStore] (createStore {:counters [{:counter/id 0
+                                                   :counter/value 1}]
+                                       :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
+                                                             :contract [:contract/id :codo]
+                                                             :transactions []}
+                                       :header {:user {:user/id 0
+                                                       :user/ethereum-address "0x0"
+                                                       :user/leg {:leg/id "left"}}}})
+        {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/counter" :component Counters}]

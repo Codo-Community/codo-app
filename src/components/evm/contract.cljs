@@ -16,32 +16,29 @@
 (defn add-transaction [{:keys [store setStore] :as ctx} contract]
   (fn [e]
     (let [selected (:local/selected-function contract)
-          a (println selected)
-          function-data (n/pull store (get-in store [:function/id selected]))
+          function-data (n/pull store (get-in store [:function/id selected]) [:name :inputs :outputs :stateMutability :type])
           transaction-data {:transaction/id (js/crypto.randomUUID)
-                            :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))
-                            }
-          ]
-      (add [store setStore] transaction-data)
+                            :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))}]
+      (add ctx transaction-data)
       (setStore :transaction-builder
-              (fn [x]
-                (update-in x [:transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
+                (fn [x]
+                  (update-in x [:transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 
 (defn Contract [ident]
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
-        data (createMemo (fn []
-                           (n/pull store (get-in store ident.children)
-                                   [:contract/id :contract/address :contract/chain :contract/name
-                                    {:contract/abi [:name :type :stateMutability :inputs :outputs]}])))
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
+        data (createMemo #(n/pull store (get-in store ident.children)
+                                  [:contract/id :contract/address :contract/chain :contract/name
+                                   :local/selected-function
+                                   {:contract/abi [:name :type :stateMutability :inputs :outputs]}]))
         on-change (select-on-change ctx ident.children)]
     #jsx [:div {:class "flex flex-col grid grid-cols-1 w-full gap-2"}
           [:h2 {:class "py-3 font-bold text-lg"} "Parameters"]
           [:span {:class "flex w-full gap-2"}
            (in/address-input {:name "Address"
                               :value (:contract/address (data))})]
-          (d/dropdown-select "Function" (mapv (fn [a] {:value (:name a)})
+          (d/dropdown-select "Function" (mapv (fn [a] {:id (:name a)
+                                                       :value (:name a)})
                                               (filterv #(= (:type %) :function) (:contract/abi (data))))
-                             on-change "")
+                             on-change (:local/selected-function (data)))
           [:div {:class "flex items-end"}
            (b/button "Add" (add-transaction ctx (data)))]]))

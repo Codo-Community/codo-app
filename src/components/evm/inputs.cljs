@@ -24,8 +24,9 @@
                    :on-change on-change} value))
 
 (defn set-abi-field [path value & convert-fn]
-
-   #_(swap! co-who.app/app assoc-in (conj path :value) value))
+  (setStore (first path)
+              (fn [x]
+                (assoc-in x (rest path) value))))
 
 (defn convert-input-filter [input]
   (condp = (:type input)

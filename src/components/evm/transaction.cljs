@@ -20,22 +20,30 @@
           args (mapv #(ein/convert-input-filter %) inputs)]
       (.then (function args) #(println %)))))
 
-(defn Transaction [ident #_{:transaction/keys [id function] :as data :or {id (random-uuid)
-                                                                          function nil}} {:local/keys [execute-fn remove-fn open?] :or {open? true} :as local}]
-  (let [ctx (useContext AppContext)
-        {:keys [store setStore]} ctx
+(defn remove-evm-transaction [{:keys [store setStore] :as ctx} ident]
+  (fn []
+    (setStore :transaction-builder (fn [x]
+                                     (println (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
+                                                                                                     (second ident)))) %)))
+                                     (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
+                                                                                            (second ident)))) %))
+                                     ))))
+
+
+(defn Transaction [ident {:local/keys [execute-fn open?] :or {open? true} :as local}]
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         query [:transaction/id {:transaction/function [:function/id :name
                                                        {:inputs [:internalType :type :name :value]}
                                                        {:outputs [:internalType :type :name :value]}
                                                        :stateMutability :type]}]
-        data (createMemo (fn []
-                           (n/pull store (get-in store ident.children)
-                                   query)))]
+        data (createMemo #(n/pull store (get-in store ident.children) query))]
     #jsx [:div {:class "flex flex-col mb-4"}
-          (f/abi-entry (get-in (data) [:transaction/function]) {:local/on-change-id [:transaction/id (:transaction/id (data))]})
+          #_(str "id " (:transaction/id (data)))
+          (f/abi-entry (get-in (data) [:transaction/function])
+                       {:local/on-change [:transaction/id (:transaction/id (data))]})
           [:span {:class "flex gap-3"}
            (b/button "Transact" execute-fn)
-           (b/button "Remove" remove-fn {:color "dark:bg-red-600 dark:hover:bg-red-700"})]]))
+           (b/button "Remove" (remove-evm-transaction ctx ident.children) {:color "dark:bg-red-600 dark:hover:bg-red-700"})]]))
 
 #_(defn append-transaction [app]
   (fn [e]
@@ -49,7 +57,3 @@
           ]
       (swap! app py/add ((first tr)))
       (swap! app update-in [:id :transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))
-
-(defn remove-evm-transaction [transaction]
-  (fn []
-    (swap! co-who.app/app py/delete [:transaction/id (:transaction/id transaction)])))

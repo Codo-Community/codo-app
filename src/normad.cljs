@@ -17,40 +17,41 @@
 (defn traverse-and-transform [item setStore]
   (cond
     (vector? item) (mapv #(traverse-and-transform % setStore) item)
-    (map? item) (if-let [ident (get-ident item)]
-                  (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
-                    (do (setStore (first ident)
-                                  (fn [x] (assoc x (second ident) new-val)))
-                        ident))
-                  (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item))))
+    (map? item)  (if-let [ident (get-ident item)]
+                   (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
+                     (setStore (first ident)
+                               (fn [x] (assoc x (second ident) new-val)))
+                     ident)
+                   (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item))))
     :else item))
 
-(defn normalize-store [store]
+#_(defn normalize-store [store]
   (let [[store setStore] store
         res (traverse-and-transform store setStore)]
     (doall (for [[k v] res]
              (setStore k (fn [x] v))))
     [store setStore]))
 
-(defn add [store data]
-  (let [[store setStore] store
-        res (traverse-and-transform data setStore)]
+(defn add [{:keys [store setStore] :as ctx} & data]
+  (let [res (traverse-and-transform (or (first data) store) setStore)]
     (doall (for [[k v] res]
              (setStore k (fn [x] v))))
-    [store setStore]))
+    ctx))
 
 (defn pull [store entity query]
   (cond
     (ident? entity) (pull store (get-in store entity) query)
 
     (and (> (count entity) 0)
-         (vector? entity)) (mapv (fn [x] (pull store (get-in store x) query)) entity)
+         (vector? entity)) (mapv (fn [x] (if (ident? x)
+                                           (pull store (get-in store x) query)
+                                           x)) entity)
 
     (and (> (count query) 1)
          (vector? query)) (let [simple-keys (filterv string? query)
                                 not-simple  (filterv #(not (string? %)) query)]
-                            (into (zipmap simple-keys (mapv #(pull store entity %) simple-keys))
-                                  (mapv #(pull store entity %) not-simple)))
+         (into (zipmap simple-keys (mapv #(pull store entity %) simple-keys))
+               (mapv #(pull store entity %) not-simple)))
 
     (and (= (count query) 1)
          (vector? query)) (pull store entity (first query))
