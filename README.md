@@ -1,34 +1,21 @@
-## Usage
+# Codo Solid Squint
+Hi this is a repo containing the Codo frontend App (and some tools to set up a local dev env).
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+This version is based on SolidJs for rendering, Squint-cljs as a lightweight ClojureScript alternative, WindiCSS for css and Vite for packaging.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+We use Memoization and build a very basic frontend database using some custom normalization functions.
+
+The "backend" is based on ComposeDB.
+
+WIP: setting up composedb dev env script
+
+## Getting started
 
 ```bash
-$ npm install # or pnpm install or yarn install
+pnpm i
+pnpm run dev
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+now start editing files to see squint compiling things and vite hot reloading the new files under "./dist".
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm dev` or `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+Also browse to localhost:3000/#/tb or /#/counter to actually see something...

@@ -18,6 +18,18 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  optimizeDeps: { // 👈 optimizedeps
+      esbuildOptions: {
+        target: "esnext",
+        // Node.js global to browser globalThis
+        define: {
+          global: 'globalThis'
+        },
+        supported: {
+          bigint: true
+        },
+      },
+  },
   build: {
     outDir: "public/js",
     target: 'esnext',
