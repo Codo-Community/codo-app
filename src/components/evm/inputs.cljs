@@ -1,5 +1,6 @@
 (ns co-who.components.evm.inputs
-  (:require ["blo" :refer [blo]]
+  (:require
+            ["blo" :refer [blo]]
             ["../../evm/util.mjs" :as eu]
             ["../blueprint/input.jsx" :as i]
             ))
@@ -23,10 +24,10 @@
                    :readonly? (not editable?)
                    :on-change on-change} value))
 
-(defn set-abi-field [path value & convert-fn]
+(defn set-abi-field [{:keys [store setStore] :as ctx} path value & convert-fn]
   (setStore (first path)
-              (fn [x]
-                (assoc-in x (rest path) value))))
+            (fn [x]
+              (assoc-in x (rest path) value))))
 
 (defn convert-input-filter [input]
   (condp = (:type input)

@@ -8,42 +8,37 @@
             ["../../evm/lib.mjs" :as el]
             ["../../Context.mjs" :refer [AppContext]]))
 
-(defn execute-transaction [{:contract/keys [abi address]}
-                           transaction]
+(defn execute-transaction [{:keys [store setStore] :as ctx} contract transaction]
   (fn [e]
-    (let [{:keys [function/id type inputs name outputs stateMutability]} (:transaction/function transaction)
+    (let [{:contract/keys [abi address]} (n/pull store contract [:contract/address {:contract/abi [:name :type :stateMutability :inputs :outputs]}])
+          {:keys [function/id type inputs name outputs stateMutability]} (:transaction/function (n/pull store transaction {:transaction/function [:function/id :type :inputs :name :outputs :stateMutability]}))
           c (el/get-contract {:address address
                               :abi abi
-                              :client {:public @ec/public-client :wallet @ec/wallet-client}})
+                              :client {:public ec/public-client :wallet ec/wallet-client}})
           cf (if (= stateMutability "view") c.read c.write)
           function (aget cf name)
           args (mapv #(ein/convert-input-filter %) inputs)]
-      (.then (function args) #(println %)))))
+      (.then (function args)
+             (fn [r]
+               (if (vector? r)
+                 (map-indexed (fn [i v] (ein/set-abi-field ctx (conj [:function/id id :outputs i :value] v))) r)
+                 (ein/set-abi-field ctx [:function/id id :outputs 0 :value] r)))))))
 
 (defn remove-evm-transaction [{:keys [store setStore] :as ctx} ident]
-  (fn []
-    (setStore :transaction-builder (fn [x]
-                                     (println (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
-                                                                                                     (second ident)))) %)))
-                                     (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
-                                                                                            (second ident)))) %))
-                                     ))))
+  (fn [] (setStore :transaction-builder (fn [x]
+                                          (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
+                                                                                                 (second ident)))) %))))))
 
 
 (defn Transaction [ident {:local/keys [execute-fn open?] :or {open? true} :as local}]
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        query [:transaction/id {:transaction/function [:function/id :name
-                                                       {:inputs [:internalType :type :name :value]}
-                                                       {:outputs [:internalType :type :name :value]}
-                                                       :stateMutability :type]}]
-        data (createMemo #(n/pull store (get-in store ident.children) query))]
+        query [:transaction/id :transaction/function]
+        data (createMemo (fn [] (n/pull store (get-in store ident) query)))]
     #jsx [:div {:class "flex flex-col mb-4"}
-          #_(str "id " (:transaction/id (data)))
-          (f/abi-entry (get-in (data) [:transaction/function])
-                       {:local/on-change [:transaction/id (:transaction/id (data))]})
+          (f/function (:transaction/function (data)))
           [:span {:class "flex gap-3"}
            (b/button "Transact" execute-fn)
-           (b/button "Remove" (remove-evm-transaction ctx ident.children) {:color "dark:bg-red-600 dark:hover:bg-red-700"})]]))
+           (b/button "Remove" (remove-evm-transaction ctx ident) {:color "dark:bg-red-600 dark:hover:bg-red-700"})]]))
 
 #_(defn append-transaction [app]
   (fn [e]

@@ -9,7 +9,6 @@
                      focus:border-blue-500 block h-11 w-full p-3 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
                      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"}
          (map-indexed (fn [i {:keys [value href id] :as item}]
-                        #jsx [:option {:asd "1"
-                                       :selected (if (= id selected)
+                        #jsx [:option {:selected (if (= id selected)
                                                    true false)}
-                              [:a {:href href} value]]) items)]])
+                              value]) items)]])

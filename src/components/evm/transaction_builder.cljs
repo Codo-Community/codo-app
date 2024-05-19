@@ -1,5 +1,5 @@
 (ns co-who.components.evm.transaction-builder
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index]]
+  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount]]
             [clojure.string :as str]
             ["./contract.jsx" :as c]
             ["../../evm/abi.mjs" :as abi]
@@ -38,12 +38,11 @@
 
 (defn TransactionBuilder []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        norm (do (println "now run long running norm add")
-                 (add ctx contract-gen))
         data (createMemo (fn []
                            (n/pull store (get store :transaction-builder)
                                    [:contract {:contracts [:contract/id :contract/name]}
                                     :transactions])))]
+    (onMount #(add ctx contract-gen))
     #jsx [:div {:class "flex flex-col grid grid-cols-1 md:(grid-cols-2 justify-center gap-0) 3xl:grid-cols-3 w-full h-full gap-4"}
           [:div {:class "col-span-full md:col-span-1 3xl:col-span-1 flex flex-col dark:border-gray-600 border-gray-200 px-4"}
            [:h1 {:class "mb-3 font-bold text-lg"} "Contract"]
@@ -59,5 +58,4 @@
             [:div {:class "position-relative overflow-y-auto overflow-x-hidden"}
              #jsx [For {:each (:transactions (data))}
                    (fn [t _]
-                     #jsx [tr/Transaction t #_{:local/execute-fn (tr/execute-transaction (:contract (data)) t)
-                                               :local/remove-fn (tr/remove-evm-transaction t)}])]]]]]))
+                     (tr/Transaction t {:local/execute-fn (tr/execute-transaction ctx (:contract (data)) t)}))]]]]]))

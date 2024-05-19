@@ -10,5 +10,5 @@
 (defn icon-button [attr-map icon]
   #jsx [:button (merge {:class "text-gray-400 bg-transparent
                               hover:text-gray-900 rounded-md text-sm p-1.5 block h-10 w-10
-                              ml-auto inline-flex items-center dark:hover:text-white"} attr-map)
+                              ml-auto inline-flex items-center dark:hover:text-white "} attr-map)
         [:div {:class "w-6 h-6"} icon]])
