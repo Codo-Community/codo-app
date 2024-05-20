@@ -1,5 +1,4 @@
-(ns normad
-  (:require ["solid-js/store" :refer [createStore reconcile]]))
+(ns normad)
 
 (defn get-ident [data]
   (if-let [ident-key (first (filter #(re-find #"/id$" %) (keys data)))]

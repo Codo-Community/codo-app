@@ -1,9 +1,9 @@
 (ns comp
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount]]
+  (:require ["solid-js" :as solid]
             ["./normad.mjs" :as n]
             ["blo" :refer [blo]]
             [squint.core :refer [defclass]])
-  (:require-macros [compm :refer [defc]]))
+  (:require-macros [comp :refer [defc]]))
 
 (defclass Comp
   (field -ctx)
@@ -20,7 +20,7 @@
   #_(query [] -query)
   (render [this ident]))
 
-(defclass User
+#_(defclass User
   (extends Comp)
   (field -query [:user/id :user/ethereum-address])
   (field -local)
@@ -46,9 +46,13 @@
                          :src (blo (ethereum-address))}]])))
 
 (defn comp-factory [comp-class ctx]
-  (fn [p]
-    (let [c (comp-class. ctx)]
-      (c.render p))))
+  (let [c (new comp-class ctx)
+        r (aget c "render")]
+    c))
 
-#_(defn defc [name bindings body]
-  (defc 'name [] body))
+#_(defn defsc [name bindings body]
+  (defc name bindings body))
+
+(def useContext solid/useContext)
+(def pull n/pull)
+(def createMemo solid/createMemo)

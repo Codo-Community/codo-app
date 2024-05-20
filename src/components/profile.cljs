@@ -5,6 +5,7 @@
             ["./blueprint/input.jsx" :as in]
             ["./blueprint/button.jsx" :as b]
             ["../ua.jsx" :as ua]
+            ["./user.jsx" :as u :refer [ui-user]]
             ["../comp.jsx" :as comp]
             ["../Context.mjs" :refer [AppContext]]))
 
@@ -56,14 +57,18 @@
                               :on-change (fn [e] (set-field! ctx (conj ident :basicProfile/username) e.target.value))} (:username (data)))]
           (b/button "Get Name" on-click)]))
 
-(def ui-user (comp/comp-factory comp/User AppContext))
-(def ui-user2 (comp/comp-factory ua/User AppContext))
+#_(def ui-user3 (comp/comp-factory u/User AppContext))
+#_(def ui-user2 (comp/comp-factory ua/User AppContext))
+
+#_(println "us " ui-user)
 
 (defn ProfilePage []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(n/pull store (get store :profile) [:user/id]))
-        u [:user/id 0]]
+        data (createMemo #(n/pull store (get store :profile) [:user/id]))]
     #_(onMount ((on-click nil)))
     #jsx [:div {}
-          (ui-user2 [:user/id (data)])
+          (ui-user.render [:user/id (data)])
           #_(BasicProfile [:basicProfile/id (:basicProfile/id (data))])]))
+
+#_(defc ProfilePage []
+  )

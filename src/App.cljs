@@ -12,6 +12,7 @@
             ["./composedb/client.mjs" :as cdb]
             ["./composedb/auth.mjs" :as cda]
             ["@solidjs/router" :refer [HashRouter Route]]
+            ["./comp.mjs" :as comp]
             ["./Context.mjs" :refer [AppContext]]))
 
 (defn inc-counter [{:keys [store setStore] :as ctx} id]
@@ -60,7 +61,7 @@
              [:a {:draggable "false"
                   :href "#", :class "flex items-center"} "codo"]]
             [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
-             #jsx [user/User (:user (data))]]]]]))
+             #_(user/ui-user (:user (data)))]]]]))
 
 (defn Counters []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
@@ -82,13 +83,13 @@
                                        :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
                                                              :contract [:contract/id :codo]
                                                              :transactions []}
-                                       :profile [:user/id 0]
+                                       :pages/id {:profile [:user/id 0]}
                                        :header {:user {:user/id 0
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
     #_(onMount (do (cda/init-auth)
-                 (cdb/init-clients)))
+                   (cdb/init-clients)))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/counter" :component Counters}]
