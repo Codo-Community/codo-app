@@ -1,9 +1,7 @@
 (ns co-who.components.evm.inputs
-  (:require
-            ["blo" :refer [blo]]
+  (:require ["blo" :refer [blo]]
             ["../../evm/util.mjs" :as eu]
-            ["../blueprint/input.jsx" :as i]
-            ))
+            ["../blueprint/input.jsx" :as i]))
 
 (defn address-input [{:keys [name value] :as data :or {name "Address"
                                                        value "0x0"}}

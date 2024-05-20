@@ -2,7 +2,7 @@
   (:require ["@composedb/client" :refer [ComposeClient]]
             ["@ceramicnetwork/http-client" :refer [CeramicClient]]
             ["did-session" :refer [DIDSession]]
-            ["./composite.cljs" :refer [composite]]
+            ["./composite.mjs" :refer [composite]]
             ["../evm/client.mjs" :refer [wallet-client]]
             ["./auth.mjs" :as a]))
 

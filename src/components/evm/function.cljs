@@ -31,7 +31,7 @@
                                                  :local/on-change (fn [e]
                                                                     (ein/set-abi-field ctx [:function/id (:function/id (data)) :inputs (i) :value] e.target.value))}))]]
                  #jsx [Show {:when (not (empty? (:outputs (data))))}
-                       [:h2 {:class "mb-2 font-bold"} (str "Outputs: ")]
+                       [:h2 {:class "mb-2 font-bold text-green"} (str "Outputs: ")]
                        #jsx [For {:each (vec (:outputs (data)))}
                              (fn [entry _]
                                (ein/input entry {:local/editable? false}))]]]]]))

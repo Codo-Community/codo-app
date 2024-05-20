@@ -1,12 +1,16 @@
 (ns App
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index]]
+  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount]]
             [squint.string :as str]
             ["solid-js/store" :refer [createStore]]
             ["./components/user.jsx" :as user]
             ["./components/evm/transaction_builder.jsx" :as tb]
+            ["./components/profile.jsx" :as profile]
             ["./evm/util.mjs" :as eu]
+            ["./evm/client.mjs" :as ec]
             ["./normad.mjs" :as norm]
             ["./utils.mjs" :as u]
+            ["./composedb/client.mjs" :as cdb]
+            ["./composedb/auth.mjs" :as cda]
             ["@solidjs/router" :refer [HashRouter Route]]
             ["./Context.mjs" :refer [AppContext]]))
 
@@ -43,13 +47,15 @@
 
 (defn Header []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(get store :header))
-        user-fn (eu/add-accounts-changed #(user/add-user ctx (first %)))]
+        data (createMemo #(get store :header))]
+    (onMount (do
+               (eu/request-addresses ec/wallet-client #(user/add-user ctx (first %)))
+               (eu/add-accounts-changed #(user/add-user ctx (first %)))))
     #jsx [:header {}
           [:nav {:class "border-gray-200 text-gray-900 px-4
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
                     dark:border-gray-700 dark:text-gray-400"}
-           [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden"}
+           [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden px-2"}
             [:span {:class "flex gap-3"}
              [:a {:draggable "false"
                   :href "#", :class "flex items-center"} "codo"]]
@@ -65,8 +71,8 @@
             #jsx [Counter c])]))
 
 (defn Main [props]
-  #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden dark text-gray-900"}
-        #jsx [Header]
+  #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden text-gray-900 dark"}
+        [Header]
         [:div {:class "flex h-full overflow-hidden dark:text-white bg-[#f3f4f6] dark:bg-[#101014] py-4"}
          props.children]])
 
@@ -76,13 +82,17 @@
                                        :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
                                                              :contract [:contract/id :codo]
                                                              :transactions []}
+                                       :profile [:user/id 0]
                                        :header {:user {:user/id 0
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
+    #_(onMount (do (cda/init-auth)
+                 (cdb/init-clients)))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/counter" :component Counters}]
+           [Route {:path "/profile" :component profile/ProfilePage}]
            [Route {:path "/tb" :component tb/TransactionBuilder}]]]))
 
 (def default Root)

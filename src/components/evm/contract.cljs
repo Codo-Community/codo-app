@@ -25,7 +25,7 @@
 
 (defn Contract [ident]
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(n/pull store (get-in store ident.children)
+        data (createMemo #(n/pull store ident.children
                                   [:contract/id :contract/address :contract/chain :contract/name
                                    {:contract/abi [:name :type :stateMutability :inputs :outputs]}]))
         [local setLocal] (createSignal {:selected-function ""})]
