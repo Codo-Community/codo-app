@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite",
     "watch": "npx squint watch",
-    "dev": "concurrently --kill-others \"pnpm run watch\" \"pnpx vite\"",
+    "dev": "concurrently --kill-others \"pnpm run watch\" \"pnpm dlx vite\"",
     "build": "vite build",
     "serve": "vite preview"
   },

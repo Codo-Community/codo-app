@@ -1,17 +1,20 @@
 (ns components.user
   (:require ["blo" :refer [blo]]
             ["../comp.mjs" :as comp]
+            ["../transact.mjs" :as t]
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defn add-user [{:keys [store setStore] :as ctx} address]
-  (let [id (count (:user/id store))]
-    (setStore :user/id
+(defn add-user [{:keys [store setStore] :as ctx} address & extra]
+  (println (first extra))
+  (t/add! ctx {:user/id (count (:user/id store))
+               :user/ethereum-address address} {:replace [:header :user]})
+  #_(setStore :user/id
               (fn [user-id]
                 (assoc-in user-id [id] {:user/id id
                                         :user/ethereum-address address})))
-    (setStore :header (fn [header]
-                        (assoc header :user [:user/id id])))))
+  #_(setStore :header (fn [header]
+                        (assoc header :user [:user/id id]))))
 
 (defc User [this {:user/keys [id ethereum-address]}]
   #jsx [:div {:class "flex flex-inline  items-caenter justify-items-center text-white"}
@@ -27,8 +30,7 @@
                     (str first-name " " last-name)
                     (subs (str ethereum-address) 0 8)))]])
 
-
 (def ui-user (comp/comp-factory User AppContext))
 
-(println "render: " ui-user #_(let [c (new User AppContext)]
+#_(println "render: " ui-user #_(let [c (new User AppContext)]
                       (aget c "render")))

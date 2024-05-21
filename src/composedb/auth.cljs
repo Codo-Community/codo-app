@@ -4,7 +4,7 @@
             ["did-session" :refer [DIDSession]]
             ["@didtools/pkh-ethereum" :refer [EthereumWebAuth getAccountId]]))
 
-(def auth (atom {}))
+(def auth (atom {:addresses nil :account-id nil :auth-method nil}))
 
 (defn ^:async init-auth []
   #_(let [session-str (u/get-item "ceramic:eth_did")
@@ -18,6 +18,7 @@
         auth-method (js-await (EthereumWebAuth.getAuthMethod wallet-client account-id))]
     (println "ComposeDB auth OK: " account-id)
     (reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
+    (println "a: " @auth)
     (js/Promise.resolve @auth)))
 
 #_(defstate auth :start  (init-auth))

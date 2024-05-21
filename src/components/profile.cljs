@@ -4,71 +4,77 @@
             ["../normad.mjs" :as n]
             ["./blueprint/input.jsx" :as in]
             ["./blueprint/button.jsx" :as b]
-            ["../ua.jsx" :as ua]
             ["./user.jsx" :as u :refer [ui-user]]
             ["../comp.jsx" :as comp]
+            ["../transact.mjs" :as t]
+            ["../utils.mjs" :as utils]
             ["../Context.mjs" :refer [AppContext]]))
 
 (def query-from-acc "query {
   viewer {
-        basicProfile {
-              id
-              name
-            }
+    user {
+      author { id }
+      firstName
+      lastName
+    }
   }
 }
 ")
 
-#_(defn on-click-mutation [app ident]
-  (fn [e]
-    (.preventDefault e)
-    (-> (.executeQuery ^js (:compose @cli/client)
-                       (basic-profile-mutation {:document (u/remove-ns-from-keys (nth (basicProfile-comp {} {}) 2))})
-                       (mutation-vars (first (vals (n/pull store  [:basicProfile/id id])))))
-        (.then (fn [response] (js/console.log response))))))
+#_{:viewer {:user {:author [id]} :firstName :lastName}}
 
-(defn set-field! [{:keys [store setStore] :as ctx} path value & convert-fn]
-  (setStore (first path)
-            (fn [x]
-              (assoc-in x (rest path) value))))
+(defn basic-profile-mutation [query]
+  (str "mutation setUser($i: SetUserInput!){
+          setUser(input: $i){
+            document { firstName lastName }
+ } }"))
+
+#_(eql-gql/query->graphql query)
+
+(defn mutation-vars [{:user/keys [id firstName lastName] :as data}]
+  {:i {:content (utils/drop-false {:firstName firstName :lastName lastName})}})
+
+(defn on-click-mutation [{:keys [store setStore] :as ctx} ident]
+    (fn [e]
+      (.preventDefault e)
+      (-> (.executeQuery (:compose @cli/client)
+                         (basic-profile-mutation {:document [:firstName :lastName]})
+                         (mutation-vars (n/pull store ident [:user/id :user/firstName :user/lastName])))
+          (.then (fn [response] (js/console.log response))))))
 
 (defn on-click [{:keys [store setStore] :as ctx}]
   (fn [e]
     (-> (.executeQuery (:compose @cli/client) query-from-acc)
         (.then (fn [response]
-                 (js/console.log response)
-                 (let [res (aget response "data" "viewer" "basicProfile")]
-                   (println "got res:" (aget res "name"))
-                   (n/add ctx {:basicProfile/id (aget res "id")
-                               :basicProfile/name (aget res "name")})
-                   (setStore :profile (fn [profile] [:basicProfile/id (aget res "id")]))))))))
+                 #_(js/console.log "response: " response)
+                 (let [res (aget response "data" "viewer" "user")]
+                   #_(println "got res:" (aget res "firstName"))
+                   (t/add! ctx {:user/id (aget res "author" "id") #_(aget res "id")
+                                 :user/firstName (aget res "firstName")
+                                 :user/lastName (aget res "lastName")}
+                            {:replace [:pages/id :profile :user]})
+                   #_(setStore :profile (fn [profile] [:user/id (aget res "id")]))))))))
 
-(defn BasicProfile [ident]
+(defn UserProfile [ident]
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        a (println ident)
-        data (createMemo #(n/pull store (get-in store ident) [:basicProfile/id :basicProfile/name :basicProfile/username]))]
-    #jsx [:div {} [:form {;:onSubmit on-click-mut
-                          }
-                   (in/input {:label "Name"
-                              :placeholder "Your Name"
-                              :on-change (fn [e] (set-field! ctx (conj ident :basicProfile/name) e.target.value))} (:name (data)))
-                   (in/input {:label "Username"
-                              :placeholder "Your Username"
-                              :on-change (fn [e] (set-field! ctx (conj ident :basicProfile/username) e.target.value))} (:username (data)))]
-          (b/button "Get Name" on-click)]))
-
-#_(def ui-user3 (comp/comp-factory u/User AppContext))
-#_(def ui-user2 (comp/comp-factory ua/User AppContext))
-
-#_(println "us " ui-user)
+        data (createMemo #(n/pull store (get-in store ident) [:user/id :user/firstName :user/lastName]))]
+    #jsx [:div {}
+          [:form {:onSubmit (on-click-mutation ctx ident)}
+           (in/input {:label "First Name"
+                      :placeholder "Your Name"
+                      :on-change (fn [e] (t/set-field! ctx (conj ident :user/firstName) e.target.value))} (:user/firstName (data)))
+           (in/input {:label "Last Name"
+                      :placeholder "Your Last Name"
+                      :on-change (fn [e] (t/set-field! ctx (conj ident :user/lastName) e.target.value))} (:user/lastName (data)))]
+          (b/button "Get Name" (on-click ctx))]))
 
 (defn ProfilePage []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(n/pull store (get store :profile) [:user/id]))]
+        data (createMemo #(n/pull store [:pages/id :profile] [:user]))]
     #_(onMount ((on-click nil)))
     #jsx [:div {}
-          (ui-user.render [:user/id (data)])
-          #_(BasicProfile [:basicProfile/id (:basicProfile/id (data))])]))
+          #_(ui-user (data))
+          (UserProfile (data))]))
 
 #_(defc ProfilePage []
   )

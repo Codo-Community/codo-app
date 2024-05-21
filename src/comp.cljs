@@ -48,7 +48,8 @@
 (defn comp-factory [comp-class ctx]
   (let [c (new comp-class ctx)
         r (aget c "render")]
-    c))
+    (fn [p]
+      (c.render p))))
 
 #_(defn defsc [name bindings body]
   (defc name bindings body))

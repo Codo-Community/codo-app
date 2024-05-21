@@ -1,0 +1,11 @@
+type Project @createModel(accountRelation: SINGLE, description: "Codo project") {
+  name: String! @string(minLength: 3, maxLength: 50)
+  description: String! @string(minLength: 1, maxLength: 100)
+
+  body: String! @string(minLength: 1, maxLength: 100)
+  tag: String! @string(minLength: 1, maxLength: 100)
+  ranking: Int!
+  categories: [StreamID!] postID: StreamID! @documentReference(model: "Post")
+  resources: 
+  start: DateTime!
+}

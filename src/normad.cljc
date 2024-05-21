@@ -11,8 +11,6 @@
        (re-find #"/id$" (first data))
        (= (count data) 2)))))
 
-#_(get-ident {:casd/id 0 :asd 1})
-
 (defn traverse-and-transform [item setStore]
   (cond
     (vector? item) (mapv #(traverse-and-transform % setStore) item)
@@ -33,8 +31,7 @@
 
 (defn add [{:keys [store setStore] :as ctx} & data]
   (let [res (traverse-and-transform (or (first data) store) setStore)]
-    (doall (for [[k v] res]
-             (setStore k (fn [x] v))))
+    (vec (map-indexed (fn [k v] (setStore k (fn [x] v))  res)))
     ctx))
 
 (defn pull [store entity query]

@@ -50,8 +50,8 @@
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         data (createMemo #(get store :header))]
     (onMount (do
-               (eu/request-addresses ec/wallet-client #(user/add-user ctx (first %)))
-               (eu/add-accounts-changed #(user/add-user ctx (first %)))))
+               (eu/request-addresses ec/wallet-client #(user/add-user ctx (first %) {:replace [:header :user]}))
+               (eu/add-accounts-changed #(user/add-user ctx (first %) {:replace [:header :user]}))))
     #jsx [:header {}
           [:nav {:class "border-gray-200 text-gray-900 px-4
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
@@ -61,7 +61,7 @@
              [:a {:draggable "false"
                   :href "#", :class "flex items-center"} "codo"]]
             [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
-             #_(user/ui-user (:user (data)))]]]]))
+             (user/ui-user (:user (data)))]]]]))
 
 (defn Counters []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
@@ -83,13 +83,14 @@
                                        :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
                                                              :contract [:contract/id :codo]
                                                              :transactions []}
-                                       :pages/id {:profile [:user/id 0]}
+                                       :pages/id {:profile {:user [:user/id 0]}}
                                        :header {:user {:user/id 0
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
-    #_(onMount (do (cda/init-auth)
-                   (cdb/init-clients)))
+    (onMount (do (.then (cda/init-auth) (fn [e]
+                                          (println "auth ok with: " e)
+                                          (cdb/init-clients)))))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/counter" :component Counters}]

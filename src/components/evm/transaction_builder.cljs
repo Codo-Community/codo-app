@@ -1,6 +1,5 @@
 (ns co-who.components.evm.transaction-builder
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount]]
-            [clojure.string :as str]
             ["./contract.jsx" :as c]
             ["../../evm/abi.mjs" :as abi]
             ["../../normad.mjs" :as n :refer [add]]
@@ -16,17 +15,6 @@
                  :codo-governor {:contract/id :codo-governor :contract/name "Codo Governor"
                                  :contract/address "0x0d4d1e9665a8BF75869A63e3F45AC465Bc291CBB" :contract/chain :sepolia
                                  :contract/abi (abi/indexed-abi abi/governor-abi)}}})
-
-#_(defn get-or-create [ident component]
-    (if (get-in co-who.app/app ident)
-      (let [data (py/pull @co-who.app/app ident)]
-        (m/update-children! co-who.app/app [:id :transaction-builder :contract] ident))
-      (do
-        (println "replace")
-        (swap! co-who.app/app py/add (get-in contract-gen ident))
-
-        (m/merge-component! co-who.app/app (c/contract-comp {} {}) {:target [{[:id :transaction-builder] [{:contract [:mr-who/node]}]}]
-                                                                    :action :replace-children}))))
 
 (defn contract-select-on-change [{:keys [store setStore] :as ctx}]
   (let [m {"Codo" :codo

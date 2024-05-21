@@ -26,7 +26,7 @@
 
         compose (ComposeClient. {:ceramic "http://localhost:7007"
                                  :definition composite})
-
+        a (js/console.log "didsess"  @a/auth)
         session (.then (.get DIDSession (:account-id @a/auth) (:auth-method @a/auth) {:resources (aget compose "resources")})
                        (fn [session]
                          (js/console.log "session did:" compose.context)
