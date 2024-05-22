@@ -61,7 +61,7 @@
              [:a {:draggable "false"
                   :href "#", :class "flex items-center"} "codo"]]
             [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
-             (user/ui-user (:user (data)))]]]]))
+             [user/ui-user (:user (data))]]]]]))
 
 (defn Counters []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
@@ -78,7 +78,8 @@
          props.children]])
 
 (defn Root []
-  (let [[store setStore] (createStore {:counters [{:counter/id 0
+  (let [[store setStore] (createStore {:viewer []
+                                       :counters [{:counter/id 0
                                                    :counter/value 1}]
                                        :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
                                                              :contract [:contract/id :codo]
@@ -88,9 +89,7 @@
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
-    (onMount (do (.then (cda/init-auth) (fn [e]
-                                          (println "auth ok with: " e)
-                                          (cdb/init-clients)))))
+    (onMount (.then (cda/init-auth) #(cdb/init-clients)))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/counter" :component Counters}]

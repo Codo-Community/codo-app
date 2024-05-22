@@ -46,10 +46,8 @@
                          :src (blo (ethereum-address))}]])))
 
 (defn comp-factory [comp-class ctx]
-  (let [c (new comp-class ctx)
-        r (aget c "render")]
-    (fn [p]
-      (c.render p))))
+  (let [c (new comp-class ctx)]
+    #(c.render %)))
 
 #_(defn defsc [name bindings body]
   (defc name bindings body))

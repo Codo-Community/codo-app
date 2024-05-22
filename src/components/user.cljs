@@ -6,15 +6,9 @@
   (:require-macros [comp :refer [defc]]))
 
 (defn add-user [{:keys [store setStore] :as ctx} address & extra]
-  (println (first extra))
+  #_(println (first extra))
   (t/add! ctx {:user/id (count (:user/id store))
-               :user/ethereum-address address} {:replace [:header :user]})
-  #_(setStore :user/id
-              (fn [user-id]
-                (assoc-in user-id [id] {:user/id id
-                                        :user/ethereum-address address})))
-  #_(setStore :header (fn [header]
-                        (assoc header :user [:user/id id]))))
+               :user/ethereum-address address} (first extra) #_{:replace [:header :user]}))
 
 (defc User [this {:user/keys [id ethereum-address]}]
   #jsx [:div {:class "flex flex-inline  items-caenter justify-items-center text-white"}
@@ -31,6 +25,3 @@
                     (subs (str ethereum-address) 0 8)))]])
 
 (def ui-user (comp/comp-factory User AppContext))
-
-#_(println "render: " ui-user #_(let [c (new User AppContext)]
-                      (aget c "render")))

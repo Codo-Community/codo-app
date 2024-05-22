@@ -11,27 +11,30 @@
             (fn [x]
               (update-in x [(second ident) :counter/value] value))))
 
-(defn input [{:keys [id ident label placeholder on-submit copy? on-change on-click readonly? required? extra-class left-icon]
-              :or {required? false extra-class "" copy? true readonly? false left-icon false label nil
-                   on-click (fn [e] (util/copy-to-clipboard children))}} children]
-  #jsx [:div {:class (str "mb-3 w-full" extra-class)}
-        (l/label label)
-        [:span {:class "flex flex-row relative"}
-         [:div {:class (str  "w-7 h-7 absolute left-2 top-2 " (if-not left-icon "hidden"))}
-          (left-icon)
-          [:button {:class (str  "w-5 h-5 absolute right-2.5 top-3 hover:text-white text-gray-400 " (if-not copy? "hidden"))
-                    :on-click on-click} "cl" #_(clipboard)]]
-         [:input {:class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
+(defn input [v s]
+  (let [a (println "v " v)
+        a (println "s " s)
+        {:keys [id ident label placeholder on-submit value copy? on-change on-click readonly? required? extra-class left-icon]
+         :or {required? false extra-class "" copy? true readonly? false left-icon false label nil
+              on-click (fn [e] (util/copy-to-clipboard v.children))}} v]
+    #jsx [:div {:class (str "mb-3 w-full" extra-class)}
+          (l/label label)
+          [:span {:class "flex flex-row relative"}
+           [:div {:class (str  "w-7 h-7 absolute left-2 top-2 " (if-not left-icon "hidden"))}
+            (left-icon)
+            [:button {:class (str  "w-5 h-5 absolute right-2.5 top-3 hover:text-white text-gray-400 " (if-not copy? "hidden"))
+                      :on-click on-click} "cl" #_(clipboard)]]
+           [:input {:class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
                                                             focus:border-blue-500 block w-full pr-10 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
                                                             dark:text-white dark:focus:ring-blue-500
                                                             dark:focus:border-blue-500
                                                             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-11" "pl-3"))
-                  :placeholder placeholder
-                  :onChange on-change
-                  :onSubmit on-submit
-                  :value children
-                  :readonly readonly?
-                  :required required?}]]])
+                    :placeholder placeholder
+                    :onChange on-change
+                    :onSubmit on-submit
+                    :value s
+                    :readonly readonly?
+                    :required required?}]]]))
 
 (defn number-input [{:keys [id label readonly? placeholder on-submit on-change readonly? required?] :or {required? false extra-class "" readonly? false}} & children]
   #jsx [:div {:class "mb-3"}

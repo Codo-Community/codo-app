@@ -18,7 +18,6 @@
         auth-method (js-await (EthereumWebAuth.getAuthMethod wallet-client account-id))]
     (println "ComposeDB auth OK: " account-id)
     (reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
-    (println "a: " @auth)
     (js/Promise.resolve @auth)))
 
 #_(defstate auth :start  (init-auth))
