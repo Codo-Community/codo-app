@@ -1,6 +1,6 @@
 (ns components.blueprint.button)
 
-(defn button [title on-click & {:keys [color] :or {color "dark:bg-blue-600"}}]
+(defn button [{:keys [title on-click color] :or {color "dark:bg-blue-600"}}]
   #jsx [:button {:class (str "text-white hover:bg-blue-800 focus:outline-none
                             rounded-md text-sm px-3 py-3 border border-gray-300 dark:border-gray-600
                             dark:hover:bg-blue-700 h-11 " color)

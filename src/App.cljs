@@ -4,6 +4,7 @@
             ["solid-js/store" :refer [createStore]]
             ["./components/user.jsx" :as user]
             ["./components/evm/transaction_builder.jsx" :as tb]
+            ["./components/pages/tbpage.jsx" :as tbp]
             ["./components/profile.jsx" :as profile]
             ["./evm/util.mjs" :as eu]
             ["./evm/client.mjs" :as ec]
@@ -49,7 +50,7 @@
 (defn Header []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         data (createMemo #(get store :header))]
-    (onMount (do
+    (onMount (fn []
                (eu/request-addresses ec/wallet-client #(user/add-user ctx (first %) {:replace [:header :user]}))
                (eu/add-accounts-changed #(user/add-user ctx (first %) {:replace [:header :user]}))))
     #jsx [:header {}
@@ -61,7 +62,7 @@
              [:a {:draggable "false"
                   :href "#", :class "flex items-center"} "codo"]]
             [:div {:class "flex items-center md:order-2 md:space-x-5 overflow-hidden py-2"}
-             [user/ui-user (:user (data))]]]]]))
+             #_[user/ui-user (:user (data))]]]]]))
 
 (defn Counters []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
@@ -81,19 +82,19 @@
   (let [[store setStore] (createStore {:viewer []
                                        :counters [{:counter/id 0
                                                    :counter/value 1}]
-                                       :transaction-builder {:contracts [[:contract/id :codo] [:contract/id :codo-governor]]
-                                                             :contract [:contract/id :codo]
-                                                             :transactions []}
-                                       :pages/id {:profile {:user [:user/id 0]}}
+                                       :pages/id {:profile {:user [:user/id 0]}
+                                                  :transaction-builder {:contracts []
+                                                                        :contract nil #_[:contract/id :codo]
+                                                                        :transactions []}}
                                        :header {:user {:user/id 0
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
-    (onMount (.then (cda/init-auth) #(cdb/init-clients)))
+    (onMount #(.then (cda/init-auth) (fn [] (cdb/init-clients))))
     #jsx [AppContext.Provider {:value ctx}
-          [HashRouter {:root Main}
-           [Route {:path "/counter" :component Counters}]
-           [Route {:path "/profile" :component profile/ProfilePage}]
-           [Route {:path "/tb" :component tb/TransactionBuilder}]]]))
+            [HashRouter {:root Main}
+             #_[Route {:path "/counter" :component Counters}]
+             [Route {:path "/profile" :component profile/ProfilePage}]
+             [Route {:path "/tb" :component tbp/TransactionBuilderPage}]]]))
 
 (def default Root)

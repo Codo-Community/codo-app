@@ -3,24 +3,27 @@
             ["../../evm/util.mjs" :as eu]
             ["../blueprint/input.jsx" :as i]))
 
-(defn address-input [{:keys [name value] :as data :or {name "Address"
-                                                       value "0x0"}}
-                     {:local/keys [on-change editable?]}]
+(defn address-input [{:keys [name value readonly on-change] :as data :or {name "Address"
+                                                                          value "0x0"
+                                                                          on-change (fn [])
+                                                                          readonly false}}]
   #jsx [:span {:class "gap-3 flex flex-row w-full items-center"}
-        (i/input {:label (str name)
+        [i/input {:label (str name)
                   :left-icon (fn [] #jsx [:img {:class "rounded-md"
-                                                :src (blo value)}])
+                                                :src (blo (value))}])
+                  :value value
                   :place-holder "0x..."
-                  :readonly? (not editable?)
-                  :copy? true
-                  :on-change on-change} value)])
+                  :readonly readonly
+                  :copy true
+                  :on-change on-change
+                  }]])
 
-(defn number-input [{:keys [name value] :or {name "Value" value 0}}
-                    {:local/keys [on-change editable?]}]
-  (i/number-input {:label name
+(defn number-input [{:keys [name value on-change readonly] :or {name "Value" value 0 readonly false}}]
+  [i/number-input {:label name
                    :placeholder 0
-                   :readonly? (not editable?)
-                   :on-change on-change} value))
+                   :readonly readonly
+                   :value value
+                   :on-change on-change}])
 
 (defn set-abi-field [{:keys [store setStore] :as ctx} path value & convert-fn]
   (setStore (first path)
@@ -34,11 +37,10 @@
     "uint8" (eu/parse-ether (:value input))
     "uint48" (eu/parse-ether (:value input))))
 
-(defn input [{:keys [internalType type name value] :as entry}
-             {:local/keys [on-change editable?] :as local}]
+(defn input [{:keys [internalType type name value on-change readonly] :as entry}]
   (condp = type
-    "address" (address-input entry local)
-    "uint256" (number-input entry local)
-    "uint8" (number-input entry local)
-    "uint48" (number-input entry local)
-    "" #_(str entry)))
+    "address" #jsx [address-input entry]
+    "uint256" #jsx [number-input entry]
+    "uint8" #jsx [number-input entry]
+    "uint48" #jsx [number-input entry]
+    ""))

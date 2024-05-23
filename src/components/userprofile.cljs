@@ -45,27 +45,25 @@
     (if e (.preventDefault e))
     (-> (.executeQuery (:compose @cli/client) query-from-acc)
         (.then (fn [response]
-                 #_(js/console.log "response: " response)
-                 (let [res (aget response "data" "viewer" "user")]
+                 (js/console.log "response: " response)
+                 (let [res (-> response :data :viewer :user)]
                    #_(println "got res:" (aget res "firstName"))
                    (t/add! ctx {:user/id (aget res "author" "id") #_(aget res "id")
-                                :user/firstName (aget res "firstName")
-                                :user/lastName (aget res "lastName")}
-                           {:replace [:pages/id :profile :user]})
-                   #_(setStore :profile (fn [profile] [:user/id (aget res "id")]))))))))
-
+                                  :user/firstName (aget res "firstName")
+                                  :user/lastName (aget res "lastName")}
+                             {:replace [:pages/id :profile :user]})
+                   #_(setStore :pages/id (fn [t] (assoc-in t [:profile :user] [:user/id (-> res :author :id)])))))))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName]}]
   #jsx [:form {:onSubmit (on-click-mutation ctx ident)}
-        [:div {} (firstName)]
         [in/input {:label "First Name"
                    :placeholder "Your Name"
-                   :on-change (fn [e] (t/set-field! ctx (conj ident :user/firstName) e.target.value))
-                   } (firstName)]
-        #_(in/input {:label "Last Name"
-                     :placeholder "Your Last Name"
-                     :on-change (fn [e] (t/set-field! ctx (conj ident :user/lastName) e.target.value))} (lastName))
-        [:button {:onClick (on-click ctx)} "get"]
-        #_(b/button "Get Name" (on-click ctx))])
+                   :value firstName
+                   :on-change (fn [e] (t/set-field! ctx (conj ident.children :user/firstName) e.target.value))}]
+        [in/input {:label "Last Name"
+                   :placeholder "Your Last Name"
+                   :value lastName
+                   :on-change (fn [e] (t/set-field! ctx (conj ident.children :user/lastName) e.target.value))}]
+        (b/button "Get Name" (on-click ctx))])
 
 (def ui-user-profile (comp/comp-factory UserProfile AppContext))

@@ -25,30 +25,20 @@
                  (ein/set-abi-field ctx [:function/id id :outputs 0 :value] r)))))))
 
 (defn remove-evm-transaction [{:keys [store setStore] :as ctx} ident]
-  (fn [] (setStore :transaction-builder (fn [x]
-                                          (update-in x [:transactions] #(filterv (fn [x] (not (= (second x)
+  (fn [e] (setStore :pages/id (fn [x]
+                                (update-in x [:transaction-builder :transactions] #(filterv (fn [x] (not (= (second x)
                                                                                                  (second ident)))) %))))))
 
 
-(defn Transaction [ident {:local/keys [execute-fn open?] :or {open? true} :as local}]
+(defn Transaction [ident #_{:local/keys [execute-fn open?] :or {open? true} :as local}]
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        query [:transaction/id :transaction/function]
-        data (createMemo (fn [] (n/pull store (get-in store ident) query)))]
+        data (createMemo (fn [] (n/pull store ident.children [:transaction/id :transaction/function])))]
     #jsx [:div {:class "flex flex-col mb-4"}
-          (f/function (:transaction/function (data)))
-          [:span {:class "flex gap-3"}
-           (b/button "Transact" execute-fn)
-           (b/button "Remove" (remove-evm-transaction ctx ident) {:color "dark:bg-red-600 dark:hover:bg-red-700"})]]))
-
-#_(defn append-transaction [app]
-  (fn [e]
-    (let [selected (get-in @app [:id :transaction-builder :local/selected-function])
-          ident [:contract/id (keyword (clojure.string/replace (clojure.string/lower-case (get-in @app [:id :transaction-builder :local/selected-contract])) " " "-"))]
-          contract (get-in @co-who.app/app ident)
-          function-data (get-in @app [:function/id selected])
-          transaction-data {:transaction/id (random-uuid)
-                            :transaction/function (assoc-in function-data [:function/id] (random-uuid))}
-          tr (Transaction transaction-data {:local/execute-fn (partial execute-transaction contract)})
-          ]
-      (swap! app py/add ((first tr)))
-      (swap! app update-in [:id :transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))
+          [f/function (:transaction/function (data))]
+          #jsx [:span {:class "flex gap-3"}
+                #jsx [b/button {:title "Transact"
+                                :on-click #();execute-fn
+                                }]
+                #jsx [b/button {:title "Remove"
+                                :on-click (remove-evm-transaction ctx ident.children)
+                                :color "dark:bg-red-600 dark:hover:bg-red-700"}]]]))
