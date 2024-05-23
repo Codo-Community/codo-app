@@ -9,7 +9,9 @@
     (if (string? (first data))
       (and
        (re-find #"/id$" (first data))
-       (= (count data) 2)))))
+       (= (count data) 2))
+      false)
+    false))
 
 (defn traverse-and-transform [item setStore]
   (cond
@@ -40,7 +42,7 @@
 
     (and (> (count entity) 0)
          (vector? entity)) (mapv (fn [x] (if (ident? x)
-                                           (pull store (get-in store x) query)
+                                           (pull store x query)
                                            x)) entity)
 
     (and (> (count query) 1)

@@ -1,7 +1,6 @@
 (ns comp
   (:require ["solid-js" :as solid]
             ["./normad.mjs" :as n]
-            ["blo" :refer [blo]]
             [squint.core :refer [defclass]])
   (:require-macros [comp :refer [defc]]))
 
@@ -55,3 +54,4 @@
 (def useContext solid/useContext)
 (def pull n/pull)
 (def createMemo solid/createMemo)
+(def ident? n/ident?)

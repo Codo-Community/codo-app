@@ -16,13 +16,19 @@
           (list 'constructor ['_ 'ctx] (list 'println "constructor: " ntmp) (list 'super 'ctx))
           'Object
 
-          (list 'render ['this# 'ident]
+          (list 'render ['this# 'children]
                 (list 'let [(first bindings) 'this#
+                            ;'asd (list 'println "chi " 'children)
+                            ;'children 'children.children
+                            ;'asd (list 'println "chi2 " 'children)
                             'asd (list 'println "render: " ntmp)
                             'ctx (list `useContext (list 'this#.ctx))
                             {:keys ['store 'setStore]} 'ctx
-                            'data (list `createMemo (list 'fn []
-                                                          (list 'println "memo: " ntmp " ident: " 'ident.children)
-                                                          (list `pull 'store 'ident.children 'this#.-query)))
-                            val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keyword val-vec))]
+                            'asd (list 'println "cho " (list 'comp/ident? 'children.children))
+                            'data (list 'if (list 'comp/ident? 'children.children)
+                                        (list `createMemo (list 'fn []
+                                                                (list 'println "memo: " ntmp " ident: " 'children)
+                                                                (list `pull 'store 'children.children 'this#.-query)))
+                                        (list 'fn [] 'children))
+                            val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]
                       body)))))

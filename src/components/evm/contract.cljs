@@ -5,7 +5,9 @@
             ["./inputs.jsx" :as in]
             ["./transaction.jsx" :as tr]
             ["../../normad.mjs" :as n :refer [add]]
-            ["../../Context.mjs" :refer [AppContext]]))
+            ["../../Context.mjs" :refer [AppContext]]
+            ["../../comp.mjs" :as comp])
+  (:require-macros [comp :refer [defc]]))
 
 #_(defn select-on-change [{:keys [store setStore] :as ctx} ident]
   (fn [e]
@@ -24,24 +26,23 @@
                 (fn [x]
                   (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 
-(defn Contract [ident]
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(n/pull store ident.children
-                                  [:contract/id :contract/address :contract/chain :contract/name
-                                   {:contract/abi [:name :type :stateMutability :inputs :outputs]}]))
-        [local setLocal] (createSignal {:selected-function ""})]
+(defc Contract [this {:contract/keys [id address chain name
+                                      {abi [:name :type :stateMutability :inputs :outputs]}]}]
+  (let [[local setLocal] (createSignal {:selected-function ""})]
     #jsx [:div {:class "flex flex-col grid grid-cols-1 w-full gap-2"}
           [:h2 {:class "py-3 font-bold text-lg"} "Parameters"]
           [:span {:class "flex w-full gap-2"}
-           [in/address-input {:name "Address"
-                              :readonly true
-                              :value #(:contract/address (data))}]]
+           #jsx [in/address-input (fn [] {:name "Address"
+                                          :readonly true
+                                          :value (address)})]]
           [d/dropdown-select {:title "Function"
                               :items #(mapv (fn [a] {:id (:name a)
                                                      :value (:name a)})
-                                            (filterv (fn [x] (= (:type x) :function)) (:contract/abi (data))))
+                                            (filterv (fn [x] (= (:type x) :function)) (abi)))
                               :on-change (fn [e] (setLocal {:selected-function e.target.value}))
                               :selected #(:selected-function (local))}]
           [:div {:class "flex items-end"}
            [b/button {:title "Add"
                       :on-click (add-transaction ctx local)}]]]))
+
+(def ui-contract (comp/comp-factory Contract AppContext))

@@ -34,7 +34,7 @@
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         data (createMemo (fn [] (n/pull store ident.children [:transaction/id :transaction/function])))]
     #jsx [:div {:class "flex flex-col mb-4"}
-          [f/function (:transaction/function (data))]
+          #jsx [f/function (:transaction/function (data))]
           #jsx [:span {:class "flex gap-3"}
                 #jsx [b/button {:title "Transact"
                                 :on-click #();execute-fn

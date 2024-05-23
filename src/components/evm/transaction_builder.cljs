@@ -27,7 +27,7 @@
                              :on-change (contract-select-on-change ctx)
                              :selected #(second (contract))}]
          (if (contract)
-           #jsx [c/Contract (contract)])]
+           #jsx [c/ui-contract (contract)])]
 
         [:div {:class "col-span-full md:col-span-1 3xl:col-span-2 h-full w-full overflow-y-auto flex flex-col items-top"}
          [:h1 {:class "mb-3 font-bold text-lg"} "Transactions"]
