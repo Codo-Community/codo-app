@@ -1,34 +1,11 @@
+type CategoryLink {
+  parent: StreamID @documentReference(model: "Category")
+  child: StreamID @documentReference(model: "Category")
+}
+
 type Category @createModel(accountRelation: LIST, description: "A category to group other categories and/or requirements, tasks.") {
-  #id: ID!
-  #parentID: StreamID @documentReference(model: "Category")
+  name: String! @string(minLength: 3, maxLength: 50)
   mainReviewer: DID @accountReference
-  #child: Category
-  #categories: [Category1] @list(maxLength: 200) #@relationFrom(model: "Category", property: "parentID")
+  children: [CategoryLink] @list(maxLength: 200)  #@relationFrom(model: "Category", property: "parentID")
+  parent: CategoryLink
 }
-
-type Category1 @inherits(from: ["Category"])  {
-  name: String! @string(minLength: 3, maxLength: 50)
-  children: [Category2] @list(maxLength: 200)
-}
-
-type Category2 {
-  name: String! @string(minLength: 3, maxLength: 50)
-  children: [Category3] @list(maxLength: 200)
-}
-
-type Category3 {
-  name: String! @string(minLength: 3, maxLength: 50)
-}
-
-
-# type Item {
-#   name: String! @string(minLength: 3, maxLength: 50)
-#   children: [Item] @list(maxLength: 30)
-# }
-
-# type ItemLink {
-#     name: String! @string(minLength: 3, maxLength: 50)
-#   #parent: StreamID! @documentReference(model: "Item")
-#   #item: Item
-# #  children: [Item] @relationDocument(property: "postID")
-# }

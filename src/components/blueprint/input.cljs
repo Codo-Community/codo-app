@@ -22,7 +22,7 @@
         (l/label label)
         [:span {:class "flex flex-row relative"}
          [:div {:class (str  "w-7 h-7 absolute left-2 top-2 " (if-not left-icon "hidden"))}
-          (left-icon value)
+          (if left-icon (left-icon value))
           #_[:button {:class (str  "w-5 h-5 absolute right-2.5 top-3 hover:text-white text-gray-400 " (if-not copy "hidden"))
                       :on-click on-click} "cl" #_(clipboard)]]
          [:input {:class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11

@@ -27,7 +27,7 @@
                   (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 
 (defc Contract [this {:contract/keys [id address chain name
-                                      {abi [:name :type :stateMutability :inputs :outputs]}]}]
+                                      {abi [:name :type]}]}]
   (let [[local setLocal] (createSignal {:selected-function ""})]
     #jsx [:div {:class "flex flex-col grid grid-cols-1 w-full gap-2"}
           [:h2 {:class "py-3 font-bold text-lg"} "Parameters"]

@@ -6,13 +6,14 @@
   "scripts": {
     "start": "vite",
     "watch": "npx squint watch",
-    "dev": "concurrently --kill-others \"pnpm run watch\" \"pnpm dlx vite\"",
+    "dev": "concurrently --kill-others \"pnpm run watch\" \"pnpm dlx vite\" \" source ./ceramic.sh && ceramic_daemon\"",
     "build": "vite build",
     "serve": "vite preview"
   },
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.24.1",
+    "@ceramicnetwork/cli": "^5.12.0",
     "concurrently": "^8.2.2",
     "flowbite-windicss-plugin": "^0.1.3",
     "solid-devtools": "^0.30.1",
@@ -28,7 +29,6 @@
     "@solidjs/router": "^0.13.3",
     "@thisbeyond/solid-dnd": "^0.7.5",
     "blo": "^1.2.0",
-    "datascript": "^1.6.5",
     "did-session": "^3.1.0",
     "flowbite": "^2.3.0",
     "immutable": "^4.3.6",

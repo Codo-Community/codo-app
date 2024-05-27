@@ -55,15 +55,16 @@
                    #_(setStore :pages/id (fn [t] (assoc-in t [:profile :user] [:user/id (-> res :author :id)])))))))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName]}]
-  #jsx [:form {:onSubmit (on-click-mutation ctx ident)}
+  #jsx [:form {:onSubmit (on-click-mutation ctx children.children)}
         [in/input {:label "First Name"
                    :placeholder "Your Name"
                    :value firstName
-                   :on-change (fn [e] (t/set-field! ctx (conj ident.children :user/firstName) e.target.value))}]
+                   :on-change (fn [e] (t/set-field! ctx (conj children.children :user/firstName) e.target.value))}]
         [in/input {:label "Last Name"
                    :placeholder "Your Last Name"
                    :value lastName
-                   :on-change (fn [e] (t/set-field! ctx (conj ident.children :user/lastName) e.target.value))}]
-        (b/button "Get Name" (on-click ctx))])
+                   :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]
+        [b/button {:title "Get Name"
+                   :on-click (on-click ctx)}]])
 
 (def ui-user-profile (comp/comp-factory UserProfile AppContext))

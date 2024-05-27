@@ -1,19 +1,45 @@
 #!/usr/bin/env sh
+. ./.ceramic_dev_key.env
 
-ceramic daemon --network inmemory
+comp_path=./src/composedb/model/
+out_path=./dist/
 
-. .ceramic_dev_key.env
+ceramic_daemon () {
+    ceramic daemon --network inmemory
+}
 
-# generate DID from private-key
-composedb did:from-private-key ${DID_PRIVATE_KEY}
-
-# did:key:z6MkkrEXvfk4n8PP2Xk9MM45yvgZumU52ChuKSmWEw5AgWkD
+did_from_private_key() {
+    composedb did:from-private-key ${DID_PRIVATE_KEY}
+}
 
 # build composeite from graphql schema
-composedb composite:create ./src/composedb/model/user.graphql --output=dist/user.json --did-private-key=${DID_PRIVATE_KEY}
+create_from_schema () {
+    local graphql_file=$1
+    local basen=""${graphql_file##*/}""
+    local out_file=composite_"${basen%.*}".json
+    composedb composite:create ${graphql_file} --output=./dist/${out_file} --did-private-key=${DID_PRIVATE_KEY}
+}
 
-composedb composite:deploy simple-profile.json --ceramic-url=http://localhost:7007 --did-private-key=${DID_PRIVATE_KEY}
+testa() {
+    dir="${1}"
+    for file in "${dir}/*.graphql"; do
+        echo $file
+    done
+}
 
-composedb composite:compile my-first-composite.json runtime-composite.json
 
-composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql runtime-composite.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
+merge_composites() {
+    composedb composite:merge dist/composite_*.json > dist/merged.json
+}
+
+compile_composite() {
+    composedb composite:compile dist/merged.json dist/runtime-composite.json
+}
+
+deploy_composite() {
+    composedb composite:deploy simple-profile.json --ceramic-url=http://localhost:7007 --did-private-key=${DID_PRIVATE_KEY}
+}
+
+graphql_server() {
+     composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql dist/runtime-composite.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
+}
