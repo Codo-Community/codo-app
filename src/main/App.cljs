@@ -12,6 +12,7 @@
             ["./utils.mjs" :as u]
             ["./composedb/client.mjs" :as cdb]
             ["./composedb/auth.mjs" :as cda]
+            ["./composedb/composite.mjs" :as composite]
             ["@solidjs/router" :refer [HashRouter Route]]
             ["./comp.mjs" :as comp]
             ["./Context.mjs" :refer [AppContext]]))
@@ -90,11 +91,14 @@
                                                        :user/ethereum-address "0x0"
                                                        :user/leg {:leg/id "left"}}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
-    (onMount #(.then (cda/init-auth) (fn [] (cdb/init-clients))))
+    (onMount #(.then (composite/fetch-abi)
+                     (fn [] (.then (cda/init-auth)
+                                   (fn [] (.then (cdb/init-clients)
+                                                 (fn [])))))))
     #jsx [AppContext.Provider {:value ctx}
-            [HashRouter {:root Main}
-             #_[Route {:path "/counter" :component Counters}]
-             [Route {:path "/profile" :component profile/ProfilePage}]
-             [Route {:path "/tb" :component tbp/TransactionBuilderPage}]]]))
+          [HashRouter {:root Main}
+           #_[Route {:path "/counter" :component Counters}]
+           [Route {:path "/profile" :component profile/ProfilePage}]
+           [Route {:path "/tb" :component tbp/TransactionBuilderPage}]]]))
 
 (def default Root)

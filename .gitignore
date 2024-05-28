@@ -1,2 +1,7 @@
 node_modules
 dist
+resources
+src/__generated__/
+.nrepl-port
+.lsp/
+.clj-kondo/

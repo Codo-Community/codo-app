@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
-. ./.ceramic_dev_key.env
+. ./.env
 
-comp_path=./src/composedb/model/
+comp_path=./src/main/composedb/model/
 out_path=./dist/
 
 ceramic_daemon () {
@@ -29,7 +29,7 @@ testa() {
 
 
 merge_composites() {
-    composedb composite:merge dist/composite_*.json > dist/merged.json
+    composedb composite:merge dist/__generated__/composite_project.json dist/__generated__/composite_user.json dist/__generated__/composite_category.json   > dist/merged.json
 }
 
 compile_composite() {

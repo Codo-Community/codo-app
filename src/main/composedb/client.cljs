@@ -2,7 +2,8 @@
   (:require ["@composedb/client" :refer [ComposeClient]]
             ["@ceramicnetwork/http-client" :refer [CeramicClient]]
             ["did-session" :refer [DIDSession]]
-            ["./composite.mjs" :refer [composite]]
+            ["./composite.mjs" :as c :refer [composite]]
+            ["./../definition.mjs" :refer [definition]]
             ["../evm/client.mjs" :refer [wallet-client]]
             ["./auth.mjs" :as a]))
 
@@ -11,7 +12,7 @@
                    (js/fetch "http://localhost:5173/runtime-composite.json")
                    (.then (fn [response] (.json response))))))
 
-#_(def composite {:models {:SimpleProfile {:id "kjzl6hvfrbw6c8wlx340w9nmgfrtwvkkmkf1s4x3lrrtv8gu7sd8relzobvputu"
+#_(def compositea {:models {:SimpleProfile {:id "kjzl6hvfrbw6c8wlx340w9nmgfrtwvkkmkf1s4x3lrrtv8gu7sd8relzobvputu"
                                            :accountRelation {:type "single"}}}
                 :objects {:SimpleProfile {:displayName {:type "string" :required true}}}
                 :enums {}
@@ -21,11 +22,12 @@
                    :compose nil
                    :session nil}))
 
-(defn init-clients []
+(defn ^:async init-clients []
   (let [ceramic (CeramicClient. "http://localhost:7007")
 
         compose (ComposeClient. {:ceramic "http://localhost:7007"
-                                 :definition composite})
+                                 :definition definition})
+
         session (.then (.get DIDSession (:account-id @a/auth) (:auth-method @a/auth) {:resources (aget compose "resources")})
                        (fn [session]
                          #_(js/console.log "session did:" compose.context)
