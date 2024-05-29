@@ -51,6 +51,7 @@
 #_(defn defsc [name bindings body]
   (defc name bindings body))
 
+(def default Comp)
 (def useContext solid/useContext)
 (def pull n/pull)
 (def createMemo solid/createMemo)
