@@ -1,11 +1,8 @@
 (ns components.profile
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["./userprofile.jsx" :as up]
-            ["../composedb/client.mjs" :as cli]
+            ["../components/userprofile.jsx" :as up]
             ["../normad.mjs" :as n]
-            ["./blueprint/input.jsx" :as in]
-            ["./blueprint/button.jsx" :as b]
-            ["./user.jsx" :as u :refer [ui-user]]
+            ["@solidjs/router" :refer [useParams]]
             ["../comp.mjs" :as comp]
             ["../transact.mjs" :as t]
             ["../utils.mjs" :as utils]
@@ -14,7 +11,10 @@
 
 (defn ProfilePage []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo #(n/pull store [:pages/id :profile] [:user]))]
+        params (useParams)
+        a (println "params: " params)
+        data (createMemo #(n/pull store [:pages/id :profile] [:user]))
+        ]
     #_(onMount ((on-click-mutation ctx (data)) nil))
     #jsx [:div {}
           #_[u/ui-user (data)]

@@ -1,19 +1,17 @@
-(ns components.userprofile
+(ns components.project
   (:require ["../comp.mjs" :as comp]
             ["./blueprint/input.jsx" :as in]
-            ["./blueprint/textarea.jsx" :as ta]
             ["../utils.mjs" :as utils]
             ["../transact.mjs" :as t]
             ["./blueprint/button.jsx" :as b]
             ["../composedb/client.mjs" :as cli]
-            ["../normad.mjs" :as n]
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (def query-from-acc "query {
   viewer {
-    id
     user {
+      id
       firstName
       lastName
     }
@@ -32,7 +30,7 @@
 #_(eql-gql/query->graphql query)
 
 (defn mutation-vars [{:user/keys [id firstName lastName] :as data}]
-  {:i {:content (utils/drop-false {:firstName firstName :lastName lastName})}})
+  {:i {:content (utils/drop-false {:id id :firstName firstName :lastName lastName})}})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} ident]
   (fn [e]
@@ -57,21 +55,30 @@
                    #_(setStore :pages/id (fn [t] (assoc-in t [:profile :user] [:user/id (-> res :author :id)])))))))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName]}]
-  #jsx [:form {:class "flex flex-col min-w-96 gap-3"
-               :onSubmit (on-click-mutation ctx children.children)}
-        [:span {:class "flex w-full gap-3"}
-         [in/input {:label "First Name"
-                    :placeholder "Your Name"
-                    :value firstName
-                    :on-change (fn [e] (t/set-field! ctx (conj children.children :user/firstName) e.target.value))}]
-         [in/input {:label "Last Name"
-                    :placeholder "Your Last Name"
-                    :value lastName
-                    :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]]
-        [ta/textarea {:title "Description"}]
-        [:span {:class "flex w-full gap-3"}
-         [b/button {:title "Submit"}]
-         [b/button {:title "Get Name"
-                    :on-click (on-click ctx)}]]])
+  #jsx [:form {:onSubmit (on-click-mutation ctx children.children)}
+        [in/input {:label "First Name"
+                   :placeholder "Your Name"
+                   :value firstName
+                   :on-change (fn [e] (t/set-field! ctx (conj children.children :user/firstName) e.target.value))}]
+        [in/input {:label "Last Name"
+                   :placeholder "Your Last Name"
+                   :value lastName
+                   :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]
+        [b/button {:title "Get Name"
+                   :on-click (on-click ctx)}]])
 
 (def ui-user-profile (comp/comp-factory UserProfile AppContext))
+
+
+(defn ProjectPage []
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
+        data (createMemo #(n/pull store [:pages/id :profile] [:user]))]
+    #_(onMount ((on-click-mutation ctx (data)) nil))
+    #jsx [:div {}
+          #_[u/ui-user (data)]
+          [up/ui-project (data)]]))
+
+#_(defc ProfilePage [this {:keys [user]}]
+  #jsx [:div {}
+          #_(ui-user (data))
+          (UserProfile (user))])

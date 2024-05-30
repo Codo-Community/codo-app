@@ -18,7 +18,7 @@
               :or {required false extra-class "" copy true readonly false left-icon false label nil
                    value (fn [] "")
                    on-click (fn [e] #_(util/copy-to-clipboard v.children))}}]
-  #jsx [:div {:class (str "mb-3 w-full" extra-class)}
+  #jsx [:div {:class (str "w-full" extra-class)}
         (l/label label)
         [:span {:class "flex flex-row relative"}
          [:div {:class (str  "w-7 h-7 absolute left-2 top-2 " (if-not left-icon "hidden"))}
@@ -40,7 +40,7 @@
 #_(def input (comp/comp-factory Input AppContext))
 
 (defn number-input [{:keys [id label readonly placeholder on-submit on-change required value] :or {required false extra-class "" readonly false value (fn [] 0)}}]
-  #jsx [:div {:class "mb-3"}
+  #jsx [:div {:class ""}
         (l/label label)
         [:input {:type "number"
                                         ;:aria-describedby "helper-text-explanation"
@@ -56,7 +56,7 @@
 #_(def number-input (comp/comp-factory NumberInput AppContext))
 
 (defc BoolInput [this {:keys [ident label placeholder on-submit on-change readonly required value] :or {required false extra-class "" readonly false}}]
-  #jsx [:div {:class "mb-3"}
+  #jsx [:div {:class ""}
         (l/label label)
         [:input {:type "checkbox"
                  :value (value)

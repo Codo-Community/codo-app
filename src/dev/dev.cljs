@@ -39,6 +39,7 @@
 
         asd (js-await (writeEncodedComposite composite "./dist/__generated__/definition.json"))
         merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/definition.js"))
+        merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/definition2.json"))
 
         ;; merged (js-await (mergeEncodedComposites ceramic #js ["./dist/__generated__/composite_category.json"
         ;;                                                       "./dist/__generated__/composite_project.json"

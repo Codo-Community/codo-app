@@ -1,10 +1,9 @@
 (ns components.pages.transaction-builder
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../evm/transaction_builder.jsx" :as tb]
-            ["../../evm/abi.mjs" :as abi]
-            ["../../transact.mjs" :as t]
-            ["../../normad.mjs" :as n :refer [add]]
-            ["../../Context.mjs" :refer [AppContext]]))
+            ["../components/evm/transaction_builder.jsx" :as tb]
+            ["../evm/abi.mjs" :as abi]
+            ["../transact.mjs" :as t]
+            ["../Context.mjs" :refer [AppContext]]))
 
 ;; simulate a remote
 (def contract-gen
@@ -24,3 +23,5 @@
     (let [ident [:pages/id :transaction-builder]]
       #jsx [:div {}
             [tb/ui-transaction-builder ident]])))
+
+(def default TransactionBuilderPage)
