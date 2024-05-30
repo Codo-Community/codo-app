@@ -29,6 +29,6 @@
                                         (list `createMemo (list 'fn []
                                                                 (list 'println "memo: " ntmp " ident: " 'children)
                                                                 (list `pull 'store 'children.children 'this#.-query)))
-                                        (list 'fn [] 'children.children))
+                                        (list 'fn [] 'children))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]
                       body)))))

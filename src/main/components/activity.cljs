@@ -11,22 +11,25 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc Activity [this {:keys []}]
-  #jsx [:div {:class "grid w-screen dark:text-white p-3 gap-3"}
+  #jsx [:div {:class "grid grid-cols-4 grid-rows-4 grid-flow-row w-fit dark:text-white p-3 gap-3 w-screen"}
 
-        [:div {:class "w-96 bg-zinc-800 p-3 rounded-lg select-none"}
+        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
          [:h1 {:class "font-bold text-xl"} "Activity"]
-         [:div {} "No recent activity. Do something!"]]
+         [:div {:class "text-zinc-400"} "No recent activity."]]
 
-        [:div {:class "w-96 bg-zinc-800 p-3 rounded-lg select-none"}
+        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
          [:h1 {:class "font-bold text-xl"} "Trending"]]
 
-        [:div {:class "w-96 bg-zinc-800 p-3 rounded-lg select-none"}
+        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
          [:h1 {:class "font-bold text-xl"} "Actions"]]
 
-        [:div {:class "w-96 bg-zinc-800 p-3 rounded-lg select-none"}
-         [:span {:class "flex"}
-          [:h1 {:class "font-bold text-xl"} "Projects"]
-          [A {:href "/wizards/new-project"} [HiOutlinePlus]]
-          ]]])
+        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
+         [:span {:class "flex items-center "}
+          [:h1 {:class "font-bold text-xl"} "Projects"]]
+         [:button {:class "text-gray-400 bg-transparent
+                         hover:text-gray-900 rounded-md text-sm p-1.5 block h-10 w-10
+                         ml-auto inline-flex items-center dark:hover:text-white "}
+          [A {:class "flex items-center"
+              :href "/wizards/new-project"} [HiOutlinePlus {:size 16}]]]]])
 
 (def ui-activity (comp/comp-factory Activity AppContext))
