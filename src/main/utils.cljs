@@ -10,6 +10,9 @@
 (defn string? [thing]
   (= (js/typeof thing) "string"))
 
+(defn uuid? [s]
+  (re-matches #"^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$" s))
+
 (defn entity-key [k]
   (str (name k) "s"))
 
@@ -50,7 +53,8 @@
   (into {} (filterv (fn [x] (and (not (false? (second x))) (not (nil? (second x))))) m)))
 
 (defn nsd [data ns]
-  (into {} (map (fn [[k v]] [(keyword (str (name ns) "/" (name k))) v]) data)))
+  (zipmap (mapv #(str ns "/" %) (keys data)) (vals data))
+  #_(into {} (mapv (fn [[k v]] [(str ns "/" k) v]) data)))
 
 ;; local storage
 

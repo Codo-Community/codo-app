@@ -2,10 +2,16 @@ type Category @loadModel(id: "$CATEGORY_ID") {
   id: ID!
 }
 
+type Contract @loadModel(id: "$CONTRACT_ID") {
+  id: ID!
+}
+
 type Project @createModel(accountRelation: LIST, description: "A Codo Project") {
   name: String! @string(minLength: 3, maxLength: 50)
   description: String @string(minLength: 1, maxLength: 100)
   categoryID: StreamID! @documentReference(model: "Category")
   category: Category! @relationDocument(property: "categoryID")
-  start: DateTime!
+  contractID: StreamID @documentReference(model: "Contract")
+  contract: Contract @relationDocument(property: "contractID")
+  start: Date!
 }

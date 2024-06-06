@@ -2,9 +2,9 @@
   (:require ["./App.jsx" :refer [Root]]
             ["solid-js/web" :refer [render]]
             ["solid-devtools"]
-            ["flowbite" :as fb]
-            ["virtual:windi.css"]
-            ["virtual:windi-devtools"]))
+            ["virtual:uno.css"]
+            ;["virtual:windi-devtools"]
+            ["./start.mjs" :as s]))
 
-(fb/initFlowbite)
+(s/start)
 (render Root (js/document.getElementById "root"))

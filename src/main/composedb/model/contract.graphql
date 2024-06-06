@@ -1,0 +1,6 @@
+type Contract @createModel(accountRelation: LIST, description: "A model of a Smart Contract.") {
+  name: String! @string(minLength: 3, maxLength: 50)
+  address: String! @string(minLength: 42, maxLength: 42) @immutable
+  chain: String
+  abi: String
+}

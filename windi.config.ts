@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite-plugin-windicss'
 import formsPlugin from 'windicss/plugin/forms'
-import flowbite from "flowbite-windicss-plugin";
 
 export default defineConfig({
        scan: {
@@ -26,5 +25,5 @@ export default defineConfig({
     },
   },
   plugins: [formsPlugin,
-            flowbite]
+            require('flowbite/plugin-windicss')]
 })

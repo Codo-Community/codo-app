@@ -6,7 +6,6 @@
             ["../transact.mjs" :as t]
             ["./blueprint/button.jsx" :as b]
             ["../composedb/client.mjs" :as cli]
-            ["../normad.mjs" :as n]
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
@@ -14,6 +13,7 @@
   viewer {
     id
     user {
+      id
       firstName
       lastName
     }
@@ -34,12 +34,12 @@
 (defn mutation-vars [{:user/keys [id firstName lastName] :as data}]
   {:i {:content (utils/drop-false {:firstName firstName :lastName lastName})}})
 
-(defn on-click-mutation [{:keys [store setStore] :as ctx} ident]
+(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName] :as data}]
   (fn [e]
     (if e (.preventDefault e))
     (-> (.executeQuery (:compose @cli/client)
                        (basic-profile-mutation {:document [:firstName :lastName]})
-                       (mutation-vars (n/pull store ident [:user/id :user/firstName :user/lastName])))
+                       (mutation-vars (data)))
         (.then (fn [response] (js/console.log response))))))
 
 (defn on-click [{:keys [store setStore] :as ctx}]
@@ -49,16 +49,13 @@
         (.then (fn [response]
                  (js/console.log "response: " response)
                  (let [res (-> response :data :viewer :user)]
-                   #_(println "got res:" (aget res "firstName"))
-                   (t/add! ctx {:user/id (aget res "id") #_(aget res "id")
-                                :user/firstName (aget res "firstName")
-                                :user/lastName (aget res "lastName")}
-                             {:replace [:pages/id :profile :user]})
-                   #_(setStore :pages/id (fn [t] (assoc-in t [:profile :user] [:user/id (-> res :author :id)])))))))))
+                   (println (utils/nsd res :user))
+                   (t/add! ctx (utils/nsd res :user)
+                           {:replace [:pages/id :profile :user]})))))))
 
-(defc UserProfile [this {:user/keys [id firstName lastName]}]
+(defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
   #jsx [:form {:class "flex flex-col min-w-96 gap-3"
-               :onSubmit (on-click-mutation ctx children.children)}
+               :onSubmit (on-click-mutation ctx data)}
         [:span {:class "flex w-full gap-3"}
          [in/input {:label "First Name"
                     :placeholder "Your Name"
@@ -68,7 +65,9 @@
                     :placeholder "Your Last Name"
                     :value lastName
                     :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]]
-        [ta/textarea {:title "Description"}]
+        [ta/textarea {:title "Description"
+                      :placeholder "Introduce yourself ..."
+                      :value introduction}]
         [:span {:class "flex w-full gap-3"}
          [b/button {:title "Submit"}]
          [b/button {:title "Get Name"

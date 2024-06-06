@@ -30,6 +30,6 @@
                          hover:text-gray-900 rounded-md text-sm p-1.5 block h-10 w-10
                          ml-auto inline-flex items-center dark:hover:text-white "}
           [A {:class "flex items-center"
-              :href "/wizards/new-project"} [HiOutlinePlus {:size 16}]]]]])
+              :href (str "/wizards/new-project/" (js/crypto.randomUUID))} [HiOutlinePlus {:size 16}]]]]])
 
 (def ui-activity (comp/comp-factory Activity AppContext))
