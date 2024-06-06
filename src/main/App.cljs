@@ -8,7 +8,7 @@
             ["./components/wizards/new_project/main.jsx" :refer [WizardNewProject]]
             ;["./imports.mjs" :refer [WizardNewProject]]
             ["./components/wizards/new_project/info_step.jsx" :as istep]
-            ["./components/wizards/new_project/contract_step.jsx" :refer [ContractStep]]
+            ["./components/wizards/new_project/contract_step.jsx" :as cstep]
             ["./normad.mjs" :as norm]
             ["./composedb/client.mjs" :as cdb]
             ["./composedb/auth.mjs" :as cda]
@@ -84,7 +84,9 @@
                                                  ident [:project/id (:id params)]]
                                              #jsx [istep/ui-basic-info-step ident]))}]
             [Route {:path "/contract"
-                    :component ContractStep}]]
+                    :component (fn [props] (let [params (useParams)
+                                                 ident [:project/id (:id params)]]
+                                             #jsx [cstep/ui-contract-step ident]))}]]
            [Route {:path "/" :component home/HomePage}]]]))
 
 (def default Root)

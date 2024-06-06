@@ -2,6 +2,7 @@ import { defineConfig, presetAttributify, presetUno } from 'unocss'
 import { presetFlowbite } from '@julr/unocss-preset-flowbite'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import presetWebFonts from '@unocss/preset-web-fonts'
+import presetIcons from '@unocss/preset-icons'
 
 export default defineConfig({
  transformers: [
@@ -10,6 +11,7 @@ export default defineConfig({
   presets: [
     presetUno(),
     presetFlowbite(),
+    presetIcons({ /* options */ }),
     presetWebFonts({
   provider: 'google', // default provider
   fonts: {

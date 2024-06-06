@@ -1,6 +1,5 @@
 (ns main.components.wizards.new-project.main
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
-            ["solid-icons/hi" :refer [HiOutlineArrowLeft HiOutlineArrowRight]]
             ["@solidjs/router" :refer [A useParams]]
             ["flowbite" :as fb]
             ["../../../utils.mjs" :as u]
@@ -38,21 +37,12 @@
            [Show {:when (not (u/uuid? (:id params)))}
             [:div {:class "flex flex-inline mt-6"}
              [Show {:when (not (nil? (get-in (:step-route (local)) [(:step (local)) :back])))}
-              [A {:href (str "/wizards/new-project" (get-in (:step-route (local)) [(:step (local)) :back]))}
-               [HiOutlineArrowLeft]]]
+              [A {:href (str "/wizards/new-project/" (:id params) (get-in (:step-route (local)) [(:step (local)) :back]))}
+               [:div {:class "i-tabler-arrow-left"}]]]
              [Show {:when (not (nil? (get-in (:step-route (local)) [(:step (local)) :forward])))}
-              [A {:href (str "/wizards/new-project" (get-in (:step-route (local)) [(:step (local)) :forward]))
+              [A {:href (str "/wizards/new-project/" (:id params) (get-in (:step-route (local)) [(:step (local)) :forward]))
                                         ;:onClick #(setLocal :step )
                   }
-               [HiOutlineArrowRight]]]
-
-             #_(if-let [next (get-in step-route [step :forward])]
-                 (if-not (tempid/tempid? id)
-                   (:div {:class "absolute right-0"}
-                         (f/ui-button {:color "gray"
-                                       :onClick #(let [next-state (get step-route next)]
-                                                   ((:onEnter next-state) this (:comp next-state) {:id id})
-                                                   (comp/set-state! this {:active next}))}
-                           (:div :.h-5.w-5 arrow-right)))))]]]]))
+               [:div {:class "i-tabler-arrow-right"}]]]]]]]))
 
 (def default WizardNewProject)

@@ -7,8 +7,6 @@
             ["../../../transact.mjs" :as t]
             ["../../blueprint/button.jsx" :as b]
             ["../../../composedb/client.mjs" :as cli]
-                                        ;["../composedb/client.mjs" :as cli]
-                                        ;["../normad.mjs" :as n]
             ["../../../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
@@ -30,7 +28,6 @@
 (defn mutation-vars [{:project/keys [id name description start categoryID] :as data}]
   {:i {:content {:name name :description description :start start :categoryID categoryID}}})
 
-
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName] :as data} navigate]
   (fn [e]
     (if e (.preventDefault e))
@@ -41,17 +38,16 @@
                        {:i {:content {:name "Root"}}})
         (.then (fn [response]
                  (js/console.log response)
-                 (let [res (-> response :data)]
+                 (let [res (-> response :data :createCategory :document)]
                    ;; add project
                    (-> (.executeQuery (:compose @cli/client)
                                       (basic-project-mutation)
                                       (mutation-vars (merge (data) {:project/categoryID (:id res)})))
                        (.then (fn [response]
                                 (js/console.log response)
-                                (let [res (-> response :data)
-                                      ]
+                                (let [res (-> response :data :createProject :document)]
                                   (t/add! ctx (u/nsd res :project)
-                                          {:replace [:components/id :project-wizard :project]})
+                                          {:replace [:component/id :project-wizard :project]})
                                   (navigate (str "/wizards/new-project/" (:id res)))))))))))))
 
 (defc BasicInfoStep [this {:project/keys [id name description start] :as data}]

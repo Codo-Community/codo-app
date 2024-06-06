@@ -13,10 +13,10 @@
                  (eu/request-addresses ec/wallet-client #(user/add-user ctx (first %) {:replace [:comp/id :header :user]}))
                  (eu/add-accounts-changed #(user/add-user ctx (first %) {:replace [:comp/id :header :user]}))))
       #jsx [:header {:class ""}
-            [:nav {:class "text-gray-900 px-4
+            [:nav {:class "text-gray-900
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
                     dark:border-gray-700 dark:text-gray-400"}
-             [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden px-8"}
+             [:div {:class "flex flex-wrap justify-between items-center mx-auto overflow-hidden px-6"}
               [:span {:class "flex gap-3"}
                [:a {:draggable "false"
                     :href "#" :class "flex items-center"}
