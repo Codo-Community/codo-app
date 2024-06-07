@@ -4,7 +4,6 @@
             ["did-session" :refer [DIDSession]]
             ["./composite.mjs" :as c :refer [composite]]
             ["./../definition.mjs" :refer [definition]]
-            ["../evm/client.mjs" :refer [wallet-client]]
             ["./auth.mjs" :as a]))
 
 #_(def composite (js/await

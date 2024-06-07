@@ -6,7 +6,6 @@
             ["../transact.mjs" :as t]
             ["../utils.mjs" :as utils]
             ["./blueprint/button.jsx" :as b]
-            ["solid-icons/hi" :refer [HiOutlinePlus]]
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
@@ -30,6 +29,7 @@
                          hover:text-gray-900 rounded-md text-sm p-1.5 block h-10 w-10
                          ml-auto inline-flex items-center dark:hover:text-white "}
           [A {:class "flex items-center"
-              :href (str "/wizards/new-project/" (js/crypto.randomUUID))} [HiOutlinePlus {:size 16}]]]]])
+              :href (str "/wizards/new-project/" (js/crypto.randomUUID))}
+           [:div {:class "i-tabler-plus"}]]]]])
 
 (def ui-activity (comp/comp-factory Activity AppContext))

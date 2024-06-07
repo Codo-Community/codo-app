@@ -56,7 +56,7 @@
 
         ;; asd (js-await (writeEncodedComposite merged "./src/__generated__/definition-enc.json"))
         ;; new (js-await (writeRuntimeDefinition merged "./resources/definition.js"))
-        ;; new (js-await (writeRuntimeDefinition merged "./resources/definition.json"))
+        new (js-await (writeRuntimeDefinition merged "./src/__generated__/definition-merged.json"))
         ]
     (copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log "copy to resources failed")))
     (js-await (merged.startIndexingOn ceramic))))

@@ -32,9 +32,6 @@ importers:
       flowbite-datepicker:
         specifier: ^1.2.6
         version: 1.2.6
-      solid-icons:
-        specifier: ^1.1.0
-        version: 1.1.0(solid-js@1.8.17)
       solid-js:
         specifier: ^1.8.17
         version: 1.8.17
@@ -70,6 +67,9 @@ importers:
         specifier: ^0.60.4
         version: 0.60.4
       '@unocss/preset-web-fonts':
+        specifier: ^0.60.4
+        version: 0.60.4
+      '@unocss/preset-wind':
         specifier: ^0.60.4
         version: 0.60.4
       concurrently:
@@ -4597,11 +4597,6 @@ packages:
         optional: true
       vite:
         optional: true
-
-  solid-icons@1.1.0:
-    resolution: {integrity: sha512-IesTfr/F1ElVwH2E1110s2RPXH4pujKfSs+koT8rwuTAdleO5s26lNSpqJV7D1+QHooJj18mcOiz2PIKs0ic+A==}
-    peerDependencies:
-      solid-js: '*'
 
   solid-js@1.8.17:
     resolution: {integrity: sha512-E0FkUgv9sG/gEBWkHr/2XkBluHb1fkrHywUgA6o6XolPDCJ4g1HaLmQufcBBhiF36ee40q+HpG/vCZu7fLpI3Q==}
@@ -11400,10 +11395,6 @@ snapshots:
       vite: 5.2.12(@types/node@20.12.12)
     transitivePeerDependencies:
       - supports-color
-
-  solid-icons@1.1.0(solid-js@1.8.17):
-    dependencies:
-      solid-js: 1.8.17
 
   solid-js@1.8.17:
     dependencies:

@@ -3,6 +3,7 @@
             ["../components/evm/transaction_builder.jsx" :as tb]
             ["../evm/abi.mjs" :as abi]
             ["../transact.mjs" :as t]
+            ["flowbite" :as fb]
             ["../Context.mjs" :refer [AppContext]]))
 
 ;; simulate a remote
@@ -15,11 +16,13 @@
                                  :contract/abi (abi/indexed-abi abi/governor-abi)}}})
 
 (defn TransactionBuilderPage []
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)]
+  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
+        ]
     (onMount #(do (println "long add")
                   (t/add! ctx contract-gen)
                   (t/set-field! ctx [:pages/id :transaction-builder :contract] [:contract/id :codo])
-                  (t/set-field! ctx [:pages/id :transaction-builder :contracts] [[:contract/id :codo] [:contract/id :codo-governor]])))
+                  (t/set-field! ctx [:pages/id :transaction-builder :contracts] [[:contract/id :codo] [:contract/id :codo-governor]])
+                  (fb/initFlowbite)))
     (let [ident [:pages/id :transaction-builder]]
       #jsx [:div {}
             [tb/ui-transaction-builder ident]])))

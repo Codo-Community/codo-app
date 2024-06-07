@@ -3,7 +3,7 @@
             ["../../blueprint/input.jsx" :as in]
             ["../../blueprint/textarea.jsx" :as ta]
             ["../../../utils.mjs" :as u]
-            ["@solidjs/router" :refer [useNavigate]]
+            ["@solidjs/router" :refer [useNavigate useParams]]
             ["../../../transact.mjs" :as t]
             ["../../blueprint/button.jsx" :as b]
             ["../../../composedb/client.mjs" :as cli]
@@ -48,14 +48,15 @@
                                 (let [res (-> response :data :createProject :document)]
                                   (t/add! ctx (u/nsd res :project)
                                           {:replace [:component/id :project-wizard :project]})
-                                  (navigate (str "/wizards/new-project/" (:id res)))))))))))))
+                                  (navigate (str "/wizards/new-project/" (:id res)))))))))))
+    (println store)))
 
 (defc BasicInfoStep [this {:project/keys [id name description start] :as data}]
-  (let [navigate (useNavigate)]
+  (let [navigate (useNavigate)
+        params (useParams)]
     #jsx [:form {:class "flex flex-col min-w-96 gap-3"
                  :onSubmit (on-click-mutation ctx data navigate)}
           [:span {:class "flex w-full gap-3"}
-
            [in/input {:label "Name"
                       :placeholder "Project Name"
                       :value name
@@ -69,7 +70,8 @@
           [ta/textarea {:title "Description"
                         :value description
                         :on-change #(t/set-field! ctx (conj children.children :project/description) (e->v %))}]
-          [:span {:class "flex w-full gap-3"}
-           [b/button {:title "Submit"}]]]))
+          [Show {:when (or (u/uuid? (:id params)) (nil? (:id params)))}
+           [:span {:class "flex w-full gap-3"}
+            [b/button {:title "Submit"}]]]]))
 
 (def ui-basic-info-step (comp/comp-factory BasicInfoStep AppContext))

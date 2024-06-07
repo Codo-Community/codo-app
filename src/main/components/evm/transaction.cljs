@@ -3,10 +3,13 @@
             ["./function.jsx" :as f]
             ["./inputs.jsx" :as ein]
             ["../blueprint/button.jsx" :as b]
+            ["../blueprint/label.jsx" :as l]
             ["../../normad.mjs" :as n :refer [add]]
             ["../../evm/client.mjs" :as ec]
             ["../../evm/lib.mjs" :as el]
-            ["../../Context.mjs" :refer [AppContext]]))
+            ["../../comp.mjs" :as comp]
+            ["../../Context.mjs" :refer [AppContext]])
+  (:require-macros [comp :refer [defc]]))
 
 (defn execute-transaction [{:keys [store setStore] :as ctx} contract transaction]
   (fn [e]
@@ -14,7 +17,7 @@
           {:keys [function/id type inputs name outputs stateMutability]} (:transaction/function (n/pull store transaction {:transaction/function [:function/id :type :inputs :name :outputs :stateMutability]}))
           c (el/get-contract {:address address
                               :abi abi
-                              :client {:public ec/public-client :wallet ec/wallet-client}})
+                              :client {:public ec/public-client :wallet @ec/wallet-client}})
           cf (if (= stateMutability "view") c.read c.write)
           function (aget cf name)
           args (mapv #(ein/convert-input-filter %) inputs)]
@@ -30,16 +33,17 @@
                                                                                                  (second ident)))) %))))))
 
 
-(defn Transaction [ident #_{:local/keys [execute-fn open?] :or {open? true} :as local}]
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        data (createMemo (fn [] (n/pull store ident.children [:transaction/id :transaction/function])))]
-    #jsx [:div {:class "flex flex-col mb-4"}
-          [:h2 {:class "mb-2 font-bold"} (str "id: ") [:text {:class ""} (:transaction/id (data))]]
-          #jsx [f/ui-function (:transaction/function (data))]
-          #jsx [:span {:class "flex gap-3"}
-                #jsx [b/button {:title "Transact"
-                                :on-click #();execute-fn
-                                }]
-                #jsx [b/button {:title "Remove"
-                                :on-click (remove-evm-transaction ctx ident.children)
-                                :color "dark:bg-red-600 dark:hover:bg-red-700"}]]]))
+(defc Transaction [this {:transaction/keys [id function]}]
+  #jsx [:div {:class "flex flex-col gap-3"}
+        #_[:h2 {:class "mb-2 font-bold"} (str "id: ") [:text {:class ""} (:transaction/id (data))]]
+        [l/label (str "id: " (id))]
+        [f/ui-function (function)]
+        [:span {:class "flex gap-3"}
+         [b/button {:title "Transact"
+                    :on-click #();execute-fn
+                    }]
+         [b/button {:title "Remove"
+                    :on-click (remove-evm-transaction ctx [:transaction/id (id)])
+                    :color "dark:bg-red-600 dark:hover:bg-red-700"}]]])
+
+(def ui-transaction (comp/comp-factory Transaction AppContext))

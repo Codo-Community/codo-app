@@ -24,8 +24,8 @@
                                                  :active? false
                                                  :icon :cube}]})
         params (useParams)]
-    (onMount (fn [] (fb/initFlowbite)))
-    #jsx [:div {:class "flex justify-center"}
+    (onMount (fn [] (fb/initFlowbite))) ; reinit flowbite since this component is imported dynamically
+    #jsx [:div {:class "flex justify-center w-screen"}
           [:div {:class "mt-4 w-fit h-fit"}
            [s/ui-stepper (local)]]
           [:div {:class "ml-24 relative"}

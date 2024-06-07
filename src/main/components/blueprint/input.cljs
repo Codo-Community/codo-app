@@ -20,12 +20,13 @@
               :or {required false extra-class "" copy true readonly false left-icon false label nil datepicker false type "" ref false
                    value (fn [] "")
                    on-click (fn [e] #_(util/copy-to-clipboard v.children))}}]
-  (let [datepicker-el (atom nil)]
+  (let [datepicker-el (atom nil)
+        in-el (js/crypto.randomUUID)]
     (if datepicker
       #_(onMount (fn [] (reset! datepicker-el (dp/Datepicker. ref {:todayBtn true :clearBtn true :language "en"
-                                                                 :theme {}
-                                                                 :container "dp"
-                                                                 :autohide true})))))
+                                                                   :theme {}
+                                                                   :container "dp"
+                                                                   :autohide true})))))
 
     #jsx [:div {:id id
                 :class (str "w-full" extra-class)}
@@ -33,14 +34,16 @@
           [:span {:class "flex flex-row relative"}
            [Show {:when #(if left-icon true)}
             [:div {:class (str  "w-7 h-7 absolute left-2 top-2 ")}
-             (if left-icon (left-icon value))
-             #_[:button {:class (str  "w-5 h-5 absolute right-2.5 top-3 hover:text-white text-gray-400 " (if-not copy "hidden"))
-                         :on-click on-click} "cl" #_(clipboard)]]]
-           [:input {:class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
-                                                            focus:border-blue-500 block w-full pr-10 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
+             (left-icon value)]
+            [Show {:when copy}
+             [:button {:class (str  "w-5 h-5 absolute right-2 top-3 hover:text-white text-gray-400 i-tabler-clipboard")
+                       :data-copy-to-clipboard-target in-el}]]]
+           [:input {:id in-el
+                    :class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
+                                                            focus:border-blue-500 block w-full pr-8 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
                                                             dark:text-white dark:focus:ring-blue-500
                                                             dark:focus:border-blue-500
-                                                            invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-11" "pl-3"))
+                                                            invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-12" "pl-3"))
                     :datepicker datepicker
                     :placeholder placeholder
                     :type type

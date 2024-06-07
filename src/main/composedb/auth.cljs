@@ -12,10 +12,10 @@
 
       (if (or (not session-str)
               (and session.hasSession session.isExpired))))
-  (let [ethProvider wallet-client
-        addresses (js-await (.request wallet-client {:method "eth_requestAccounts"}))
+  (let [ethProvider @wallet-client
+        addresses (js-await (.request @wallet-client {:method "eth_requestAccounts"}))
         account-id (js-await (getAccountId ethProvider (first addresses)))
-        auth-method (js-await (EthereumWebAuth.getAuthMethod wallet-client account-id))]
+        auth-method (js-await (EthereumWebAuth.getAuthMethod @wallet-client account-id))]
     (println "ComposeDB auth OK: " account-id)
     (reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
     (js/Promise.resolve @auth)))
@@ -27,13 +27,13 @@
          (authenticate-user))
 
 (defn authenticate-user []
-  (let [account (eu/request-addresses wallet-client
+  (let [account (eu/request-addresses @wallet-client
                                       (fn [x]
-                                        (.then (getAccountId wallet-client (first x)))))
-        auth-method (eu/request-addresses wallet-client
+                                        (.then (getAccountId @wallet-client (first x)))))
+        auth-method (eu/request-addresses @wallet-client
                                           (fn [x] (-> x
-                                                      (#(.then (getAccountId wallet-client (first %))))
-                                                      (#(.then (EthereumWebAuth.getAuthMethod wallet-client %)))
+                                                      (#(.then (getAccountId @wallet-client (first %))))
+                                                      (#(.then (EthereumWebAuth.getAuthMethod @wallet-client %)))
                                                       #_(#(DIDSession.get % )))
                                             ))
         ;;   session (DIDSession.get account-id)

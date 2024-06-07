@@ -29,8 +29,8 @@
 (defc Contract [this {:contract/keys [id address chain name
                                       {abi [:name :type]}]}]
   (let [[local setLocal] (createSignal {:selected-function ""})]
-    #jsx [:div {:class "flex flex-col grid grid-cols-1 w-full gap-2"}
-          [:h2 {:class "py-3 font-bold text-lg"} "Parameters"]
+    #jsx [:div {:class "flex flex-col w-full gap-3 mb-3"}
+          [:h2 {:class "font-bold text-lg"} "Parameters"]
           [:span {:class "flex w-full gap-2"}
            #jsx [in/address-input (fn [] {:name "Address"
                                           :readonly true

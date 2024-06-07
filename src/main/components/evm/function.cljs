@@ -1,8 +1,7 @@
 (ns co-who.components.evm.function
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
+  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["../blueprint/button.jsx" :as b]
             ["./input.jsx" :as ein]
-            #_[co-blue.icons.chevron-right :refer [chevron-right]]
             ["../../normad.mjs" :as n :refer [add]]
             ["../blueprint/label.jsx" :as l]
             ["../../Context.mjs" :refer [AppContext]]
@@ -12,28 +11,27 @@
 (defc Function [this {:keys [function/id name type stateMutability
                              {inputs [:internalType :type :name :value]}
                              {outputs [:internalType :type :name :value]}]}]
-  (let [{:keys [on-change open]} {:open true}]
-    #jsx [:div {}
+  (let [[open? setOpen] (createSignal true)]
+    #jsx [:div {:class "flex flex-col gap-3"}
           [:span {:class "flex inline-flex w-full items-center pb-2 dark:border-gray-600"}
-           #_(b/icon-button {:class "dark:text-gray-600"} "cr " #_(chevron-right))
-           #_[:button {:onClick (fn [e]
-                                  (ein/set-abi-field ctx [:function/id (:function/id (data)) :inputs 0 :value] "1"))} "b"]
-           [:h1 {:class "font-bold dark:border-gray-600 border-gray-200 "}
-            (str (name))]]
-          #jsx [Show {:when open}
-                [:div {}
-                 #jsx [Show {:when (not (empty? (inputs)))}
-                       [:h2 {:class "mb-2 font-bold"} (str "Inputs: ")]
-                       #jsx [Index {:each (inputs)}
-                             (fn [entry i]
-                               #_(println "render fn " (entry))
-                               #jsx [ein/input entry #_{:readonly false
-                                                        :on-change (fn [e]
-                                                                     (ein/set-abi-field ctx [:function/id (:function/id (data)) :inputs i :value] e.target.value))}])]]
-                 #_#jsx [Show {:when (not (empty? (:outputs (data))))}
-                         [:h2 {:class "mb-2 font-bold text-green"} (str "Outputs: ")]
-                         #jsx [For {:each (vec (:outputs (data)))}
-                               (fn [entry _]
-                                 (ein/input entry {:local/editable? false}))]]]]]))
+           [:button {:class (str "dark:text-gray-600 w-5 h-5 p-2 " (if open? "i-tabler-chevron-down" "i-tabler-chevron-right"))
+                     :onClick #(setOpen (not open?))}]
+           [:h1 {:class "dark:border-gray-600 border-gray-200 w-full border-b"} "tx: " (name)]]
+          [Show {:when (fn [] open?)}
+           [:div {:class "flex flex-col gap-3"}
+            [Show {:when #(not (empty? (inputs)))}
+             [:h2 {:class "font-bold"} (str "Inputs: ")]
+             [Index {:each (inputs)}
+              (fn [entry _]
+                #jsx [ein/input entry #_{:readonly false
+                                         :on-change (fn [e]
+
+                                                      (ein/set-abi-field ctx [:function/id (:function/id (data)) :inputs i :value] e.target.value))}])]]
+            (js/console.log "out " (outputs))
+            [Show {:when #(not (empty? (outputs)))}
+             [:h2 {:class "font-bold"} (str "Outputs: ")]
+             [Index {:each (outputs)}
+              (fn [entry i]
+                #jsx [ein/input entry])]]]]]))
 
 (def ui-function (comp/comp-factory Function AppContext))

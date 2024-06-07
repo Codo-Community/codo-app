@@ -17,7 +17,7 @@
   (.then (.getAddresses client)
          f))
 
-(defn ^:async get-chain [client]
+#_(defn ^:async get-chain [client]
   (.then (.get client)
          #(first %)))
 
@@ -27,5 +27,12 @@
 (defn add-accounts-changed [f]
   (add-listener js/window.ethereum "accountsChanged" f))
 
+(defn add-chain-changed [f]
+  (add-listener js/window.ethereum "chainChanged" f))
+
 (defn parse-ether [value]
   (parseEther value))
+
+(defn ^:async get-chain [& f]
+  (.then (.request js/window.ethereum {:method "eth_chainId"})
+         (or f (fn [r] (js/parseInt r 16)))))

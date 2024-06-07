@@ -13,7 +13,6 @@
   (let [data (if data.children data.children data)
         ;{:keys [name value readonly on-change]} data
         ]
-    (println "fa " data)
     #jsx [:span {:class "gap-3 flex flex-row w-full items-center"}
           [i/input {:label (:name (data))
                     :left-icon (fn [value] #jsx [:img {:class "rounded-md"
