@@ -19,6 +19,7 @@
 
 (defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace] :or {append false replace false} :as params}]
   (n/add ctx value)
+  (println store)
   (if (or append replace)
     (add-ident! ctx (n/get-ident value) params)))
 

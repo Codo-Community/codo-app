@@ -1,18 +1,27 @@
 (ns graphql-eql-transform.core
   (:require ["graphql" :as graphql]
-            [squint.string :as str]))
+            [squint.string :as str]
+            ["lodash" :refer [camelCase]]))
 
 (defn eql-key->field [key]
-  (let [key (str/split key ",")
-        key (if (= (count key) 2) key (first key))]
-    (if (vector? key)
-      {:kind "Field"
-       :name {:kind "Name" :value (first key)}
-       :arguments [{:kind "Argument"
-                    :name {:kind "Name" :value "id"}
-                    :value {:kind "StringValue" :value (second key)}}]}
-      {:kind "Field"
-       :name {:kind "Name" :value key}})))
+  (if (vector? key)
+    {:kind "Field"
+     :name {:kind "Name" :value (first key)}
+     :arguments [{:kind "Argument"
+                  :name {:kind "Name" :value "id"}
+                  :value {:kind "StringValue" :value (second key)}}]}
+    {:kind "Field"
+     :name {:kind "Name" :value key}}))
+
+(defn inline-fragment [k]
+  {:kind "InlineFragment"
+   :typeCondition {
+                   :kind "NamedType"
+                   :name {
+                          :kind "Name"
+                          :value k
+                          }
+                   }})
 
 (defn build-field [field]
   (println "eq:f " field)
@@ -23,10 +32,16 @@
                 (map? field) [(first (keys field)) (vals field)]
                 :else [field nil])]
     (if-not (map? k)
-      (let [base-field (eql-key->field k)]
-        (if (vector? v) (assoc base-field :selectionSet {:kind "SelectionSet"
-                                                         :selections (mapv build-field v)})
-            base-field))
+      (let [k (str/split k ",")
+            k (if (= (count k) 2) k (first k))]
+        (if (vector? k) (assoc (eql-key->field ["node" (second k)])
+                               :selectionSet {:kind "SelectionSet"
+                                              :selections [(assoc (inline-fragment "User" #_(camelCase (first k)))
+                                                                  :selectionSet {:kind "SelectionSet"
+                                                                                 :selections (mapv build-field v)})]})
+            (if (vector? v) (assoc (eql-key->field k) :selectionSet {:kind "SelectionSet"
+                                                                     :selections (mapv build-field v)})
+                (eql-key->field k))))
       (vec (flatten [k v])))))
 
 (defn eql->graphql [eql]

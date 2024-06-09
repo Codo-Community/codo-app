@@ -32,6 +32,9 @@ importers:
       flowbite-datepicker:
         specifier: ^1.2.6
         version: 1.2.6
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       solid-js:
         specifier: ^1.8.17
         version: 1.8.17

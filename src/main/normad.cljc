@@ -1,4 +1,5 @@
-(ns normad)
+(ns normad
+  (:require ["solid-js/store" :refer [reconcile]]))
 
 (defn get-ident [data]
   (if-let [ident-key (first (filter #(re-find #"/id$" %) (keys data)))]
@@ -19,7 +20,7 @@
     (map? item)  (if-let [ident (get-ident item)]
                    (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
                      (setStore (first ident)
-                               (fn [x] (assoc x (second ident) new-val)))
+                               (fn [x] (update x (second ident) merge new-val)))
                      ident)
                    (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item))))
     :else item))
@@ -33,7 +34,7 @@
 
 (defn add [{:keys [store setStore] :as ctx} & data]
   (let [res (traverse-and-transform (or (first data) store) setStore)]
-    (vec (map-indexed (fn [k v] (setStore k (fn [x] v))  res)))
+    (vec (map-indexed (fn [k v] (setStore k (fn [x] (merge x v))) res)))
     ctx))
 
 (defn pull [store entity query]

@@ -7,7 +7,8 @@
             ["./blueprint/button.jsx" :as b]
             ["../geql.mjs" :as geql]
             ["../composedb/client.mjs" :as cli]
-            ["../Context.mjs" :refer [AppContext]])
+            ["../Context.mjs" :refer [AppContext]]
+            [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
 (def query-from-acc "query {
@@ -33,14 +34,14 @@
 
 #_(eql-gql/query->graphql query)
 
-(defn mutation-vars [{:user/keys [id firstName lastName] :as data}]
-  {:i {:content (utils/drop-false {:firstName firstName :lastName lastName})}})
+(defn mutation-vars [{:user/keys [id firstName lastName introduction] :as data}]
+  {:i {:content (utils/drop-false {:firstName firstName :lastName lastName :introduction introduction})}})
 
-(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName] :as data}]
+(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
   (fn [e]
     (if e (.preventDefault e))
     (-> (.executeQuery (:compose @cli/client)
-                       (basic-profile-mutation {:document [:id :firstName :lastName]})
+                       (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
                        (mutation-vars (data)))
         (.then (fn [response] (js/console.log response))))))
 
@@ -58,18 +59,24 @@
                     :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]]
         [ta/textarea {:title "Introduction"
                       :placeholder "Introduce yourself ..."
-                      :value introduction}]
+                      :value introduction
+                      :on-change (fn [e] (t/set-field! ctx (conj children.children :user/introduction) e.target.value))}]
         [:span {:class "flex w-full gap-3"}
          [b/button {:title "Submit"}]]])
 
-(defn ^:async load-user-profile [{:keys [store setStore] :as ctx}]
-  (-> (.executeQuery (:compose @cli/client) (geql/eql->graphql UserProfile.query))
-      (.then (fn [response]
-               (js/console.log "response: " response)
-               (let [res (-> response :data :viewer :user)]
-                 (println (utils/nsd res :user))
-                 (t/add! ctx (utils/nsd res :user)
-                         #_{:replace [:pages/id :profile :user]}))))))
+(defn ^:async load-user-profile [{:keys [store setStore] :as ctx} ident f]
+  (let [query (aget (UserProfile.) "query")
+        query (mapv #(second (string/split % "/")) query)
+        a (println "gq2" {:query query})
+        query (geql/eql->graphql {ident query})]
+    (println "gq: " query)
+    (-> (.executeQuery (:compose @cli/client) query)
+        (.then (fn [response]
+                 (js/console.log "response: " response)
+                 (let [res (-> response :data :node)]
+                   (println (utils/nsd res :user))
+                   (t/add! ctx (utils/nsd res :user)
+                             #_{:replace [:pages/id :profile :user]})))))))
 
 
 (def ui-user-profile (comp/comp-factory UserProfile AppContext))

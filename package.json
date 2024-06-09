@@ -46,6 +46,7 @@
     "did-session": "^3.1.0",
     "flowbite": "^2.3.0",
     "flowbite-datepicker": "^1.2.6",
+    "lodash": "^4.17.21",
     "solid-js": "^1.8.17",
     "solid-spinner": "^0.2.0",
     "viem": "^2.13.1"

@@ -19,12 +19,14 @@
             ["./composedb/composite.mjs" :as composite]
             ["@solidjs/router" :refer [HashRouter Route useParams cache]]
             ["flowbite-datepicker" :as dp]
+            ["./utils.mjs" :as utils]
             ["./components/header.jsx" :as h]
             ["./comp.mjs" :as comp :refer [Comp]]
             ["./Context.mjs" :refer [AppContext]]
             ["./transact.mjs" :as t]
             ["flowbite" :as fb]
-            ["./geql.mjs" :as geql])
+            ["./geql.mjs" :as geql]
+            [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
 #_(defn import-proj [comp-path f] (.then (import comp-path) (fn [r] (println "got r " (:WizardNewProject r)) (get r f))))
@@ -57,10 +59,11 @@
           [:div {:class "flex h-screen w-sceen overflow-auto dark:text-white bg-[#f3f4f6] dark:bg-[#101014] justify-center"}
              props.children]]))
 
-(defn load-user [params location]
-  (let [ctx (useContext AppContext)
-        get-user (fn [id] (println "load2") (up/load-user-profile ctx [:user/id]))]
-    (cache (get-user (:id params)))))
+(def get-user (cache (fn [ident] (let [ctx (useContext AppContext)] (println "load2")
+                                      (up/load-user-profile ctx ident)))))
+
+(defn load-user [{:keys [params location]}]
+  (get-user [:user (:id params)]))
 
 (defn Root []
   (let [[store setStore] (createStore {:viewer []
