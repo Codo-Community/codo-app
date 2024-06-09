@@ -56,8 +56,7 @@ export default defineConfig({
       },
   },
   build: {
-    sourcemap: true,
-    outDir: "public/js",
+    outDir: "public/",
     target: 'esnext',
   },
 });

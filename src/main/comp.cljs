@@ -6,17 +6,18 @@
 
 (defclass Comp
   (field -ctx)
-  (field -query)
+  (^:static field query)
   (field -data)
 
   (constructor [this ctx]
                (set! -ctx ctx))
 
   Object
+  (^:static get-query [_] query)
   (ctx [_] -ctx)
   (ident [_ id])
   (data [_] -data)
-  #_(query [] -query)
+  #_(query [_] query)
   (render [this ident]))
 
 #_(defclass User

@@ -4,7 +4,13 @@
             ["did-session" :refer [DIDSession]]
             ["@didtools/pkh-ethereum" :refer [EthereumWebAuth getAccountId]]))
 
-(def auth (atom {:addresses nil :account-id nil :auth-method nil}))
+(def addresses-resolver (atom nil))
+(def account-id-resolver (atom nil))
+(def auth-method-resolver (atom nil))
+
+(def auth (atom {:addresses (js/Promise. (fn [resolve _] (reset! addresses-resolver resolve)))
+                 :account-id (js/Promise. (fn [resolve _] (reset! account-id-resolver resolve)))
+                 :auth-method (js/Promise. (fn [resolve _] (reset! auth-method-resolver resolve)))}))
 
 (defn ^:async init-auth []
   #_(let [session-str (u/get-item "ceramic:eth_did")
@@ -16,8 +22,11 @@
         addresses (js-await (.request @wallet-client {:method "eth_requestAccounts"}))
         account-id (js-await (getAccountId ethProvider (first addresses)))
         auth-method (js-await (EthereumWebAuth.getAuthMethod @wallet-client account-id))]
+    (@addresses-resolver addresses)
+    (@account-id-resolver account-id)
+    (@auth-method-resolver auth-method)
     (println "ComposeDB auth OK: " account-id)
-    (reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
+    #_(reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
     (js/Promise.resolve @auth)))
 
 #_(defstate auth :start  (init-auth))

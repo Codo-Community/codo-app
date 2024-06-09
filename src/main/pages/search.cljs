@@ -1,32 +1,45 @@
 (ns pages.search
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../normad.mjs" :as n]
-            ["@solidjs/router" :refer [useParams]]
-            ["../components/activity.jsx" :as a]
+            ["@solidjs/router" :refer [useSearchParams]]
+            ["../components/project_list.jsx" :as p]
+            ["../composedb/client.mjs" :as cli]
+            ["../utils.mjs" :as utils]
+            ["../transact.mjs" :as t]
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc ProjectList [this {}]
+(def query "query {
+  projectIndex(last: 10) {
+    edges {
+      node {
+        id
+        name
+        contract {
+          id
+          chain
+          address
+        }
+      }
+    }
+  }
+}
+")
+
+(defn SearchPage []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        params (useParams)
-        ;data (createMemo #(n/pull store [:pages/id :search] [:activity]))
-        ]
-    #jsx [:div {:class "border border-white dark:border-black w-full bg-white dark:bg-black p-6 shadow rounded-md
-                hover:border-sky-500 hover:dark:border-sky-500 hover:cursor-pointer dark:border-gray-800"}
-          [:div {:class "flex items-center border-b border-gray-200 dark:border-gray-700 pb-6"}
-           [:img {:src "https://cdn.tuk.dev/assets/components/misc/doge-coin.png"
-                  :alt "coin avatar"
-                  :class "w-12 h-12 rounded-full"}]
-           [:div {:class "flex items-start justify-between w-full"}
-            [:div {:class "pl-3 w-full"}
-             [:p {:class "focus:outline-none text-xl font-medium leading-5 text-gray-800 dark:text-white"}
-              name]
-             [:p {:class "focus:outline-none text-sm leading-normal pt-2 text-gray-500 dark:text-gray-200"}
-              "36 contributors"]]
-            [:div {:class "w-8 h-8 p-1"} "icon"#_(get-in chains [:project.chain/polygon :icon])]
-            [:div {:role "img" :aria-label "bookmark" :class "i-tabler-bookmark"}]]]
-          [:div.px-2
-           [:p {:class "focus:outline-none text-sm leading-5 py-4 text-gray-600 dark:text-gray-200"} description]
-           [:div {:tabindex 0 :class "focus:outline-none flex"}
-            [:div {:class "py-2 px-4 text-xs leading-3 text-indigo-700 rounded-full bg-indigo-100"} "#dogecoin"]
-            [:div {:class "py-2 px-4 ml-3 text-xs leading-3 text-indigo-700 rounded-full bg-indigo-100"} "#crypto"]]]]))
+        params (useSearchParams)
+        ident [:component/id :project-list]]
+    (onMount (fn []
+               (if (empty? (get-in store [:component/id :project-list :projects]))
+                 (-> (.executeQuery (:compose @cli/client) query)
+                     (.then (fn [response]
+                              #_(js/console.log "response: " (-> response :data :projectIndex :edges))
+                              (let [res (-> response :data :projectIndex :edges)]
+                                (doall (for [v res]
+                                         (let [;a (println v)
+                                               v (:node v)
+                                               val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
+                                           (t/add! ctx val
+                                                   {:append [:component/id :project-list :projects]}))))
+                                #_(println store))))))))
+    #jsx [p/ui-project-list ident]))

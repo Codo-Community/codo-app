@@ -9,6 +9,7 @@
 
 (defn icon-button [{:keys [icon]}]
   #jsx [:button {:class "text-gray-400 bg-transparent
-                         hover:text-gray-900 rounded-md text-sm p-1.5 block h-10 w-10
-                         ml-auto inline-flex items-center dark:hover:text-white "}
-        [:div {:class "w-6 h-6"} #jsx [icon]]])
+                         hover:text-gray-900 text-sm h-10 w-10 block
+                         inline-flex items-center dark:hover:text-white "}
+        icon
+        #_[:div {:class (str "w-6 h-6 " icon)}]])

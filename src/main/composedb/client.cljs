@@ -17,24 +17,31 @@
                 :enums {}
                 :accountData {:simpleProfile {:type "node" :name "SimpleProfile"}}})
 
-(def client (atom {:ceramic nil
-                   :compose nil
+(def client (atom {:ceramic (CeramicClient. "http://localhost:7007")
+                   :compose (ComposeClient. {:ceramic "http://localhost:7007"
+                                             :definition definition})
+                   #_(js/Promise. (fn [resolve reject] (resolve) (reject) ))
                    :session nil}))
 
+(defn ^:async await-session [compose auth]
+  (let [account-id (js-await (:account-id @a/auth))
+        auth-method (js-await (:auth-method @a/auth))]
+    (.get DIDSession account-id auth-method  {:resources (aget compose "resources")})))
+
 (defn ^:async init-clients []
-  (let [ceramic (CeramicClient. "http://localhost:7007")
-
-        compose (ComposeClient. {:ceramic "http://localhost:7007"
-                                 :definition definition})
-
-        session (.then (.get DIDSession (:account-id @a/auth) (:auth-method @a/auth) {:resources (aget compose "resources")})
+  (let [account-id (js-await (:account-id @a/auth))
+        auth-method (js-await (:auth-method @a/auth))
+        session (.then (.get DIDSession account-id auth-method {:resources (aget (:compose @client) "resources")})
                        (fn [session]
                          #_(js/console.log "session did:" compose.context)
-                         (.setDID compose (aget session "did"))
-                         (aset ceramic "did" (aget session "did"))
+                         (.setDID (:compose @client) (aget session "did"))
+                         (aset (:ceramic @client)  "did" (aget session "did"))
                          session))]
-    (reset! client {:ceramic ceramic
-                    :compose compose})))
+    #_(.resolve (:ceramic @client) ceramic)
+    #_(.resolve (:compose @client) compose)
+    #_(reset! client {:ceramic (js/Promise.resolve ceramic)
+                      :compose (js/Promise.resolve compose)})
+    (js/Promise.resolve session)))
 
 (comment
   (do

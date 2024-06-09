@@ -28,13 +28,12 @@
                              :selected #(second (contract))}]
          [Show {:when (contract)}
           [c/ui-contract (contract)]]]
-
         [:div {:class "col-span-full md:col-span-2 xl:col-span-1 h-full w-full overflow-y-auto items-top px-4"}
-         [:h1 {:class "mt-3 font-bold text-lg"} "Transactions"]
+         [:h1 {:class "my-3 font-bold text-lg"} "Transactions"]
          [:div {:class "dark:(placeholder-gray-400 focus:ring-blue-500 border-gray-700) w-full px-4
                           text-md overflow-auto"}
           [:div {:class "position-relative overflow-y-auto overflow-x-hidden"}
-           [Show {:when #(not (empty? (transactions)))}
+           [Show {:when (not (empty? (transactions)))}
             [For {:each (transactions)}
              (fn [t _]
                #jsx [tr/ui-transaction t])]]]]]])

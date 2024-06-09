@@ -3,19 +3,19 @@
             [squint.string :as str]))
 
 (defn eql-key->field [key]
-  (if (vector? key)
-    {:kind "Field"
-     :name {:kind "Name" :value (first key)}
-     :arguments (mapv (fn [[k v]]
-                        {:kind "Argument"
-                         :name {:kind "Name" :value k}
-                         :value {:kind "StringValue" :value v}})
-                      (partition 2 (rest key)))}
-    {:kind "Field"
-     :name {:kind "Name" :value key}}))
+  (let [key (str/split key ",")
+        key (if (= (count key) 2) key (first key))]
+    (if (vector? key)
+      {:kind "Field"
+       :name {:kind "Name" :value (first key)}
+       :arguments [{:kind "Argument"
+                    :name {:kind "Name" :value "id"}
+                    :value {:kind "StringValue" :value (second key)}}]}
+      {:kind "Field"
+       :name {:kind "Name" :value key}})))
 
 (defn build-field [field]
-  #_(println "f " field)
+  (println "eq:f " field)
   (let [[k v] (cond
                 (vector? field) (if (and (string? (first field)) (vector? (second field)))
                                   field
@@ -35,10 +35,13 @@
                             :operation "query"
                             :selectionSet {:kind "SelectionSet"
                                            :selections (mapv build-field eql)}}]}]
-    #_(js/console.log ast)
+    (js/console.log ast)
     (graphql/print ast)))
 
 ;; Example usage:
 (def eql-query {:viewer [:id {:user [:firstName :lastName]}]})
 
-(eql->graphql eql-query)
+(def eql-query {[:user 0] [:id :firstName :lastName]})
+
+;(println "eq:q" eql-query)
+;(println "eq: " (eql->graphql eql-query))

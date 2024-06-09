@@ -1,6 +1,5 @@
 (ns main.components.blueprint.stepper
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
-            ["solid-icons/hi" :refer [HiOutlineCheck HiOutlineClipboardDocumentList HiOutlineCube]]
             ["./step.jsx" :as s :refer [ui-step]]
             ["../../Context.mjs" :refer [AppContext]]
             ["../../comp.mjs" :as comp])

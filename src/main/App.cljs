@@ -4,8 +4,12 @@
             ["./pages/tbpage.jsx" :as tbp]
             ["./pages/home.jsx" :as home]
             ["./pages/profile.jsx" :as profile]
+            ["./pages/search.jsx" :as sp]
+
             ["./components/blueprint/input.jsx" :as in]
-            ;["./components/wizards/new_project/main.jsx" :refer [WizardNewProject]]
+            ["./components/project_report.jsx" :as pr]
+            ["./components/userprofile.jsx" :as up]
+                                        ;["./components/wizards/new_project/main.jsx" :refer [WizardNewProject]]
             ["./imports.mjs" :refer [WizardNewProject]]
             ["./components/wizards/new_project/info_step.jsx" :as istep]
             ["./components/wizards/new_project/contract_step.jsx" :as cstep]
@@ -13,7 +17,7 @@
             ["./composedb/client.mjs" :as cdb]
             ["./composedb/auth.mjs" :as cda]
             ["./composedb/composite.mjs" :as composite]
-            ["@solidjs/router" :refer [HashRouter Route useParams]]
+            ["@solidjs/router" :refer [HashRouter Route useParams cache]]
             ["flowbite-datepicker" :as dp]
             ["./components/header.jsx" :as h]
             ["./comp.mjs" :as comp :refer [Comp]]
@@ -48,16 +52,22 @@
 
 (defn Main [props]
   (let [header [:comp/id :header]]
-    #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden text-gray-900 dark font-mono"}
+    #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden text-gray-900 dark font-mono dark:text-white bg-[#f3f4f6] dark:bg-[#101014]"}
           [h/ui-header header]
-          [:div {:class "flex h-full overflow-hidden dark:text-white bg-[#f3f4f6] dark:bg-[#101014] justify-center"}
-           props.children]]))
+          [:div {:class "flex h-screen w-sceen overflow-auto dark:text-white bg-[#f3f4f6] dark:bg-[#101014] justify-center"}
+             props.children]]))
+
+(defn load-user [params location]
+  (let [ctx (useContext AppContext)
+        get-user (fn [id] (println "load2") (up/load-user-profile ctx [:user/id]))]
+    (cache (get-user (:id params)))))
 
 (defn Root []
   (let [[store setStore] (createStore {:viewer []
                                        :counters [{:counter/id 0
                                                    :counter/value 1}]
-                                       :component/id {:project-wizard {:project []}}
+                                       :component/id {:project-wizard {:project []}
+                                                      :project-list {:projects []}}
                                        :pages/id {:profile {:user [:user/id 0]}
                                                   :transaction-builder {:contracts []
                                                                         :contract nil
@@ -75,7 +85,15 @@
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/profile" :component profile/ProfilePage}]
+           [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
+                                                                     ident [:project/id (:id params)]]
+                                                                 #jsx [pr/ui-project-report ident]))}]
+           [Route {:path "/user/:id" :component (fn [props] (let [params (useParams)
+                                                                  ident [:user/id (:id params)]]
+                                                              #jsx [up/ui-user-profile ident]))
+                   :load load-user}]
            [Route {:path "/tb" :component tbp/TransactionBuilderPage}]
+           [Route {:path "/search" :component sp/SearchPage}]
            [Route {:path "/wizards/new-project/:id"
                    :component WizardNewProject
                    :load (fn [params location] (t/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project]}))}

@@ -4,10 +4,10 @@
 (defn SearchInput [{:keys [on-submit]}]
   (let [[local setLocal] (createSignal {:search ""})]
     #jsx [:form {:class ""
-                 :onSubmit on-submit}
+                 :onSubmit #(do (.preventDefault %) (on-submit local))}
           #_[:label {:htmlFor "default-search"
-                   :class "mb-2 text-sm font-medium text-zinc-900 sr-only dark:text-white"}
-           "Search"]
+                     :class "mb-2 text-sm font-medium text-zinc-900 sr-only dark:text-white"}
+             "Search"]
           [:div {:class "relative rounded-md"}
            [:div {:class "absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"}
             [:div {:class "i-tabler-search"}]]

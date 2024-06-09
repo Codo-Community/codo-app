@@ -32,9 +32,9 @@
     #jsx [:div {:class "flex flex-col w-full gap-3 mb-3"}
           [:h2 {:class "font-bold text-lg"} "Parameters"]
           [:span {:class "flex w-full gap-2"}
-           #jsx [in/address-input (fn [] {:name "Address"
-                                          :readonly true
-                                          :value (address)})]]
+           [in/address-input {:name "Address"
+                              :readonly true
+                              :value address}]]
           [d/dropdown-select {:title "Function"
                               :items #(mapv (fn [a] {:id (:name a)
                                                      :value (:name a)})

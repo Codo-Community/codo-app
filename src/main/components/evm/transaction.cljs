@@ -1,5 +1,5 @@
 (ns co-who.components.evm.transaction
-  (:require ["solid-js" :refer [useContext createMemo]]
+  (:require ["solid-js" :refer [createSignal]]
             ["./function.jsx" :as f]
             ["./inputs.jsx" :as ein]
             ["../blueprint/button.jsx" :as b]
@@ -32,18 +32,22 @@
                                 (update-in x [:transaction-builder :transactions] #(filterv (fn [x] (not (= (second x)
                                                                                                  (second ident)))) %))))))
 
-
 (defc Transaction [this {:transaction/keys [id function]}]
-  #jsx [:div {:class "flex flex-col gap-3"}
-        #_[:h2 {:class "mb-2 font-bold"} (str "id: ") [:text {:class ""} (:transaction/id (data))]]
-        [l/label (str "id: " (id))]
-        [f/ui-function (function)]
-        [:span {:class "flex gap-3"}
-         [b/button {:title "Transact"
-                    :on-click #();execute-fn
-                    }]
-         [b/button {:title "Remove"
-                    :on-click (remove-evm-transaction ctx [:transaction/id (id)])
-                    :color "dark:bg-red-600 dark:hover:bg-red-700"}]]])
+  (let [[open? setOpen] (createSignal true)]
+    #jsx [:div {:class "flex flex-col gap-3 mb-6 px-1"}
+          [:span {:class "w-full border-b border-gray-600 flex gap-3"}
+           [:button {:class (str "dark:text-gray-400 w-5 h-5 p-2 " (if (open?) "i-tabler-chevron-down" "i-tabler-chevron-right"))
+                     :onClick #(setOpen (not (open?)))}]
+           (l/label (id))]
+          [Show {:when (open?)}
+           [:div {}
+            [f/ui-function (function)]
+            [:span {:class "flex gap-3"}
+             [b/button {:title "Transact"
+                        :on-click #()       ;execute-fn
+                        }]
+             [b/button {:title "Remove"
+                        :on-click (remove-evm-transaction ctx [:transaction/id (id)])
+                        :color "dark:bg-red-600 dark:hover:bg-red-700"}]]]]]))
 
 (def ui-transaction (comp/comp-factory Transaction AppContext))

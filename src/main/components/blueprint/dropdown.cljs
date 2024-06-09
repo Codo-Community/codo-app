@@ -16,3 +16,22 @@
                  #jsx [:option {:selected (if (= id (selected))
                                             true false)}
                        value])]]])
+
+(defn dropdown [{:keys [id items]}]
+  #jsx [:div {:id id
+              :class "z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"}
+        [:div {:class "px-4 py-3 text-sm text-gray-900 dark:text-white"}
+         [:div {:class "font-medium"} "Pro User"]
+         [:div {:class "truncate"} "name@flowbite.com"]]
+        [:ul {:class "py-2 text-sm text-gray-700 dark:text-gray-200"
+              :aria-labelledby "dropdownInformdropdownAvatarNameButtonationButton"}
+         [For {:each items}
+          [:li
+           [:a {:href "#"
+                :class "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"}
+            "Dashboard"]]]
+         ]
+        [:div {:class "py-2"}
+         [:a {:href "#"
+              :class "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"}
+          "Sign out"]]])
