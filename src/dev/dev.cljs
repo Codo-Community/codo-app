@@ -45,8 +45,9 @@
         asd (js-await (writeEncodedComposite composite "./src/__generated__/definition.json"))
 
         merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/definition.js"))
+        merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/merged-rt.json"))
 
-        ;merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/definition2.json"))
+                                        ;merged (js-await (writeEncodedCompositeRuntime ceramic "./src/__generated__/definition.json" "./src/__generated__/definition2.json"))
 
         ;; merged (js-await (mergeEncodedComposites ceramic #js ["./dist/__generated__/composite_category.json"
         ;;                                                       "./dist/__generated__/composite_project.json"
@@ -58,7 +59,7 @@
         ;; new (js-await (writeRuntimeDefinition merged "./resources/definition.js"))
         new (js-await (writeRuntimeDefinition merged "./src/__generated__/definition-merged.json"))
         ]
-    (copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log "copy to resources failed")))
+    (copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log err)))
     (js-await (merged.startIndexingOn ceramic))))
 
 #_(.then (authenticate ceramic) (fn [r]

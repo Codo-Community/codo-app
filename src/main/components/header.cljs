@@ -14,7 +14,7 @@
             ["../Context.mjs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc Header [this {:keys [comp/id user]}]
+(defc Header [this {:keys [component/id user]}]
   (let [navigate (useNavigate)
         location (useLocation)
         params (useSearchParams)
@@ -24,9 +24,9 @@
                       (fn [r]
                         (eu/request-addresses @ec/wallet-client
                                               (fn [ethereum-address]
-                                                (user/load-viewer-user #(t/add! ctx % {:replace [:comp/id :header :user]}))))
+                                                (user/load-viewer-user #(t/add! ctx % {:replace [:component/id :header :user]}))))
                         (eu/add-accounts-changed (fn [ethereum-address]
-                                                   (user/load-viewer-user #(t/add! ctx % {:replace [:comp/id :header :user]}))))))))
+                                                   (user/load-viewer-user #(t/add! ctx % {:replace [:component/id :header :user]}))))))))
     #jsx [:header {:class ""}
           [:nav {:class "text-gray-900
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden

@@ -53,32 +53,45 @@
 #_(println (geql/eql->graphql {:viever [:id {:user [:firstName :lastName]}]}))
 
 (defn Main [props]
-  (let [header [:comp/id :header]]
+  (let [header [:component/id :header]]
     #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden text-gray-900 dark font-mono dark:text-white bg-[#f3f4f6] dark:bg-[#101014]"}
           [h/ui-header header]
           [:div {:class "flex h-screen w-sceen overflow-auto dark:text-white bg-[#f3f4f6] dark:bg-[#101014] justify-center"}
-             props.children]]))
+           #_(str (get-in js/window [:store :user/id "k2t6wzhkhabz1tk8f3pxf7gaecz67s8t1dezuxyfs6y6vamst77shwebvfpaz8"]))
+           props.children]]))
 
-(def get-user (cache (fn [ident] (let [ctx (useContext AppContext)] (println "load2")
+(def get-user (cache (fn [ident] (let [ctx (useContext AppContext)]
                                       (up/load-user-profile ctx ident)))))
 
 (defn load-user [{:keys [params location]}]
   (get-user [:user (:id params)]))
 
+(def get-project (cache (fn [ident] (let [ctx (useContext AppContext)]
+                                      (pr/load-project ctx ident)))))
+
+(def create-p (cache (fn [id] (let [ctx (useContext AppContext)
+                                    f (fn ^:async [] (js/Promise.resolve (t/add! ctx {:project/id id} {:replace [:component/id :project-wizard :project]})))]
+                                (f)))))
+
+(defn load-project [{:keys [params location]}]
+  (get-project [:project (:id params)]))
+
+(defn create-project [{:keys [params location]}]
+  (println (:id params))
+  (create-p (:id params)))
+
 (defn Root []
-  (let [[store setStore] (createStore {:viewer []
-                                       :counters [{:counter/id 0
-                                                   :counter/value 1}]
-                                       :component/id {:project-wizard {:project []}
+  (let [[store setStore] (createStore {:component/id {:header {:user {:user/id 0
+                                                                      :user/ethereum-address "0x0"}}
+                                                      :project-wizard {:project []}
                                                       :project-list {:projects []}}
-                                       :pages/id {:profile {:user [:user/id 0]}
+                                       :pages/id {:profile {:user {:user/id 0
+                                                                   :user/ethereum-address "0x0"}}
                                                   :transaction-builder {:contracts []
                                                                         :contract nil
-                                                                        :transactions []}}
-                                       :user/id {0 {:user/id 0
-                                                    :user/ethereum-address "0x0"}}
-                                       :comp/id {:header {:user [:user/id 0]}}})
+                                                                        :transactions []}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
+    (set! (.-store js/window) store)
     (onMount #(do
                 (fb/initFlowbite)
                 (.then (composite/fetch-abi)
@@ -87,23 +100,29 @@
                                                    (fn []))))))))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
-           [Route {:path "/profile" :component profile/ProfilePage}]
            [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
                                                                      ident [:project/id (:id params)]]
-                                                                 #jsx [pr/ui-project-report ident]))}]
+                                                                 #jsx [pr/ui-project-report ident]))
+                   }
+            [Route {:path "/" :component (fn [props] (let [params (useParams)
+                                                           ident [:project/id (:id params)]]
+                                                       (println ident)
+                                                       #jsx [pr/ui-project-planner ident]))
+                    :load load-project}]
+            [Route {:path "/transaction-builder" :component tbp/TransactionBuilderPage}]]
            [Route {:path "/user/:id" :component (fn [props] (let [params (useParams)
+                                                                  a (println "user " (:id params))
                                                                   ident [:user/id (:id params)]]
                                                               #jsx [up/ui-user-profile ident]))
                    :load load-user}]
-           [Route {:path "/tb" :component tbp/TransactionBuilderPage}]
            [Route {:path "/search" :component sp/SearchPage}]
            [Route {:path "/wizards/new-project/:id"
-                   :component WizardNewProject
-                   :load (fn [params location] (t/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project]}))}
+                   :component WizardNewProject}
             [Route {:path "/"
                     :component (fn [props] (let [params (useParams)
                                                  ident [:project/id (:id params)]]
-                                             #jsx [istep/ui-basic-info-step ident]))}]
+                                             #jsx [istep/ui-basic-info-step ident]))
+                    :load create-project}]
             [Route {:path "/contract"
                     :component (fn [props] (let [params (useParams)
                                                  ident [:project/id (:id params)]]

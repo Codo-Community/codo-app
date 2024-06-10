@@ -21,13 +21,13 @@
                             ;'asd (list 'println "chi " 'children)
                             ;'children 'children.children
                             ;'asd (list 'println "chi2 " 'children)
-                            'asd (list 'println "render: " ntmp)
+                            ;'asd (list 'println "render: " ntmp)
                             'ctx (list `useContext (list 'this#.ctx))
                             {:keys ['store 'setStore]} 'ctx
-                            'asd (list 'println "cho " (list 'comp/ident? 'children.children))
+                            ;'asd (list 'println "cho " (list 'comp/ident? 'children.children))
                             'data (list 'if (list 'comp/ident? 'children.children)
                                         (list `createMemo (list 'fn []
-                                                                (list 'println "memo: " ntmp " ident: " 'children)
+                                                                ;(list 'println "memo: " ntmp " ident: " 'children)
                                                                 (list `pull 'store 'children.children 'this#.query)))
                                         (list 'fn [] 'children))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]

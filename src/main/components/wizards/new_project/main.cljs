@@ -3,7 +3,11 @@
             ["@solidjs/router" :refer [A useParams]]
             ["flowbite" :as fb]
             ["../../../utils.mjs" :as u]
+            ["../../../Context.mjs" :refer [AppContext]]
             ["../../blueprint/stepper.jsx" :as s]))
+
+(defn add-new-proj []
+  )
 
 (defn WizardNewProject [props]
   (let [[local setLocal] (createSignal {:step :info
@@ -23,8 +27,10 @@
                                                  :completed? false
                                                  :active? false
                                                  :icon :cube}]})
+        ctx (useContext AppContext)
         params (useParams)]
-    (onMount (fn [] (fb/initFlowbite))) ; reinit flowbite since this component is imported dynamically
+    (onMount (fn [] (fb/initFlowbite))
+            (println "p " params) )    ; reinit flowbite since this component is imported dynamically
     #jsx [:div {:class "flex justify-center w-screen"}
           [:div {:class "mt-4 w-fit h-fit"}
            [s/ui-stepper (local)]]

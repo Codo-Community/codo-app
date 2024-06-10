@@ -1,14 +1,12 @@
 type Category @createModel(accountRelation: LIST, description: "A category to group other categories and/or requirements, tasks.") {
   name: String! @string(minLength: 3, maxLength: 50)
   mainReviewer: DID @accountReference
-  children: [CategoryLink] @list(maxLength: 200) @relationFrom(model: "CategoryLink", property: "parentID")
-  parentID: StreamID @documentReference(model: "Node")
-  parent: Node @relationDocument(property: "parentID")
+  children: [CategoryLink] @list(maxLength: 100) @relationFrom(model: "CategoryLink", property: "parentID")
 }
 
 type CategoryLink @createModel(description: "Collection of category contents") {
-  parentID: StreamID! @documentReference(model: "Node")
-  parent: Node! @relationDocument(property: "parentID")
-  itemID: StreamID! @documentReference(model: "Node")
-  items: [Category]! @relationFrom(model: "Category", property: "id")
+  parentID: StreamID! @documentReference(model: "Category")
+  parent: Category! @relationDocument(property: "parentID")
+  childID: StreamID! @documentReference(model: "Category")
+  child: Category @relationDocument(property: "childID")
 }

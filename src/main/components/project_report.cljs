@@ -1,13 +1,53 @@
 (ns pages.search
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
+  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["../comp.mjs" :as comp]
+            ["../composedb/util.mjs" :as cu]
+            ["./category.jsx" :as c]
+            ["../transact.mjs" :as t]
+            ["../utils.mjs" :as u]
             ["./project_item.jsx" :as pi]
-            ["../Context.mjs" :refer [AppContext]])
+            ["../Context.mjs" :refer [AppContext]]
+            [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
-(defc ProjectReport [this {:project/keys [id name description chain {contract [:contract/chain]}]}]
-  #jsx [:div {:class "flex flex-col mt-4 mb-4 p-2 items-center"}
-        [:div {:class "flex flex-col gap-3"}
-         ]])
+#_(defn query [id] (str "query {
+  node(id: " id " ) {
+    ... on Project {
+      id
+      name
+      start
+      description
+      contract {
+        chain
+      }
+    }
+  }
+}
+"))
+
+(defc ProjectReport [this {:project/keys [id name start description {category [:id]} {contract [:id :chain]}]}]
+  (let [ident (fn [category] [:category/id (:id (category))])]
+    #jsx [:div {:class "flex flex-row w-screen"}
+          #_(str [:category/id (category)])
+          #_[:aside {:id "sidebar"
+                     :class "w-16 h-full"
+                     :aria-label "Sidebar"}
+             [:div {:class "h-full px-3 py-4 overflow-hidden bg-gray-50 dark:bg-black"}
+              [:ul {:class "space-y-2 font-medium"}
+               [:li
+                [:a {:href "#"
+                     :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
+          #_[c/ui-category (ident category)]
+          (str (category))
+
+          #_(str "n " (name) (id) (description) (contract) (category))]))
 
 (def ui-project-report (comp/comp-factory ProjectReport AppContext))
+
+(defn load-project [ctx ident]
+  (cu/execute-eql-query ctx {ident (aget (ProjectReport.) "query")} :project
+                        (fn [r] (let [c (u/nsd (get-in r [:node :category]) :category)
+                                      co (u/nsd (get-in r [:node :contract]) :contract)]
+                                  #_(println "d:" (u/nsd (get r :node) :project))
+                                  (t/add! ctx (assoc (assoc (u/nsd (get r :node) :project) :project/category c) :project/contract co))
+                                  #_(t/add! ctx (u/nsd (get r :node) :project))))))

@@ -67,16 +67,11 @@
 (defn ^:async load-user-profile [{:keys [store setStore] :as ctx} ident f]
   (let [query (aget (UserProfile.) "query")
         query (mapv #(second (string/split % "/")) query)
-        a (println "gq2" {:query query})
         query (geql/eql->graphql {ident query})]
-    (println "gq: " query)
     (-> (.executeQuery (:compose @cli/client) query)
         (.then (fn [response]
-                 (js/console.log "response: " response)
                  (let [res (-> response :data :node)]
-                   (println (utils/nsd res :user))
-                   (t/add! ctx (utils/nsd res :user)
-                             #_{:replace [:pages/id :profile :user]})))))))
+                   (t/add! ctx (utils/nsd res :user))))))))
 
 
 (def ui-user-profile (comp/comp-factory UserProfile AppContext))

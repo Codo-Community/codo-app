@@ -24,20 +24,18 @@
 (defn load-viewer-user [f]
   (-> (.executeQuery (:compose @cli/client) query-from-acc)
       (.then (fn [response]
-               (js/console.log "response: " response)
                (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
                                {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
                      res (if-not (:user/id res)
                            (conj res {:user/id (js/crypto.randomUUID)})
                            res)]
-                 (println res)
                  (f res))))))
 
 (defn add-user [{:keys [store setStore] :as ctx} address & extra]
   (t/add! ctx {:user/id (count (:user/id store))
                :user/ethereum-address address} (first extra)))
 
-(defc User [this {:user/keys [id ethereum-address]}]
+(defc User [this {:user/keys [id firstName ethereum-address]}]
   #jsx [:div {:class "flex items-center"}
         [b/icon-button {:icon #jsx [:img {:class "rounded-md h-10 w-10"
                                           :data-dropdown-toggle "header-user-dropdown"

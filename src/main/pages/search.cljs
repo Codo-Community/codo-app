@@ -33,13 +33,10 @@
                (if (empty? (get-in store [:component/id :project-list :projects]))
                  (-> (.executeQuery (:compose @cli/client) query)
                      (.then (fn [response]
-                              #_(js/console.log "response: " (-> response :data :projectIndex :edges))
                               (let [res (-> response :data :projectIndex :edges)]
                                 (doall (for [v res]
-                                         (let [;a (println v)
-                                               v (:node v)
+                                         (let [v (:node v)
                                                val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
                                            (t/add! ctx val
-                                                   {:append [:component/id :project-list :projects]}))))
-                                #_(println store))))))))
+                                                   {:append [:component/id :project-list :projects]})))))))))))
     #jsx [p/ui-project-list ident]))

@@ -1,7 +1,7 @@
 (ns graphql-eql-transform.core
   (:require ["graphql" :as graphql]
             [squint.string :as str]
-            ["lodash" :refer [camelCase]]))
+            ["lodash" :refer [camelCase startCase]]))
 
 (defn eql-key->field [key]
   (if (vector? key)
@@ -24,7 +24,7 @@
                    }})
 
 (defn build-field [field]
-  (println "eq:f " field)
+  #_(println "eq:f " field)
   (let [[k v] (cond
                 (vector? field) (if (and (string? (first field)) (vector? (second field)))
                                   field
@@ -36,7 +36,7 @@
             k (if (= (count k) 2) k (first k))]
         (if (vector? k) (assoc (eql-key->field ["node" (second k)])
                                :selectionSet {:kind "SelectionSet"
-                                              :selections [(assoc (inline-fragment "User" #_(camelCase (first k)))
+                                              :selections [(assoc (inline-fragment (startCase (camelCase (first k))))
                                                                   :selectionSet {:kind "SelectionSet"
                                                                                  :selections (mapv build-field v)})]})
             (if (vector? v) (assoc (eql-key->field k) :selectionSet {:kind "SelectionSet"
@@ -50,13 +50,13 @@
                             :operation "query"
                             :selectionSet {:kind "SelectionSet"
                                            :selections (mapv build-field eql)}}]}]
-    (js/console.log ast)
+    #_(js/console.log ast)
     (graphql/print ast)))
 
 ;; Example usage:
-(def eql-query {:viewer [:id {:user [:firstName :lastName]}]})
+#_(def eql-query {:viewer [:id {:user [:firstName :lastName]}]})
 
-(def eql-query {[:user 0] [:id :firstName :lastName]})
+#_(def eql-query {[:user 0] [:id :firstName :lastName]})
 
 ;(println "eq:q" eql-query)
 ;(println "eq: " (eql->graphql eql-query))

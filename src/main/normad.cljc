@@ -10,19 +10,22 @@
     (if (string? (first data))
       (and
        (re-find #"/id$" (first data))
-       (= (count data) 2))
+       (= (count data) 2)
+       (or (number? (second data)) (string? (second data))))
       false)
     false))
 
 (defn traverse-and-transform [item setStore]
   (cond
     (vector? item) (mapv #(traverse-and-transform % setStore) item)
-    (map? item)  (if-let [ident (get-ident item)]
-                   (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
-                     (setStore (first ident)
-                               (fn [x] (update x (second ident) merge new-val)))
-                     ident)
-                   (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item))))
+    (map? item)  (let [ident (get-ident item)]
+                   (if (ident? ident)
+                     (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
+                       #_(println "try add: " ident " " new-val)
+                       (swap! setStore #(update-in % ident (fn [v] (merge v new-val))))
+                       ident
+                       )
+                     (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))))
     :else item))
 
 #_(defn normalize-store [store]
@@ -32,9 +35,26 @@
              (setStore k (fn [x] v))))
     [store setStore]))
 
+(def acc (atom {}))
+
 (defn add [{:keys [store setStore] :as ctx} & data]
-  (let [res (traverse-and-transform (or (first data) store) setStore)]
-    (vec (map-indexed (fn [k v] (setStore k (fn [x] (merge x v))) res)))
+  (let [res (traverse-and-transform (or (first data) store) acc)]
+    (println "res " res)
+    (println "acc " @acc)
+    ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) @acc)
+    ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) res)
+
+    (if-not (first data)
+      (setStore (reconcile (merge res @acc)))
+      (if (ident? res)
+          (mapv #(setStore % (fn [x] (merge x (get @acc %))))
+                (keys @acc)
+                #_{:merge true
+                   :key (first res)} #_(reconcile (get-in @acc res) {:merge true
+                                                                     :key (second res)}))
+          #_(merge res @acc)))
+    (reset! acc {})
+    (println "store" store)
     ctx))
 
 (defn pull [store entity query]
