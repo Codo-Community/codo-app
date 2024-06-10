@@ -41,20 +41,27 @@
   (let [res (traverse-and-transform (or (first data) store) acc)]
     (println "res " res)
     (println "acc " @acc)
+
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) @acc)
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) res)
 
     (if-not (first data)
       (setStore (reconcile (merge res @acc)))
-      (if (ident? res)
-          (mapv #(setStore % (fn [x] (merge x (get @acc %))))
-                (keys @acc)
-                #_{:merge true
-                   :key (first res)} #_(reconcile (get-in @acc res) {:merge true
-                                                                     :key (second res)}))
+      (mapv #(if (nil? (get store %))
+               (setStore % (fn [x] (get @acc %)))
+               (setStore % (fn [x] (merge x (get @acc %))))) (keys @acc))
+      #_(if (ident? res)
+          (if (nil? (get-in store res))
+            (setStore (first res) (fn [x] (merge x (get @acc (first res)))))
+            (setStore (first res) (second res) (fn [x] (merge x (get-in @acc res)))))
+          #_(keys @acc)
+          #_{:merge true
+             :key (first res)} #_(reconcile (get-in @acc res) {:merge true
+                                                               :key (second res)})
+          (setStore (fn [x] (merge x @acc)))
           #_(merge res @acc)))
     (reset! acc {})
-    (println "store" store)
+    #_(println "store" store)
     ctx))
 
 (defn pull [store entity query]

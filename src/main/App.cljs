@@ -10,7 +10,7 @@
             ["./components/project_report.cljs" :as pr]
             ["./components/userprofile.cljs" :as up]
             ["./components/wizards/new_project/main.cljs" :refer [WizardNewProject]]
-            #_["./imports.mjs" :refer [WizardNewProject]]
+            #_["./imports.cljs" :refer [WizardNewProject]]
             ["./components/wizards/new_project/info_step.cljs" :as istep]
             ["./components/wizards/new_project/contract_step.cljs" :as cstep]
             ["./normad.cljs" :as norm]
@@ -55,7 +55,7 @@
 (defn Main [props]
   (let [header [:component/id :header]]
     #jsx [:div {:class "flex h-screen w-screen flex-col overflow-hidden text-gray-900 dark font-mono dark:text-white bg-[#f3f4f6] dark:bg-[#101014]"}
-          [h/ui-header header]
+          [h/ui-header {:& {:ident (fn [] header)}}]
           [:div {:class "flex h-screen w-sceen overflow-auto dark:text-white bg-[#f3f4f6] dark:bg-[#101014] justify-center"}
            #_(str (get-in js/window [:store :user/id "k2t6wzhkhabz1tk8f3pxf7gaecz67s8t1dezuxyfs6y6vamst77shwebvfpaz8"]))
            props.children]]))
@@ -77,11 +77,11 @@
   (get-project [:project (:id params)]))
 
 (defn create-project [{:keys [params location]}]
-  (println (:id params))
   (create-p (:id params)))
 
 (defn Root []
-  (let [[store setStore] (createStore {:component/id {:header {:user {:user/id 0
+  (let [[store setStore] (createStore {:component/id {:header {:component/id :header
+                                                               :user {:user/id 0
                                                                       :user/ethereum-address "0x0"}}
                                                       :project-wizard {:project []}
                                                       :project-list {:projects []}}
@@ -95,37 +95,36 @@
     (onMount #(do
                 (fb/initFlowbite)
                 ;; fetch abi here
-                (fn [] (.then (cda/init-auth)
-                              (fn [] (.then (cdb/init-clients)
-                                            (fn [])))))))
+                (.then (cda/init-auth)
+                       (fn [r] (println r) (.then (cdb/init-clients)
+                                                  (fn []))))))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
-                                                                     ident [:project/id (:id params)]]
-                                                                 #jsx [pr/ui-project-report ident]))}
+                                                                     ident (fn [] [:project/id (:id params)])]
+                                                                 #jsx [pr/ui-project-report {:& {:ident ident}}]))}
             [Route {:path "/" :component (fn [props] (let [params (useParams)
-                                                           ident [:project/id (:id params)]]
-                                                       (println ident)
-                                                       #jsx [pr/ui-project-planner ident]))
+                                                           ident (fn [] [:project/id (:id params)])]
+                                                       #jsx [pr/ui-project-planner {:& {:ident ident}}]))
                     :load load-project}]
             [Route {:path "/transaction-builder" :component tbp/TransactionBuilderPage}]]
            [Route {:path "/user/:id" :component (fn [props] (let [params (useParams)
-                                                                  a (println "user " (:id params))
-                                                                  ident [:user/id (:id params)]]
-                                                              #jsx [up/ui-user-profile ident]))
-                   :load load-user}]
+                                                                  ident (fn [] [:user/id (:id params)])]
+                                                              #jsx [up/ui-user-profile {:& {:ident ident}}]))
+                   :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]) ;load-user
+                           )}]
            [Route {:path "/search" :component sp/SearchPage}]
            [Route {:path "/wizards/new-project/:id"
                    :component WizardNewProject}
             [Route {:path "/"
                     :component (fn [props] (let [params (useParams)
-                                                 ident [:project/id (:id params)]]
-                                             #jsx [istep/ui-basic-info-step ident]))
+                                                 ident (fn [] [:project/id (:id params)])]
+                                             #jsx [istep/ui-basic-info-step {:& {:ident ident}}]))
                     :load create-project}]
             [Route {:path "/contract"
                     :component (fn [props] (let [params (useParams)
-                                                 ident [:project/id (:id params)]]
-                                             #jsx [cstep/ui-contract-step ident]))}]]
+                                                 ident (fn [] [:project/id (:id params)])]
+                                             #jsx [cstep/ui-contract-step {:& {:ident ident}}]))}]]
            [Route {:path "/" :component home/HomePage}]]]))
 
 (def default Root)

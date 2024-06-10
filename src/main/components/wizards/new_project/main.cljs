@@ -27,13 +27,11 @@
                                                  :completed? false
                                                  :active? false
                                                  :icon :cube}]})
-        ctx (useContext AppContext)
         params (useParams)]
-    (onMount (fn [] (fb/initFlowbite))
-            (println "p " params) )    ; reinit flowbite since this component is imported dynamically
+    (onMount (fn [] (fb/initFlowbite)))    ; reinit flowbite since this component is imported dynamically
     #jsx [:div {:class "flex justify-center w-screen"}
           [:div {:class "mt-4 w-fit h-fit"}
-           [s/ui-stepper (local)]]
+           [s/ui-stepper {:& (local)}]]
           [:div {:class "ml-24 relative"}
            [:div {:class "my-4"}
             [:h1 {:class "text-2xl mb-4"} "Create Project"]]

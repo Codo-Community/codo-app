@@ -16,19 +16,24 @@
           (list 'constructor ['_ 'ctx] (list 'println "constructor: " ntmp) (list 'super 'ctx))
           'Object
 
-          (list 'render ['this# 'children]
+          (list 'render ['this# 'props '& 'children]
                 (list 'let [(first bindings) 'this#
-                            ;'asd (list 'println "chi " 'children)
-                            ;'children 'children.children
-                            ;'asd (list 'println "chi2 " 'children)
-                            ;'asd (list 'println "render: " ntmp)
-                            'ctx (list `useContext (list 'this#.ctx))
+                            'ctx (list `useContext 'this#.ctx)
+                            ;'a (list 'set! 'this#.-ctx 'ctx)
+                            'ident (list 'get 'props :ident)
+                            'ident (list 'if-not (list 'fn? 'ident) (list 'fn [] 'ident) 'ident)
+                            'a (list 'println ntmp ": p " 'props " i: " (list 'ident))
                             {:keys ['store 'setStore]} 'ctx
-                            ;'asd (list 'println "cho " (list 'comp/ident? 'children.children))
-                            'data (list 'if (list 'comp/ident? 'children.children)
-                                        (list `createMemo (list 'fn []
-                                                                (list 'println "memo: " ntmp " ident: " 'children.children " query: " 'this#.query)
-                                                                (list `pull 'store 'children.children 'this#.query)))
-                                        (list 'fn [] 'children))
+                            'data (list 'if (list 'comp/ident? (list 'ident))
+                                        (list 'do
+                                              (list 'set! 'this#.ident 'ident)
+                                              (list `createMemo (list 'fn []
+                                                                      (list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
+                                                                      (list 'println "data: " (list `pull 'store (list 'ident) query))
+                                                                      (list `pull 'store (list 'ident) query))))
+                                        (list 'fn [] 'props))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]
-                      body)))))
+                      body
+                      #_(list 'if 'children [:<>
+                                             body
+                                             'children] body))))))

@@ -97,8 +97,8 @@ importers:
         specifier: ^0.30.1
         version: 0.30.1(solid-js@1.8.17)(vite@5.2.13(@types/node@20.14.2))
       squint-cljs:
-        specifier: ^0.6.95
-        version: 0.6.95
+        specifier: link:../squint
+        version: link:../squint
       unocss:
         specifier: ^0.60.4
         version: 0.60.4(postcss@8.4.38)(rollup@4.18.0)(vite@5.2.13(@types/node@20.14.2))
@@ -4531,10 +4531,6 @@ packages:
 
   sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
-
-  squint-cljs@0.6.95:
-    resolution: {integrity: sha512-YaSZ1whreeMWi+veFbKuU8rx9qKqaIXJIpywREJs2zQJd53p/2ThVrmykBqAv/Rs/MKwvMLDBgsBR4t36vW+Xw==}
-    hasBin: true
 
   ssri@8.0.1:
     resolution: {integrity: sha512-97qShzy1AiyxvPNIkLWoGua7xoQzzPjQ0HAH4B0rWKo7SZ6USuPcrUiAFrws0UH8RrbWmgq3LMTObhPIHbbBeQ==}
@@ -11210,10 +11206,6 @@ snapshots:
     transitivePeerDependencies:
       - bluebird
       - supports-color
-
-  squint-cljs@0.6.95:
-    dependencies:
-      chokidar: 3.6.0
 
   ssri@8.0.1:
     dependencies:

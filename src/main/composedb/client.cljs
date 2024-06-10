@@ -37,6 +37,7 @@
                          (.setDID (:compose @client) (aget session "did"))
                          (aset (:ceramic @client)  "did" (aget session "did"))
                          session))]
+    (println "composedb client init OK")
     #_(.resolve (:ceramic @client) ceramic)
     #_(.resolve (:compose @client) compose)
     #_(reset! client {:ceramic (js/Promise.resolve ceramic)

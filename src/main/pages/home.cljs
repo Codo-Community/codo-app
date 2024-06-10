@@ -12,4 +12,4 @@
         data (createMemo #(n/pull store [:pages/id :home] [:activity]))
         ]
     #jsx [:div {}
-          [a/ui-activity]]))
+          [a/ui-activity {:& {:ident (fn [])}}]]))

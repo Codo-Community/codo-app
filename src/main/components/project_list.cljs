@@ -8,8 +8,8 @@
 (defc ProjectList [this {:keys [component/id projects]}]
   #jsx [:div {:class "flex flex-col mt-4 mb-4 p-2 items-center"}
         [:div {:class "flex flex-col gap-3"}
-         [For {:each (projects)}
+         [Index {:each (projects)}
           (fn [entity i]
-            #jsx [pi/ui-project-item entity])]]])
+            #jsx [pi/ui-project-item {:& {:ident entity}}])]]])
 
 (def ui-project-list (comp/comp-factory ProjectList AppContext))

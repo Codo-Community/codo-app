@@ -1,24 +1,31 @@
 (ns comp
   (:require ["solid-js" :as solid]
             ["./normad.cljs" :as n]
+            ["./transact.cljs" :as t]
+            ["./utils.cljs" :as u]
             [squint.core :refer [defclass]]
             #_["./comp_macro.mjs" :as m])
   #_(:require-macros [comp :refer [defc]]))
 
+(defn set! [this field event]
+  (let [ctx (solid/useContext this.ctx)]
+    (t/set-field! ctx (conj (this.ident) field) (u/e->v event))))
+
 (defclass Comp
-  (field -ctx)
+  (field ctx)
   (^:static field query)
   (field -data)
+  (field ident)
 
-  (constructor [this ctx]
-               (set! -ctx ctx))
+  (constructor [this ctx-in]
+               (set! ctx ctx-in))
 
   Object
   (^:static get-query [_] query)
-  (ctx [_] -ctx)
-  (ident [_ id])
+  #_(ctx [_] -ctx)
+  #_(ident [_ id] -ident)
   (data [_] -data)
-  #_(query [_] query)
+  (-query [this] this.query)
   (render [this ident]))
 
 #_(defclass User

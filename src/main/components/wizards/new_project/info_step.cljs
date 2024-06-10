@@ -10,9 +10,6 @@
             ["../../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defn e->v [e]
-  (-> e :target :value))
-
 (defn category-mutation []
   (str "mutation CreateCategory($i: CreateCategoryInput!){
           createCategory(input: $i){
@@ -48,8 +45,7 @@
                                 (let [res (-> response :data :createProject :document)]
                                   (t/add! ctx (u/nsd res :project)
                                           {:replace [:component/id :project-wizard :project]})
-                                  (navigate (str "/wizards/new-project/" (:id res)))))))))))
-    (println store)))
+                                  (navigate (str "/wizards/new-project/" (:id res)))))))))))))
 
 (defc BasicInfoStep [this {:project/keys [id name description start] :as data}]
   (let [navigate (useNavigate)
@@ -60,16 +56,16 @@
            [in/input {:label "Name"
                       :placeholder "Project Name"
                       :value name
-                      :on-change #(t/set-field! ctx (conj children.children :project/name) (e->v %))}]
+                      :on-change #(comp/set! this :project/name %)}]
            [in/input {:label "Start"
                       :placeholder "Project Start Date"
                       :value start
                       :datepicker ""
                       :type "date"
-                      :on-change #(t/set-field! ctx (conj children.children :project/start) (e->v %))}]]
+                      :on-change #(comp/set! this :project/start %)}]]
           [ta/textarea {:title "Description"
                         :value description
-                        :on-change #(t/set-field! ctx (conj children.children :project/description) (e->v %))}]
+                        :on-change #(comp/set! this :project/description %)}]
           [Show {:when (or (u/uuid? (:id params)) (nil? (:id params)))}
            [:span {:class "flex w-full gap-3"}
             [b/button {:title "Submit"}]]]]))

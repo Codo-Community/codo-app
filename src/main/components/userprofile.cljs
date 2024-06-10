@@ -52,20 +52,20 @@
          [in/input {:label "First Name"
                     :placeholder "Your Name"
                     :value firstName
-                    :on-change (fn [e] (t/set-field! ctx (conj children.children :user/firstName) e.target.value))}]
+                    :on-change #(comp/set! this :user/firstName %)}]
          [in/input {:label "Last Name"
                     :placeholder "Your Last Name"
                     :value lastName
-                    :on-change (fn [e] (t/set-field! ctx (conj children.children :user/lastName) e.target.value))}]]
+                    :on-change #(comp/set! this :user/lastName %)}]]
         [ta/textarea {:title "Introduction"
                       :placeholder "Introduce yourself ..."
                       :value introduction
-                      :on-change (fn [e] (t/set-field! ctx (conj children.children :user/introduction) e.target.value))}]
+                      :on-change #(comp/set! this :user/introduction %)}]
         [:span {:class "flex w-full gap-3"}
          [b/button {:title "Submit"}]]])
 
-(defn ^:async load-user-profile [{:keys [store setStore] :as ctx} ident f]
-  (let [query (aget (UserProfile.) "query")
+(defn ^:async load-user-profile [{:keys [store setStore] :as ctx} ident]
+  (let [query UserProfile.query
         query (mapv #(second (string/split % "/")) query)
         query (geql/eql->graphql {ident query})]
     (-> (.executeQuery (:compose @cli/client) query)

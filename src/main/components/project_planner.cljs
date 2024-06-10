@@ -14,4 +14,4 @@
 (def ui-project-planner (comp/comp-factory ProjectPlanner AppContext))
 
 (defn load-project-planner [ctx ident]
-  (cu/execute-query ctx {ident (aget (ProjectPlanner.) "query")} :project (fn [r] (println "load project: " r))))
+  (cu/execute-query ctx {ident ProjectPlanner.query} :project (fn [r] (println "load project: " r))))

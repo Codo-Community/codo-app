@@ -36,7 +36,7 @@
             k (if (= (count k) 2) k (first k))]
         (if (vector? k) (assoc (eql-key->field ["node" (second k)])
                                :selectionSet {:kind "SelectionSet"
-                                              :selections [(assoc (inline-fragment (startCase (camelCase (first k))))
+                                              :selections [(assoc (inline-fragment (startCase (camelCase (first (str/split (first k) "/")))))
                                                                   :selectionSet {:kind "SelectionSet"
                                                                                  :selections (mapv build-field v)})]})
             (if (vector? v) (assoc (eql-key->field k) :selectionSet {:kind "SelectionSet"

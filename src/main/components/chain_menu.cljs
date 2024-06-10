@@ -27,11 +27,11 @@
     (onMount (fn []
                (.then (eu/get-chain) switch)
                (eu/add-chain-changed switch)))
-    #jsx [d/dropdown-select {:items #(mapv (fn [c] {:id (:id c)
-                                                    :value (:name c)})
-                                           (vals chains))
-                             :on-change #(.then (.switchChain @ec/wallet-client {:id (get-in chains [(-> % :target :value) :id])}))
-                             :selected #(local)}]))
+    #jsx [d/dropdown-select {:& {:items #(mapv (fn [c] {:id (:id c)
+                                                        :value (:name c)})
+                                               (vals chains))
+                                 :on-change #(.then (.switchChain @ec/wallet-client {:id (get-in chains [(-> % :target :value) :id])}))
+                                 :selected local}}]))
 
 (def ui-chain-menu (comp/comp-factory ChainMenu AppContext)
   )

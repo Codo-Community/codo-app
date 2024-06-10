@@ -15,6 +15,9 @@
 (defn uuid? [s]
   (re-matches #"^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$" s))
 
+(defn e->v [e]
+  (-> e :target :value))
+
 (defn remove-ns [thing]
   (mapv #(if (string? %)
            (second (.split % "/"))

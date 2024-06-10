@@ -28,7 +28,7 @@
 (defn SearchPage []
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         params (useSearchParams)
-        ident [:component/id :project-list]]
+        ident (fn [] [:component/id :project-list])]
     (onMount (fn []
                (if (empty? (get-in store [:component/id :project-list :projects]))
                  (-> (.executeQuery (:compose @cli/client) query)
@@ -39,4 +39,4 @@
                                                val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
                                            (t/add! ctx val
                                                    {:append [:component/id :project-list :projects]})))))))))))
-    #jsx [p/ui-project-list ident]))
+    #jsx [p/ui-project-list {:& {:ident ident}}]))
