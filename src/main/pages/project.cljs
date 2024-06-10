@@ -1,11 +1,11 @@
 (ns components.project
-  (:require ["../comp.mjs" :as comp]
-            ["./blueprint/input.jsx" :as in]
-            ["../utils.mjs" :as utils]
-            ["../transact.mjs" :as t]
-            ["./blueprint/button.jsx" :as b]
-            ["../composedb/client.mjs" :as cli]
-            ["../Context.mjs" :refer [AppContext]])
+  (:require ["../comp.cljs" :as comp]
+            ["./blueprint/input.cljs" :as in]
+            ["../utils.cljs" :as utils]
+            ["../transact.cljs" :as t]
+            ["./blueprint/button.cljs" :as b]
+            ["../composedb/client.cljs" :as cli]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (def query-from-acc "query {

@@ -1,9 +1,9 @@
 (ns main.composedb.util
-  (:require ["../utils.mjs" :as utils]
-            ["./client.mjs" :as cli]
-            ["../geql.mjs" :as geql]
+  (:require ["../utils.cljs" :as utils]
+            ["./client.cljs" :as cli]
+            ["../geql.cljs" :as geql]
             [squint.string :as str]
-            ["../transact.mjs" :as t]))
+            ["../transact.cljs" :as t]))
 
 
 (defn execute-eql-query [ctx query ns & f]

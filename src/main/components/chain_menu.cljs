@@ -1,10 +1,10 @@
 (ns main.components.chain-menu
-  (:require ["../comp.mjs" :as comp]
+  (:require ["../comp.cljs" :as comp]
             ["solid-js" :refer [Show onMount createSignal]]
-            ["./blueprint/dropdown.jsx" :as d]
-            ["../Context.mjs" :refer [AppContext]]
-            ["../evm/client.mjs" :as ec]
-            ["../evm/util.mjs" :as eu]
+            ["./blueprint/dropdown.cljs" :as d]
+            ["../Context.cljs" :refer [AppContext]]
+            ["../evm/client.cljs" :as ec]
+            ["../evm/util.cljs" :as eu]
             ["viem/chains" :refer [sepolia hardhat]])
   (:require-macros [comp :refer [defc]]))
 

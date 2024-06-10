@@ -1,8 +1,9 @@
 (ns comp
   (:require ["solid-js" :as solid]
-            ["./normad.mjs" :as n]
-            [squint.core :refer [defclass]])
-  (:require-macros [comp :refer [defc]]))
+            ["./normad.cljs" :as n]
+            [squint.core :refer [defclass]]
+            #_["./comp_macro.mjs" :as m])
+  #_(:require-macros [comp :refer [defc]]))
 
 (defclass Comp
   (field -ctx)
@@ -57,3 +58,4 @@
 (def pull n/pull)
 (def createMemo solid/createMemo)
 (def ident? n/ident?)
+#_(def defc m/defc)

@@ -1,5 +1,5 @@
 (ns transact
-  (:require ["./normad.mjs" :as n]))
+  (:require ["./normad.cljs" :as n]))
 
 #_(defn rec-add [path value]
   (loop [p (first path)

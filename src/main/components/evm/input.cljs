@@ -1,6 +1,6 @@
 (ns components.evm.input
-  (:require ["./inputs.jsx" :as i]
-            ["../blueprint/input.jsx" :as in]))
+  (:require ["./inputs.cljs" :as i]
+            ["../blueprint/input.cljs" :as in]))
 
 (defn dummy []
   #jsx[:div])

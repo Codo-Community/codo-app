@@ -1,7 +1,7 @@
 (ns main.components.blueprint.stepper
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
-            ["../../Context.mjs" :refer [AppContext]]
-            ["../../comp.mjs" :as comp])
+            ["../Context.cljs" :refer [AppContext]]
+            ["../comp.cljs" :as comp])
   (:require-macros [comp :refer [defc]]))
 
 (def icon-map {:check "i-tabler-check"

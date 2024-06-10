@@ -27,7 +27,7 @@
                             ;'asd (list 'println "cho " (list 'comp/ident? 'children.children))
                             'data (list 'if (list 'comp/ident? 'children.children)
                                         (list `createMemo (list 'fn []
-                                                                ;(list 'println "memo: " ntmp " ident: " 'children)
+                                                                (list 'println "memo: " ntmp " ident: " 'children.children " query: " 'this#.query)
                                                                 (list `pull 'store 'children.children 'this#.query)))
                                         (list 'fn [] 'children))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]

@@ -1,31 +1,31 @@
 (ns App
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
             ["solid-js/store" :refer [createStore]]
-            ["./pages/tbpage.jsx" :as tbp]
-            ["./pages/home.jsx" :as home]
-            ["./pages/profile.jsx" :as profile]
-            ["./pages/search.jsx" :as sp]
+            ["./pages/tbpage.cljs" :as tbp]
+            ["./pages/home.cljs" :as home]
+            ["./pages/profile.cljs" :as profile]
+            ["./pages/search.cljs" :as sp]
 
-            ["./components/blueprint/input.jsx" :as in]
-            ["./components/project_report.jsx" :as pr]
-            ["./components/userprofile.jsx" :as up]
-                                        ;["./components/wizards/new_project/main.jsx" :refer [WizardNewProject]]
-            ["./imports.mjs" :refer [WizardNewProject]]
-            ["./components/wizards/new_project/info_step.jsx" :as istep]
-            ["./components/wizards/new_project/contract_step.jsx" :as cstep]
-            ["./normad.mjs" :as norm]
-            ["./composedb/client.mjs" :as cdb]
-            ["./composedb/auth.mjs" :as cda]
-            ["./composedb/composite.mjs" :as composite]
+            ["./components/blueprint/input.cljs" :as in]
+            ["./components/project_report.cljs" :as pr]
+            ["./components/userprofile.cljs" :as up]
+            ["./components/wizards/new_project/main.cljs" :refer [WizardNewProject]]
+            #_["./imports.mjs" :refer [WizardNewProject]]
+            ["./components/wizards/new_project/info_step.cljs" :as istep]
+            ["./components/wizards/new_project/contract_step.cljs" :as cstep]
+            ["./normad.cljs" :as norm]
+            ["./composedb/client.cljs" :as cdb]
+            ["./composedb/auth.cljs" :as cda]
+            ["./composedb/composite.cljs" :as composite]
             ["@solidjs/router" :refer [HashRouter Route useParams cache]]
             ["flowbite-datepicker" :as dp]
-            ["./utils.mjs" :as utils]
-            ["./components/header.jsx" :as h]
-            ["./comp.mjs" :as comp :refer [Comp]]
-            ["./Context.mjs" :refer [AppContext]]
-            ["./transact.mjs" :as t]
+            ["./utils.cljs" :as utils]
+            ["./components/header.cljs" :as h]
+            ["./comp.cljs" :as comp :refer [Comp]]
+            ["./Context.cljs" :refer [AppContext]]
+            ["./transact.cljs" :as t]
             ["flowbite" :as fb]
-            ["./geql.mjs" :as geql]
+            ["./geql.cljs" :as geql]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
@@ -33,7 +33,7 @@
 
 #_(defn ^:async import-p [path] (println "importing " path) (import path))
 
-#_(.then (import-p "./components/wizards/new_project/main.jsx") (fn [r]
+#_(.then (import-p "./components/wizards/new_project/main.cljs") (fn [r]
                                                                 (println "got r " (:WizardNewProject r))
                                                                 (reset! WizardNewProject (:WizardNewProject r)))) #_(import-proj "./components/wizards/new_project/main.jsx" :WizardNewProject)
 
@@ -94,16 +94,15 @@
     (set! (.-store js/window) store)
     (onMount #(do
                 (fb/initFlowbite)
-                (.then (composite/fetch-abi)
-                       (fn [] (.then (cda/init-auth)
-                                     (fn [] (.then (cdb/init-clients)
-                                                   (fn []))))))))
+                ;; fetch abi here
+                (fn [] (.then (cda/init-auth)
+                              (fn [] (.then (cdb/init-clients)
+                                            (fn [])))))))
     #jsx [AppContext.Provider {:value ctx}
           [HashRouter {:root Main}
            [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
                                                                      ident [:project/id (:id params)]]
-                                                                 #jsx [pr/ui-project-report ident]))
-                   }
+                                                                 #jsx [pr/ui-project-report ident]))}
             [Route {:path "/" :component (fn [props] (let [params (useParams)
                                                            ident [:project/id (:id params)]]
                                                        (println ident)

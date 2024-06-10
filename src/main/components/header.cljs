@@ -1,17 +1,18 @@
 (ns main.components.header
   (:require ["solid-js" :refer [onMount createSignal]]
-            ["../comp.mjs" :as comp]
-            ["./user.jsx" :as user]
-            ["../evm/util.mjs" :as eu]
-            ["../evm/client.mjs" :as ec]
-            ["../composedb/client.mjs" :as cli]
-            ["../transact.mjs" :as t]
-            ["./blueprint/searchinput.jsx" :as si]
-            ["./blueprint/dropdown.jsx" :as dr]
-            ["./userdropdown.jsx" :as ud]
+            ["../comp.cljs" :as comp]
+            ["./user.cljs" :as user]
+            ["../evm/util.cljs" :as eu]
+            ["../evm/client.cljs" :as ec]
+            ["../composedb/client.cljs" :as cli]
+            ["../transact.cljs" :as t]
+            ["./blueprint/searchinput.cljs" :as si]
+            ["./blueprint/dropdown.cljs" :as dr]
+            ["./userdropdown.cljs" :as ud]
+            ["/images/codo_new_white.svg$default" :as codo-logo]
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
-            ["./chain_menu.jsx" :as cm]
-            ["../Context.mjs" :refer [AppContext]])
+            ["./chain_menu.cljs" :as cm]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defc Header [this {:keys [component/id user]}]
@@ -36,7 +37,7 @@
              [:a {:draggable "false"
                   :href "#" :class "flex items-center"}
               [:img {:class "h-16 w-16"
-                     :src "./images/codo_new_white.svg"}]]
+                     :src codo-logo}]]
              [:span {:class "flex items-center dark:text-white font-bold"}
               [:text (str location.pathname)]]]
             [:div {:class "flex items-center md:order-2 gap-4"}

@@ -9,7 +9,6 @@ import devtools from 'solid-devtools/vite';
 import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
-  root: './dist',
   plugins: [UnoCSS({configFile: "./uno.config.ts"}),
     devtools({
                 autoname: true, // e.g. enable autoname
@@ -19,7 +18,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  optimizeDeps: { // 👈 optimizedeps
+  optimizeDeps: {
       esbuildOptions: {
         target: "esnext",
         // Node.js global to browser globalThis

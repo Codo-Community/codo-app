@@ -1,12 +1,12 @@
 (ns main.components.activity
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
             ["@solidjs/router" :refer [A]]
-            ["./user.jsx" :as u :refer [ui-user]]
-            ["../comp.mjs" :as comp]
-            ["../transact.mjs" :as t]
-            ["../utils.mjs" :as utils]
-            ["./blueprint/button.jsx" :as b]
-            ["../Context.mjs" :refer [AppContext]])
+            ["./user.cljs" :as u :refer [ui-user]]
+            ["../comp.cljs" :as comp]
+            ["../transact.cljs" :as t]
+            ["../utils.cljs" :as utils]
+            ["./blueprint/button.cljs" :as b]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defc Activity [this {:keys []}]

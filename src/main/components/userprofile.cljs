@@ -1,13 +1,13 @@
 (ns components.userprofile
-  (:require ["../comp.mjs" :as comp]
-            ["./blueprint/input.jsx" :as in]
-            ["./blueprint/textarea.jsx" :as ta]
-            ["../utils.mjs" :as utils]
-            ["../transact.mjs" :as t]
-            ["./blueprint/button.jsx" :as b]
-            ["../geql.mjs" :as geql]
-            ["../composedb/client.mjs" :as cli]
-            ["../Context.mjs" :refer [AppContext]]
+  (:require ["../comp.cljs" :as comp]
+            ["./blueprint/input.cljs" :as in]
+            ["./blueprint/textarea.cljs" :as ta]
+            ["../utils.cljs" :as utils]
+            ["../transact.cljs" :as t]
+            ["./blueprint/button.cljs" :as b]
+            ["../geql.cljs" :as geql]
+            ["../composedb/client.cljs" :as cli]
+            ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 

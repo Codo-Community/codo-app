@@ -1,12 +1,12 @@
 (ns components.user
   (:require ["blo" :refer [blo]]
-            ["./blueprint/tooltip.jsx" :as tt]
-            ["./blueprint/button.jsx" :as b]
-            ["../comp.mjs" :as comp]
-            ["../transact.mjs" :as t]
-            ["../utils.mjs" :as utils]
-            ["../composedb/client.mjs" :as cli]
-            ["../Context.mjs" :refer [AppContext]]
+            ["./blueprint/tooltip.cljs" :as tt]
+            ["./blueprint/button.cljs" :as b]
+            ["../comp.cljs" :as comp]
+            ["../transact.cljs" :as t]
+            ["../utils.cljs" :as utils]
+            ["../composedb/client.cljs" :as cli]
+            ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
@@ -41,7 +41,7 @@
                                           :data-dropdown-toggle "header-user-dropdown"
                                           :draggable false
                                           :onDragStart nil
-                                          :src (blo (ethereum-address))}
+                                          :src (blo (or (ethereum-address) "0x0"))}
                                     #_(Show show-name
                                             [:div {:class "px-2"}]
                                             (if-not (= first-name "")

@@ -1,14 +1,6 @@
 (ns co-who.blueprint.input
   (:require ["solid-js" :refer [Show createSignal onMount]]
-            ["./label.jsx" :as l]
-            ["../../utils.mjs" :as util]
-            #_[co-blue.icons.clipboard :refer [clipboard]]
-            ["./button.jsx" :as b]
-            ["flowbite-datepicker" :as dp]
-            #_[co-who.mutations :as m]
-            ["../../comp.mjs" :as comp]
-            ["../../Context.mjs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["./label.cljs" :as l]))
 
 (defn on-change-fn [ident value setStore]
   (setStore (first ident)
@@ -54,8 +46,6 @@
                     :readonly readonly
                     :required required}]]
           [:div {:id "dp" :class "absolute z-10"}]]))
-
-#_(def input (comp/comp-factory Input AppContext))
 
 (defn number-input [{:keys [id label readonly placeholder on-submit on-change required value] :or {required false extra-class "" readonly false value (fn [] 0)}}]
   #jsx [:div {:class ""}

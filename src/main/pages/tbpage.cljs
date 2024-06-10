@@ -1,10 +1,10 @@
 (ns components.pages.transaction-builder
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../components/evm/transaction_builder.jsx" :as tb]
-            ["../evm/abi.mjs" :as abi]
-            ["../transact.mjs" :as t]
+            ["../components/evm/transaction_builder.cljs" :as tb]
+            ["../evm/abi.cljs" :as abi]
+            ["../transact.cljs" :as t]
             ["flowbite" :as fb]
-            ["../Context.mjs" :refer [AppContext]]))
+            ["../Context.cljs" :refer [AppContext]]))
 
 ;; simulate a remote
 (def contract-gen

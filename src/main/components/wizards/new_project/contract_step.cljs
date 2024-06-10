@@ -1,14 +1,14 @@
 (ns main.components.wizards.new-project.contract-step
   (:require ["solid-js" :refer [Show onMount]]
             ["solid-spinner" :as spinner]
-            ["../../../evm/client.mjs" :as ec]
-            ["../../../evm/lib.mjs" :as el]
-            ["../../../evm/util.mjs" :as eu]
-            ["../../../transact.mjs" :as t]
-            ["../../../composedb/client.mjs" :as cli]
-            ["../../../utils.mjs" :as u]
-            ["../../../comp.mjs" :as comp]
-            ["../../../Context.mjs" :refer [AppContext]])
+            ["../../../evm/client.cljs" :as ec]
+            ["../../../evm/lib.cljs" :as el]
+            ["../../../evm/util.cljs" :as eu]
+            ["../../../transact.cljs" :as t]
+            ["../../../composedb/client.cljs" :as cli]
+            ["../../../utils.cljs" :as u]
+            ["../../../comp.cljs" :as comp]
+            ["../../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defn contract-mutation []

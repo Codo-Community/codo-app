@@ -1,8 +1,8 @@
 (ns pages.search
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../comp.mjs" :as comp]
-            ["./project_item.jsx" :as pi]
-            ["../Context.mjs" :refer [AppContext]])
+            ["../comp.cljs" :as comp]
+            ["./project_item.cljs" :as pi]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectList [this {:keys [component/id projects]}]

@@ -2,9 +2,9 @@
   (:require ["@composedb/client" :refer [ComposeClient]]
             ["@ceramicnetwork/http-client" :refer [CeramicClient]]
             ["did-session" :refer [DIDSession]]
-            ["./composite.mjs" :as c :refer [composite]]
-            ["./../definition.mjs" :refer [definition]]
-            ["./auth.mjs" :as a]))
+            ;["./composite.cljs" :as c :refer [composite]]
+            ["../../__generated__/definition.js" :refer [definition]]
+            ["./auth.cljs" :as a]))
 
 #_(def composite (js/await
                   (->

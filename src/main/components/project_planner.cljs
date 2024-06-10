@@ -1,9 +1,9 @@
 (ns pages.search
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../comp.mjs" :as comp]
-            ["../composedb/util.mjs" :as cu]
-            ["./project_item.jsx" :as pi]
-            ["../Context.mjs" :refer [AppContext]]
+            ["../comp.cljs" :as comp]
+            ["../composedb/util.cljs" :as cu]
+            ["./project_item.cljs" :as pi]
+            ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 

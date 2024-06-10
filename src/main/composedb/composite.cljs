@@ -7,7 +7,7 @@
 (def composite (atom nil))
 
 (defn ^:async fetch-abi []
-  (let [res (js-await (js/fetch "./definition.json"))
+  (let [res (js-await (js/fetch "./__generated__/definition.json"))
         data (js-await ((aget res "json")))]
     (reset! composite data)
     data))

@@ -1,13 +1,13 @@
 (ns co-who.components.evm.transaction-builder
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount]]
-            ["./contract.jsx" :as c]
-            ["../../evm/abi.mjs" :as abi]
-            ["../../normad.mjs" :as n :refer [add]]
-            ["../../Context.mjs" :refer [AppContext]]
-            ["../blueprint/dropdown.jsx" :as d]
-            ["../../transact.mjs" :as t]
-            ["./transaction.jsx" :as tr]
-            ["../../comp.mjs" :as comp])
+            ["./contract.cljs" :as c]
+            ["../../evm/abi.cljs" :as abi]
+            ["../../normad.cljs" :as n :refer [add]]
+            ["../../Context.cljs" :refer [AppContext]]
+            ["../blueprint/dropdown.cljs" :as d]
+            ["../../transact.cljs" :as t]
+            ["./transaction.cljs" :as tr]
+            ["../../comp.cljs" :as comp])
   (:require-macros [comp :refer [defc]]))
 
 (defn contract-select-on-change [{:keys [store setStore] :as ctx}]

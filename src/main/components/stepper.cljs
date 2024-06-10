@@ -1,8 +1,8 @@
 (ns main.components.blueprint.stepper
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
-            ["./step.jsx" :as s :refer [ui-step]]
-            ["../../Context.mjs" :refer [AppContext]]
-            ["../../comp.mjs" :as comp])
+            ["./step.cljs" :as s :refer [ui-step]]
+            ["../Context.cljs" :refer [AppContext]]
+            ["../comp.cljs" :as comp])
   (:require-macros [comp :refer [defc]]))
 
 (defc Stepper [this {:keys [steps click-fns]}]

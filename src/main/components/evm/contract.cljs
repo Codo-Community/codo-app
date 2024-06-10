@@ -1,12 +1,12 @@
 (ns components.evm.contract
   (:require ["solid-js" :refer [createMemo useContext createSignal]]
-            ["../blueprint/button.jsx" :as b]
-            ["../blueprint/dropdown.jsx" :as d]
-            ["./inputs.jsx" :as in]
-            ["./transaction.jsx" :as tr]
-            ["../../normad.mjs" :as n :refer [add]]
-            ["../../Context.mjs" :refer [AppContext]]
-            ["../../comp.mjs" :as comp])
+            ["../blueprint/button.cljs" :as b]
+            ["../blueprint/dropdown.cljs" :as d]
+            ["./inputs.cljs" :as in]
+            ["./transaction.cljs" :as tr]
+            ["../../normad.cljs" :as n :refer [add]]
+            ["../../Context.cljs" :refer [AppContext]]
+            ["../../comp.cljs" :as comp])
   (:require-macros [comp :refer [defc]]))
 
 #_(defn select-on-change [{:keys [store setStore] :as ctx} ident]

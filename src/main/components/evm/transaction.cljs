@@ -1,14 +1,14 @@
 (ns co-who.components.evm.transaction
   (:require ["solid-js" :refer [createSignal]]
-            ["./function.jsx" :as f]
-            ["./inputs.jsx" :as ein]
-            ["../blueprint/button.jsx" :as b]
-            ["../blueprint/label.jsx" :as l]
-            ["../../normad.mjs" :as n :refer [add]]
-            ["../../evm/client.mjs" :as ec]
-            ["../../evm/lib.mjs" :as el]
-            ["../../comp.mjs" :as comp]
-            ["../../Context.mjs" :refer [AppContext]])
+            ["./function.cljs" :as f]
+            ["./inputs.cljs" :as ein]
+            ["../blueprint/button.cljs" :as b]
+            ["../blueprint/label.cljs" :as l]
+            ["../../normad.cljs" :as n :refer [add]]
+            ["../../evm/client.cljs" :as ec]
+            ["../../evm/lib.cljs" :as el]
+            ["../../comp.cljs" :as comp]
+            ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defn execute-transaction [{:keys [store setStore] :as ctx} contract transaction]

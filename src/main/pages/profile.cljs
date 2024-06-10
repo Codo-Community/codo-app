@@ -1,12 +1,12 @@
 (ns components.profile
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../components/userprofile.jsx" :as up]
-            ["../normad.mjs" :as n]
+            ["../components/userprofile.cljs" :as up]
+            ["../normad.cljs" :as n]
             ["@solidjs/router" :refer [useParams]]
-            ["../comp.mjs" :as comp]
-            ["../transact.mjs" :as t]
-            ["../utils.mjs" :as utils]
-            ["../Context.mjs" :refer [AppContext]])
+            ["../comp.cljs" :as comp]
+            ["../transact.cljs" :as t]
+            ["../utils.cljs" :as utils]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defn ProfilePage []

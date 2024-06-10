@@ -2,9 +2,9 @@
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["@solidjs/router" :refer [A useParams]]
             ["flowbite" :as fb]
-            ["../../../utils.mjs" :as u]
-            ["../../../Context.mjs" :refer [AppContext]]
-            ["../../blueprint/stepper.jsx" :as s]))
+            ["../../../utils.cljs" :as u]
+            ["../../../Context.cljs" :refer [AppContext]]
+            ["../../stepper.cljs" :as s]))
 
 (defn add-new-proj []
   )

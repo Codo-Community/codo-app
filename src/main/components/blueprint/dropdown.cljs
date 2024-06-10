@@ -1,6 +1,6 @@
 (ns components.blueprint.dropdown
   (:require ["solid-js" :refer [For Show]]
-            ["./label.jsx" :as l]))
+            ["./label.cljs" :as l]))
 
 (defn dropdown-select [{:keys [title items on-change selected]}; & {:keys [extra-class] :or {extra-class nil}}
                        ]

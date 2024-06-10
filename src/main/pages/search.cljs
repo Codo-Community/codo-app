@@ -1,11 +1,11 @@
 (ns pages.search
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
             ["@solidjs/router" :refer [useSearchParams]]
-            ["../components/project_list.jsx" :as p]
-            ["../composedb/client.mjs" :as cli]
-            ["../utils.mjs" :as utils]
-            ["../transact.mjs" :as t]
-            ["../Context.mjs" :refer [AppContext]])
+            ["../components/project_list.cljs" :as p]
+            ["../composedb/client.cljs" :as cli]
+            ["../utils.cljs" :as utils]
+            ["../transact.cljs" :as t]
+            ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (def query "query {

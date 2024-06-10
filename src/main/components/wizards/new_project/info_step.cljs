@@ -1,13 +1,13 @@
 (ns main.components.wizards.new-project.info-step
-  (:require ["../../../comp.mjs" :as comp]
-            ["../../blueprint/input.jsx" :as in]
-            ["../../blueprint/textarea.jsx" :as ta]
-            ["../../../utils.mjs" :as u]
+  (:require ["../../../comp.cljs" :as comp]
+            ["../../blueprint/input.cljs" :as in]
+            ["../../blueprint/textarea.cljs" :as ta]
+            ["../../../utils.cljs" :as u]
             ["@solidjs/router" :refer [useNavigate useParams]]
-            ["../../../transact.mjs" :as t]
-            ["../../blueprint/button.jsx" :as b]
-            ["../../../composedb/client.mjs" :as cli]
-            ["../../../Context.mjs" :refer [AppContext]])
+            ["../../../transact.cljs" :as t]
+            ["../../blueprint/button.cljs" :as b]
+            ["../../../composedb/client.cljs" :as cli]
+            ["../../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defn e->v [e]
