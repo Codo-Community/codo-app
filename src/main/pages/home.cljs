@@ -6,7 +6,7 @@
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defn HomePage []
+(defn HomePage [props]
   (let [{:keys [store setStore] :as ctx} (useContext AppContext)
         params (useParams)
         data (createMemo #(n/pull store [:pages/id :home] [:activity]))

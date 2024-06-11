@@ -49,7 +49,7 @@
       (setStore (reconcile (merge res @acc)))
       (mapv #(if (nil? (get store %))
                (setStore % (fn [x] (get @acc %)))
-               (setStore % (fn [x] (merge x (get @acc %))))) (keys @acc))
+               (setStore % (fn [x] (merge-with merge x (get @acc %))))) (keys @acc))
       #_(if (ident? res)
           (if (nil? (get-in store res))
             (setStore (first res) (fn [x] (merge x (get @acc (first res)))))
@@ -61,6 +61,7 @@
           (setStore (fn [x] (merge x @acc)))
           #_(merge res @acc)))
     (reset! acc {})
+    #_(js/chrome.runtime.sendMessage {:action "updateData" :data store})
     #_(println "store" store)
     ctx))
 

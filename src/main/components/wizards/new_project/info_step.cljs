@@ -52,7 +52,7 @@
         params (useParams)]
     #jsx [:form {:class "flex flex-col min-w-96 gap-3"
                  :onSubmit (on-click-mutation ctx data navigate)}
-          [:span {:class "flex w-full gap-3"}
+          [:span {:class "flex  w-full gap-3"}
            [in/input {:label "Name"
                       :placeholder "Project Name"
                       :value name

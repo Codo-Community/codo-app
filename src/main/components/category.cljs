@@ -3,6 +3,7 @@
             ["./blueprint/input.cljs" :as in]
             ["../utils.cljs" :as utils]
             ["../composedb/util.cljs" :as cu]
+            ["../utils.cljs" :as u]
             ["../transact.cljs" :as t]
             ["./blueprint/button.cljs" :as b]
             ["../composedb/client.cljs" :as cli]
@@ -35,31 +36,28 @@
                                        {:append [:category/id id :category/children]})
                                (cu/execute-gql-mutation ctx (create-link id (:category/id category)) {} (fn [r] (println r)))))))
 
-(defn add-category-local [ctx id]
-  (t/add! ctx {:category/id (js/crypto.randomUUID) :category/name "blah"}
-          {:append [:category/id id :category/children]}))
-
-#_(defm add-category [this id]
-  (add [this] )
-  (cdb [this] )
-  )
-
 (declare ui-category)
 (declare Category)
 
-(defc Category [this {:category/keys [id name children]}]
+(defc Category [this {:category/keys [id name children] :or {id (u/uuid) name "Category" children []}}]
   #jsx [:div {:class "ml-2"}
-        [b/button {:title (str "id: " (id))
-                   :on-click #(if (utils/uuid? (id))
-                                (add-category-remote ctx (id))
-                                (add-category-local ctx (id)))}]
+        [:span {:class "flex"}
+         [b/button {:title (str "id: " (id))
+                    :on-click #(comp/mutate! this {:add :new
+                                                   :append [:category/id (id) :category/children]
+                                                   :cdb true})}]
+         [b/button {:title "Remove"
+                    :on-click #(comp/mutate! this {:remove :this
+                                                   :cdb true})}]]
         [in/input {:label "Title"
                    :placeholder "Name ..."
                    :value name
-                   :on-change #(comp/set! this :category/name %)}]
+                   :on-change #(comp/set! ctx ((:ident props)) :category/name %)}]
         [:div {:class "flex flex-col"}
          [Index {:each (children)}
           (fn [entity i]
             (ui-category {:ident entity}))]]])
 
 (def ui-category (comp/comp-factory Category AppContext))
+
+#_(println "cc " (ui-category {:ident [:category/id "1"]}))

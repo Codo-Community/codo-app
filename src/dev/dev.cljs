@@ -17,7 +17,7 @@
         key (fromString seed "base16")
         did (DID. {:resolver (getResolver) :provider (Ed25519Provider. key)})]
     (-> (.authenticate did)
-        (.then #(do (println did) (aset ceramic "did" did))))))
+        (.then #(aset ceramic "did" did)))))
 
 (defn ^:async write-composite [ceramic]
   (let [categoryComposite (js-await (createComposite ceramic "./src/main/composedb/model/category.graphql"))
@@ -59,14 +59,13 @@
         ;; new (js-await (writeRuntimeDefinition merged "./resources/definition.js"))
         new (js-await (writeRuntimeDefinition merged "./src/__generated__/definition-merged.json"))
         ]
-    (copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log err)))
+    #_(copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log err)))
     (js-await (merged.startIndexingOn ceramic))))
 
 #_(.then (authenticate ceramic) (fn [r]
                                 (println ceramic)
                                 (.then (write-composite ceramic) (fn [r] r))))
 
-(js-await (authenticate ceramic))
-(js-await (write-composite ceramic))
-
-(def default write-composite)
+(.then (authenticate ceramic)
+       #(println ceramic)
+       #_(.then (write-composite ceramic) (fn [r] (println "r2: " r))))

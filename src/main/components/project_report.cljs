@@ -36,7 +36,7 @@
              [:li
               [:a {:href "#"
                    :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
-        #jsx [c/ui-category {:& {:ident category}}]
+        [c/ui-category {:& {:ident category}}]
 
         #_(str "n " (name) (id) (description) (contract) (category))])
 
@@ -49,7 +49,7 @@
                         (fn [r] (let [c (u/nsd (get-in r [:node :category]) :category)
                                       co (u/nsd (get-in r [:node :contract]) :contract)
                                       project (u/nsd (get-in r [:node]) :project)]
-                                  #_(println "d:" (u/nsd (get r :node) :project))
+                                  (println "d:" (u/nsd (get r :node) :project))
                                   (t/add! ctx (assoc (assoc project :project/category c) :project/contract co))
                                   (t/add-ident! ctx [:category/id (:category/id c)] {:replace [:project/id (:project/id project) :project/category]})
                                   (t/add-ident! ctx [:contract/id (:contract/id co)] {:replace [:project/id (:project/id project) :project/contract]})

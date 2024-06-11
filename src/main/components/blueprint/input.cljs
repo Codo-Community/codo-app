@@ -42,7 +42,7 @@
                     :onChange on-change
                     :onSubmit on-submit
                     ;:onClick (if datepicker (fn [e] (aget @datepicker-el "show")))
-                    :value (value)
+                    :value (or (value) "")
                     :readonly readonly
                     :required required}]]
           [:div {:id "dp" :class "absolute z-10"}]]))
@@ -57,7 +57,7 @@
                  :placeholder placeholder
                  :onChange on-change
                  :onSubmit on-submit
-                 :value (value)
+                 :value (or (value) "")
                  :readonly readonly
                  :required required}]])
 
@@ -67,7 +67,7 @@
   #jsx [:div {:class ""}
         (l/label label)
         [:input {:type "checkbox"
-                 :value (value)
+                 :value (or (value) "")
                  :class "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600
                                   dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
                  :onChange on-change
