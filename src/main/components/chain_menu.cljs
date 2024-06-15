@@ -8,6 +8,8 @@
             ["viem/chains" :refer [sepolia hardhat]])
   (:require-macros [comp :refer [defc]]))
 
+(println "chain:" sepolia)
+
 (def id-to-chain {(:id sepolia) sepolia
                   (:id hardhat) hardhat})
 

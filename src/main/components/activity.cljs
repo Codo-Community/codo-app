@@ -17,12 +17,6 @@
          [:div {:class "text-zinc-400"} "No recent activity."]]
 
         [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
-         [:h1 {:class "font-bold text-xl"} "Trending"]]
-
-        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
-         [:h1 {:class "font-bold text-xl"} "Actions"]]
-
-        [:div {:class "bg-zinc-800 p-3 rounded-lg select-none"}
          [:span {:class "flex items-center "}
           [:h1 {:class "font-bold text-xl"} "Projects"]]
          [:button {:class "text-gray-400 bg-transparent

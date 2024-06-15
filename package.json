@@ -6,14 +6,14 @@
   "scripts": {
     "start": "vite",
     "watch": "npx squint watch",
-    "dev": "concurrently --kill-others \"pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
+    "dev": "concurrently --kill-others \"./wait_for_ceramic.sh && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview"
   },
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.24.7",
-    "@ceramicnetwork/cli": "^5.13.0",
+    "@ceramicnetwork/cli": "^5.14.0",
     "@ceramicnetwork/http-client": "^5.14.0",
     "@composedb/devtools": "^0.7.1",
     "@composedb/devtools-node": "^0.7.1",
@@ -31,7 +31,7 @@
     "key-did-provider-ed25519": "^4.0.2",
     "key-did-resolver": "^4.0.0",
     "solid-devtools": "^0.30.1",
-    "squint-cljs": "^0.7.110",
+    "squint-cljs": "^0.7.111",
     "unocss": "^0.60.4",
     "vite": "^5.2.13",
     "vite-plugin-solid": "^2.10.2",
@@ -45,10 +45,10 @@
     "blo": "^1.2.0",
     "did-session": "^3.1.0",
     "flowbite": "^2.3.0",
-    "flowbite-datepicker": "^1.2.6",
+    "flowbite-datepicker": "^1.2.7",
     "lodash": "^4.17.21",
     "solid-js": "^1.8.17",
     "solid-spinner": "^0.2.0",
-    "viem": "^2.13.7"
+    "viem": "^2.13.8"
   }
 }

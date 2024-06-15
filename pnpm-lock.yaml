@@ -30,8 +30,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       flowbite-datepicker:
-        specifier: ^1.2.6
-        version: 1.2.6
+        specifier: ^1.2.7
+        version: 1.2.7
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -42,15 +42,15 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(solid-js@1.8.17)
       viem:
-        specifier: ^2.13.7
-        version: 2.13.7(typescript@5.0.4)
+        specifier: ^2.13.8
+        version: 2.13.8(typescript@5.0.4)
     devDependencies:
       '@babel/plugin-syntax-typescript':
         specifier: ^7.24.7
         version: 7.24.7(@babel/core@7.24.7)
       '@ceramicnetwork/cli':
-        specifier: ^5.13.0
-        version: 5.13.0(@polkadot/util@7.9.2)(@types/express@4.17.21)(encoding@0.1.13)(pg@8.12.0)(typescript@5.0.4)
+        specifier: ^5.14.0
+        version: 5.14.0(@polkadot/util@7.9.2)(@types/express@4.17.21)(encoding@0.1.13)(pg@8.12.0)(typescript@5.0.4)
       '@ceramicnetwork/http-client':
         specifier: ^5.14.0
         version: 5.14.0(encoding@0.1.13)(typescript@5.0.4)
@@ -68,7 +68,7 @@ importers:
         version: 0.0.2(unocss@0.60.4(postcss@8.4.38)(rollup@4.18.0)(vite@5.2.13(@types/node@20.14.2)))
       '@nomicfoundation/hardhat-viem':
         specifier: ^2.0.2
-        version: 2.0.2(hardhat@2.22.5(typescript@5.0.4))(typescript@5.0.4)(viem@2.13.7(typescript@5.0.4))
+        version: 2.0.2(hardhat@2.22.5(typescript@5.0.4))(typescript@5.0.4)(viem@2.13.8(typescript@5.0.4))
       '@unocss/preset-icons':
         specifier: ^0.60.4
         version: 0.60.4
@@ -103,8 +103,8 @@ importers:
         specifier: ^0.30.1
         version: 0.30.1(solid-js@1.8.17)(vite@5.2.13(@types/node@20.14.2))
       squint-cljs:
-        specifier: ^0.7.110
-        version: 0.7.110
+        specifier: ^0.7.111
+        version: 0.7.111
       unocss:
         specifier: ^0.60.4
         version: 0.60.4(postcss@8.4.38)(rollup@4.18.0)(vite@5.2.13(@types/node@20.14.2))
@@ -300,31 +300,28 @@ packages:
     resolution: {integrity: sha512-XEFXSlxiG5td2EJRe8vOmRbaXVgfcBlszKujvVmWIK/UpywWljQCfzAv3RQCGujWQ1RD4YYWEAqDXfuJiy8f5Q==}
     engines: {node: '>=6.9.0'}
 
-  '@ceramicnetwork/3id-did-resolver@5.13.0':
-    resolution: {integrity: sha512-z7bPTrHf1FA60TTW2jfQ4QZQh6i+dRWCgSsFclpjTcODwqSfX2edd4+opD7hoQLkgswHT8BJ96yGLVRqVwoxvw==}
+  '@ceramicnetwork/3id-did-resolver@5.14.0':
+    resolution: {integrity: sha512-UUvL7dvbKJgiPP0JjAdOp1Qt4NpBx17o6L1sByoWoJI5iErtj8o6d21BCUav4hPThhyPUbkc1y4Dfsgvdy9yiw==}
 
-  '@ceramicnetwork/anchor-listener@4.12.0':
-    resolution: {integrity: sha512-IWC/Keg8PJEpky9NcEe6lAmVXmDXbNJyNjBNUh3Y8WM9YPo0hGZLMmCtmatJSeitYFyxuHi6Gd1pnrOX/VyrgQ==}
+  '@ceramicnetwork/anchor-listener@4.13.0':
+    resolution: {integrity: sha512-HGqnMlHIy4F0HheEGoajUmVAkEmLmadFq60QtegYlul03b12X2F56QPolmdnkfvilZDIgXR5z/OGloZKKso9UA==}
 
-  '@ceramicnetwork/anchor-utils@4.12.0':
-    resolution: {integrity: sha512-9VR7c6Y7QOtul2/jgXNj6KFgJm3lFBedc6HgCweew4D+NjuEvq20S7t3Ge+sb5knNkoaOq3sn8tHEPf2HibEVw==}
+  '@ceramicnetwork/anchor-utils@4.13.0':
+    resolution: {integrity: sha512-qkmh+hk9uuNUO2TtRPbXZjBsD+Jsazl1olQGP/yAsBmjriE6szzJhf5hnBclRcJ78ssOFcn8k3NPuzBycJFFGg==}
 
-  '@ceramicnetwork/blockchain-utils-linking@5.2.0':
-    resolution: {integrity: sha512-m57cKmb1hX/a5Q0/xgv/20C7q9yPoc8e7PFYjYFnL/hKZNLmXQXUf1QAn9W9z2W4TgZ3H+rIpRtEz4iLjhQwvg==}
+  '@ceramicnetwork/blockchain-utils-linking@5.3.0':
+    resolution: {integrity: sha512-UDxnnlmWHobCRR3ni7SBf9HdNojDxExOPenLx0tjXBcYeJk5LN/APU1OkVOCd0YePRhr1v9b7kxCF0NwtEIUAA==}
 
-  '@ceramicnetwork/blockchain-utils-validation@5.12.0':
-    resolution: {integrity: sha512-0sTRgPYNg6m8fNYIS9ybp4ifrqMOxrC+1I6OzzNFgFB41g1V1+yFOVEiKaZtGw88GWW6AewJoCNxP2xdwhMgFg==}
+  '@ceramicnetwork/blockchain-utils-validation@5.13.0':
+    resolution: {integrity: sha512-g96+mR7s+rZ1lFSLHsdYx3cAXybBqExG7e7K7kKYQ/EJkKFNDAb0ABGCA1+3VdYvRwJJHq5XYyPiR1e1f6gPfA==}
 
-  '@ceramicnetwork/cli@5.13.0':
-    resolution: {integrity: sha512-p++vc2uvcLVHGaPL1wQIRsny+tPnZVAvBBTwMb4l2dOtJycdNOe5ZIjmz88BkFVlaa/1XR3I+2M66kpIOrtn9w==}
+  '@ceramicnetwork/cli@5.14.0':
+    resolution: {integrity: sha512-YeXqeRAlubGScyUxsENHzd2v35QOhLHi8Rw+qGccx+btcepE7ZbQg5PLASICnJi7WWKYSeB0dUyQA2KV24XU9w==}
     engines: {node: '>=20.8'}
     hasBin: true
 
   '@ceramicnetwork/codecs@2.4.1':
     resolution: {integrity: sha512-QhdUHp7PJm+qL05f6ovlUe7K85urBt3V7JKQrmq33jCYt4YlVT2bTyUdsrgcyA+IJZnXP1KEWuSdcpE1V3Qe/A==}
-
-  '@ceramicnetwork/codecs@4.12.0':
-    resolution: {integrity: sha512-BPKBUPZbExwy/u07bnosxtRpJQs7DyNrQlNiZ7X6eCIcViQq4xx/avtxs1+Q3YQWaIfNtiwLdC5dfYq71aTeZQ==}
 
   '@ceramicnetwork/codecs@4.13.0':
     resolution: {integrity: sha512-/p7+PdP4c+qBZXuHy1nd7cPNvlx/WHaCZgCdsLoB/ff+jbt0z0wIf34snEXvJddTAxfi5fAYYoMaqr7IhG0l7A==}
@@ -332,31 +329,28 @@ packages:
   '@ceramicnetwork/common@3.4.1':
     resolution: {integrity: sha512-SVtPG6tkaDF77iM2mweXV+JSgZa3tKvuku0TIrA+pZswa1EHtnRHssSilaj4q91JNaTy2Gsk86oK6MuQp9+LKg==}
 
-  '@ceramicnetwork/common@5.12.0':
-    resolution: {integrity: sha512-CzsgyfgMdmFuuxpLgyD1tYwOmdFvnirPFDQz03mNVZY3lgYLLu5b1xK2tfkFqUh1cKUnaLrIpdrRNdAXpPn4Mg==}
-
   '@ceramicnetwork/common@5.13.0':
     resolution: {integrity: sha512-gYLXoABZqdhkci8JgeASkmWuGJSSGrLrscqa1RADb2VM1uq6Mv08oojCEgHN5MpxB8Hyb3/zbf1JHIttY4mpwQ==}
 
-  '@ceramicnetwork/core@5.13.0':
-    resolution: {integrity: sha512-8IT56RfwHPvTVy/1/j/vr+bHrF8WJIjqC4sFOyAPq7o7O1iieEAoAG+8GOBCmBH/ulLM+Ak4ixd57DovkK7IQw==}
+  '@ceramicnetwork/core@5.14.0':
+    resolution: {integrity: sha512-ybKYgfMRhDkoraiskDee8Gp5holzdg9dy06cvczSAhEkTQFUZqrrO/hozaSyumoHO5SP7Xzyx2svYVGvOxyCXg==}
     engines: {node: '>=20.8'}
 
   '@ceramicnetwork/http-client@5.14.0':
     resolution: {integrity: sha512-/wcqy7ikaxaeXDRxx+CSgIJZtTisp0WD0lRxIIDrmqblmwsmame1sK0EFQ1Ha6YzxAQ13ZMgUfWbzv8lbFG7jw==}
 
-  '@ceramicnetwork/indexing@4.13.0':
-    resolution: {integrity: sha512-11JCcXfhTsMYXkBEnMMqe/B5zgqe5I+/UuT8yX72FmO6hNQjIhGQYoI6jDLBPaYlylFUJZo2avOsBAi6/GmDbw==}
+  '@ceramicnetwork/indexing@4.14.0':
+    resolution: {integrity: sha512-9J9WKcJdGDmvWdeniZhRcoVpZoGwVmYxOKNuHEQTySnDbiJp0mHZHY8BVNbasf4Ih/PrcJ6/O0cz2tBzKKGeVg==}
 
-  '@ceramicnetwork/ipfs-daemon@5.13.0':
-    resolution: {integrity: sha512-wR20PpUbwu5A/On82LqPzno7ZEtYsxcEFamXzSob0Eosh/H13mKyUGgEKhoJDjM5fwTchV8UnQjMQi4P5Z76Hw==}
+  '@ceramicnetwork/ipfs-daemon@5.14.0':
+    resolution: {integrity: sha512-fNzpGLlhj00TaYceE5M1vQ0zxXHtuNqF7WQKcX7Pud/z45TD4X1/VEqv8rRCp8QDnWdiLRPzNPpdCzl75LyTlA==}
     hasBin: true
 
-  '@ceramicnetwork/ipfs-topology@5.12.0':
-    resolution: {integrity: sha512-e7ikVlYrZneh9Ur4jutPR+87p1GLgJj+x673IMQ3A9msZA8hjZslIlU+xU0uzijGeLg+WYUc5mwj9y/t1ErYig==}
+  '@ceramicnetwork/ipfs-topology@5.13.0':
+    resolution: {integrity: sha512-uG3wMoo1PssGw7+++NDjfU9+cCb7MZpyPZHanMMTBgXzae1fasRHBOq7FSlBfo8d2pbjlzrshfpqxsP4G2YtUQ==}
 
-  '@ceramicnetwork/job-queue@4.13.0':
-    resolution: {integrity: sha512-zYoulphkT85AbViRK1qOrUF3cK/PspBco9Caio715oySYyjG1RaOKyPASe6FAKaDQgD96cmBoTd0UKgJcJrZBQ==}
+  '@ceramicnetwork/job-queue@4.14.0':
+    resolution: {integrity: sha512-yxZbs11npPOIlwomO7W6bOByT3LWktUpHkhMxnEcrPt4ITmN59D+Lptq1xXffwog0ciTHEUhZiePQmbgxubKvA==}
 
   '@ceramicnetwork/logger@5.0.0':
     resolution: {integrity: sha512-migKFIIWNSP8Tu09v8YNTDbxs0jtEMX4tiXqSkwySczmW/J/yMJWBGXbcasxQdmiphBoXFituTbW+jFVQkeTxg==}
@@ -367,59 +361,44 @@ packages:
   '@ceramicnetwork/observability@1.5.6':
     resolution: {integrity: sha512-cminxgAru5VvoBPEMURTaWzdEQqVMiV1e89iaAqPyjr+hAjALWStm90btNPt/PlHlpdkr/jmi4AFi1mFtdT9mQ==}
 
-  '@ceramicnetwork/pinning-aggregation@5.12.0':
-    resolution: {integrity: sha512-QaImy+sdXwJ5qh5qi703ZIFE/W3OzS02mfbAoYnyOpxF+g/1bHFM1hETkikCAsi4TmaO8O+vVDKpWA49QhgOQA==}
+  '@ceramicnetwork/pinning-aggregation@5.13.0':
+    resolution: {integrity: sha512-vbFgtH2K8l5PhGO0FVNDK3vFmtwk8KB/TaPkPPAfIiB/huBncx0x5yVv65zRNlhNpLVIBQDGpdN4ICjHokcjsg==}
 
-  '@ceramicnetwork/pinning-ipfs-backend@5.12.0':
-    resolution: {integrity: sha512-EEpaSSXHFExk3CXpERZus4SUqIybuBRlb+vS7WgE18tPoBLF6ZZlLQ+LBs7jyHHrQqslJuP2aWnSjx6RXw83Zw==}
+  '@ceramicnetwork/pinning-ipfs-backend@5.13.0':
+    resolution: {integrity: sha512-NReyMGFO7cJ/+J/jmJZS7QJ9RG0TShbp7vroJvQpHtY0ggWdfhOIrmzgLgbq63ZFF+vbg6SGgTvWKAAWdgsAMw==}
 
-  '@ceramicnetwork/stream-caip10-link-handler@5.13.0':
-    resolution: {integrity: sha512-JVUaMNdtR+IP0w2LgUzekpWDLR/ej1iCayizoIHFjf47nM9qyw6IAeSB8jz0paLeDAWctkBiZx4JVq4j0K/dFg==}
-
-  '@ceramicnetwork/stream-caip10-link@5.12.0':
-    resolution: {integrity: sha512-WEPNlGRrUkLpoAjp/ctk+XEuubIwJ8Y5Yynuu55sLyY9hPKUMnCXlCF59bV2dgCsvwWeTO9Md1qXgmwF88p/Gw==}
+  '@ceramicnetwork/stream-caip10-link-handler@5.14.0':
+    resolution: {integrity: sha512-NQHfM65FyJeAL5UBcwJ3EIOy/RFNZPdwLAhfKmZlQGwWmCXBRyJc6vGxxbs/fIEoKRw8AbjwLhCHt6cNSn1qgQ==}
 
   '@ceramicnetwork/stream-caip10-link@5.13.0':
     resolution: {integrity: sha512-RJpsO/AERl/tAezICArYW+Wn67aqHzl4lC19D7r4lfI8Y+KOp1o4h7VkCgTFsXr5ulDQPbkE2WQqIkry8kXoUg==}
 
-  '@ceramicnetwork/stream-handler-common@4.12.0':
-    resolution: {integrity: sha512-HlYPP/YFGBelZfT9fbMG+3YF7Fv5NBFI0ihnUWW9h3THa5H4C4uAfxeY4yURo0IJeAJSXczEsgJzGCxAWfn9Dg==}
+  '@ceramicnetwork/stream-handler-common@4.13.0':
+    resolution: {integrity: sha512-YEl/TKlcNUw0ll//Ry3n7s7lbrKdVc9e1GTdxY+cPngb4vPt/pqAhlNfRR4WtQsruZ1GjRPQ239/1arTKdINrg==}
 
-  '@ceramicnetwork/stream-model-handler@4.13.0':
-    resolution: {integrity: sha512-kYaaZkBR3BUlqqbC1C2YZXHXEGw1TOzPTfVd5k6J/F0nxjf2/7n0MHpEpYK1zURsQZg9VBMn5nTopz/zOymrwA==}
+  '@ceramicnetwork/stream-model-handler@4.14.0':
+    resolution: {integrity: sha512-Np6y99Wtp/vXm4XdmhRQHFVDFOmgigrz2YeoqB5C8JZDIhNv+aQsbDOqEn2dxH4oTt5nhp4PmyPAjxaqxpHI0A==}
 
-  '@ceramicnetwork/stream-model-instance-handler@4.13.0':
-    resolution: {integrity: sha512-BrexM8JvXA5WOLN65An1iHI2oWLrcZ9rJBBm4O6uC3jBTUO52vMXHH4qVSeJlFV78vo10JEkDZ8+4MgRh8kKAA==}
+  '@ceramicnetwork/stream-model-instance-handler@4.14.0':
+    resolution: {integrity: sha512-qpGkC3iTDSK4BYwcVlEyG7pRJKXwIm4zFGGBlUqcxXUE84QfkTOsHs0WdKeEKhCLs6F0Arn2REnPmk5JuQHOvg==}
 
   '@ceramicnetwork/stream-model-instance@2.4.1':
     resolution: {integrity: sha512-vp+oY27BFM64pXN2l4riwK3/3rN1DCEZe/iBrWWJ79SC99S9jFsSnx2TB0RLkBF+n87IsWi+t1WA+FR1KNIe/Q==}
 
-  '@ceramicnetwork/stream-model-instance@4.13.0':
-    resolution: {integrity: sha512-1SR6x8179twI9pl1n3Zy0r6Ph/jwLnEgbIgO/d+DbWPaSfHl3oKVnDbQ9/koEUqgoW6wtLPuVWo4QabKonoIMg==}
-
   '@ceramicnetwork/stream-model-instance@4.14.0':
     resolution: {integrity: sha512-PxSZcyCW0IH8vqKD+eJNpQOHM+y2BzoV1qWuq3hg6ZIpQNWeM264NuVB42KxvAkzplG3se6EVu1iAEuDAVU83Q==}
-
-  '@ceramicnetwork/stream-model@4.12.0':
-    resolution: {integrity: sha512-cLWPCe/thMH/OAf1F7zMtvoXy4pwMSTgp+OvMXBL8O6NcKyXC5f6vJVYrVZf0RpkR8hco1Zlu8nJxjK/MB/F3Q==}
 
   '@ceramicnetwork/stream-model@4.13.0':
     resolution: {integrity: sha512-fUf9YFTn5RxlWP+n80AgrLkAOmolWP5pjXxDbefg2ev8FJlANWU4J66QIdQPiWNhk8QNCMFN3O7Z/bvkWJyFgg==}
 
-  '@ceramicnetwork/stream-tile-handler@5.13.0':
-    resolution: {integrity: sha512-QQnWEDZTjHYSmzXIIf6H6dd6t0zfrU+nHL75lxyMOXWLF5Bgf9pDsP7nhD67k1Sq6M1TImPzB/3HhM/Q1QGYxg==}
-
-  '@ceramicnetwork/stream-tile@5.12.0':
-    resolution: {integrity: sha512-EyUFeS5qEpFT24PuO4KWcklGz8QfIZXPISX0tkrYoioqBf7zDnqckMcY43ppE9x84j0MwSjOshGdyI2/EPKrhQ==}
+  '@ceramicnetwork/stream-tile-handler@5.14.0':
+    resolution: {integrity: sha512-DxEOggVij1qxDBdkhwoHA1ZjO7ewj31zzhXIe3sDqUhSX5L9iQotE28pyboPiHtoDyk60bapwUAgS1t4aShqlA==}
 
   '@ceramicnetwork/stream-tile@5.13.0':
     resolution: {integrity: sha512-9qKcZtKIKGu/8Ef1dn89xA7PIabT8hh6Ft+Fdb9k0vZckYlAnDyhzxQCfewcc+AhK4Z3m7qxfQl56dgN+ieWgQ==}
 
   '@ceramicnetwork/streamid@3.4.1':
     resolution: {integrity: sha512-m6uZjcdMdwzyO6TIVTJF4IJYjuceflmYDrlRxDcXrZySBNNKnL40tSHbzpcTfOy5YcIsTqJFxqUZQrFrC0mlDA==}
-
-  '@ceramicnetwork/streamid@5.2.0':
-    resolution: {integrity: sha512-CZGgKqsLG1dVlx7wAsXBZZpBLcS4IGOPh5dfvUAcIuwEcBLerm3qNRmhvlVrSCc1JzaEIvX4v+n44IG56ZI6hw==}
 
   '@ceramicnetwork/streamid@5.3.0':
     resolution: {integrity: sha512-U/4k2iAjWIW3Ra3H8K0qJJjy9i9Zgw88gz9ecbIBDOF8Ud59ahEJpQYgdAnWc7kkSPpiZojZDTneZCgUYGQuRg==}
@@ -812,8 +791,8 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/utils@10.2.1':
-    resolution: {integrity: sha512-U8OMdkkEt3Vp3uYHU2pMc6mwId7axVAcSSmcqJcUmWNPqY2pfee5O655ybTI2kNPWAe58Zu6gLu4Oi4QT4BgWA==}
+  '@graphql-tools/utils@10.2.2':
+    resolution: {integrity: sha512-ueoplzHIgFfxhFrF4Mf/niU/tYHuO6Uekm2nCYU72qpI+7Hn9dA2/o5XOBvFXDk27Lp5VSvQY5WfmRbqwVxaYQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -862,8 +841,8 @@ packages:
   '@hapi/call@9.0.1':
     resolution: {integrity: sha512-uPojQRqEL1GRZR4xXPqcLMujQGaEpyVPRyBlD8Pp5rqgIwLhtveF9PkixiKru2THXvuN8mUrLeet5fqxKAAMGg==}
 
-  '@hapi/catbox-memory@6.0.1':
-    resolution: {integrity: sha512-sVb+/ZxbZIvaMtJfAbdyY+QJUQg9oKTwamXpEg/5xnfG5WbJLTjvEn4kIGKz9pN3ENNbIL/bIdctmHmqi/AdGA==}
+  '@hapi/catbox-memory@6.0.2':
+    resolution: {integrity: sha512-H1l4ugoFW/ZRkqeFrIo8p1rWN0PA4MDTfu4JmcoNDvnY975o29mqoZblqFTotxNHlEkMPpIiIBJTV+Mbi+aF0g==}
 
   '@hapi/catbox@12.1.1':
     resolution: {integrity: sha512-hDqYB1J+R0HtZg4iPH3LEnldoaBsar6bYp0EonBmNQ9t5CO+1CqgCul2ZtFveW1ReA5SQuze9GPSU7/aecERhw==}
@@ -878,8 +857,8 @@ packages:
   '@hapi/file@3.0.0':
     resolution: {integrity: sha512-w+lKW+yRrLhJu620jT3y+5g2mHqnKfepreykvdOcl9/6up8GrQQn+l3FRTsjHTKbkbfQFkuksHpdv2EcpKcJ4Q==}
 
-  '@hapi/hapi@21.3.9':
-    resolution: {integrity: sha512-AT5m+Rb8iSOFG3zWaiEuTJazf4HDYl5UpRpyxMJ3yR+g8tOEmqDv6FmXrLHShdvDOStAAepHGnr1G7egkFSRdw==}
+  '@hapi/hapi@21.3.10':
+    resolution: {integrity: sha512-CmEcmTREW394MaGGKvWpoOK4rG8tKlpZLs30tbaBzhCrhiL2Ti/HARek9w+8Ya4nMBGcd+kDAzvU44OX8Ms0Jg==}
     engines: {node: '>=14.15.0'}
 
   '@hapi/heavy@8.0.1':
@@ -1019,8 +998,8 @@ packages:
     resolution: {integrity: sha512-+c74EVUBTfw2sx1GE/z/IjsYO6dhur+ukF0knAppeZsRQ1Kgg6K5R3eECtT28fC6dBWLjFpAvW/7QGfiDAL4RA==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
 
-  '@libp2p/interface@1.4.0':
-    resolution: {integrity: sha512-XkbZ0NfLVnxvWgo1nVyMwCUYDQbFYFvYPA6KUPLV7/XgcxBapVZT5sJ9hgQ4kTsqSBbjQl6YDXDxCclAPZDNTQ==}
+  '@libp2p/interface@1.4.1':
+    resolution: {integrity: sha512-lYrvNn7vggL8EVN7ZcGeK4Kf03aKlSD5zW6aBu297GFyXGvpWXJ+qj+fJzmCmXhZqAyI62IXZJ2bpJgI6022IQ==}
 
   '@libp2p/interfaces@3.3.2':
     resolution: {integrity: sha512-p/M7plbrxLzuQchvNwww1Was7ZeGE2NaOFulMaZBYIihU8z3fhaV+a033OqnC/0NTX/yhfdNOG7znhYq3XoR/g==}
@@ -2060,8 +2039,8 @@ packages:
   await-semaphore@0.1.3:
     resolution: {integrity: sha512-d1W2aNSYcz/sxYO4pMGX9vq65qOTu0P800epMud+6cYYX0QcT7zyqcxec3VWzpgvdXo57UWmVbZpLMjX2m1I7Q==}
 
-  aws-sdk@2.1637.0:
-    resolution: {integrity: sha512-oV5I/d9Bd9ktXPsHOOKaJy5R5ynN3XtxCzYn30xjTnkWmZx1QKD1BGmBGJR/DigdeNWvnuGWOSPh4KGkp6Jgag==}
+  aws-sdk@2.1639.0:
+    resolution: {integrity: sha512-3vi9ONXhROfXTjsulFurKtJ/vBjiXirhwrRY6C7QRJyI/+m9lphtBivSYynnu7q2saAqC9ArlkEWQLRFUPy+Zg==}
     engines: {node: '>= 10.0.0'}
 
   axios@0.24.0:
@@ -2299,8 +2278,8 @@ packages:
     resolution: {integrity: sha512-b3tFPA9pUr2zCUiCfRd2+wok2/LBSNUMKOuRRok+WlvvAgEt/PlbgPTsZUcwCOs53IJvLgTp0eotwtosE6njug==}
     hasBin: true
 
-  cborg@4.2.0:
-    resolution: {integrity: sha512-q6cFW5m3KxfP/9xGI3yGLaC1l5DP6DWM9IvjiJojnIwohL5CQDl02EXViPV852mOfQo+7PJGPN01MI87vFGzyA==}
+  cborg@4.2.1:
+    resolution: {integrity: sha512-LSdnRagOTx1QZ3/ECLEOMc5fYHaDBjjQkBeBGtZ9KkGa78Opb5UzUxJeuxhmYTZm1DUzdBjj9JT3fcQNRL9ZBg==}
     hasBin: true
 
   chainsaw@0.1.0:
@@ -2646,8 +2625,8 @@ packages:
     resolution: {integrity: sha512-M9qw6oUILGVrcENMSRRefE1MbHPIz0h79EKIeJWK9v563aT9Qkh8aEHPO1H5vi970wPirNY+jO9OpFoLiMsMGA==}
     engines: {node: '>=6'}
 
-  electron-to-chromium@1.4.796:
-    resolution: {integrity: sha512-NglN/xprcM+SHD2XCli4oC6bWe6kHoytcyLKCWXmRL854F0qhPhaYgUswUsglnPxYaNQIg2uMY4BvaomIf3kLA==}
+  electron-to-chromium@1.4.799:
+    resolution: {integrity: sha512-3D3DwWkRTzrdEpntY0hMLYwj7SeBk1138CkPE8sBDSj3WzrzOiG2rHm3luw8jucpf+WiyLBCZyU9lMHyQI9M9Q==}
 
   elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -2832,8 +2811,8 @@ packages:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
 
-  flowbite-datepicker@1.2.6:
-    resolution: {integrity: sha512-UbU/xXs9HFiwWfL4M1vpwIo8EpS0NUQSOvYnp0Z9u3N118nU7lPFGoUOq7su9d0aOJy9FssXzx1SZwN8MXhE1g==}
+  flowbite-datepicker@1.2.7:
+    resolution: {integrity: sha512-lT0SOrux9Hu9TMO1EG03r9B8VMppRr0wmz+M4YC9qVR0BCG83Qaky4HGHcAehcoBSXh13DfIg0jFKwSxWZuXBA==}
 
   flowbite@2.3.0:
     resolution: {integrity: sha512-pm3JRo8OIJHGfFYWgaGpPv8E+UdWy0Z3gEAGufw+G/1dusaU/P1zoBLiQpf2/+bYAi+GBQtPVG86KYlV0W+AFQ==}
@@ -3360,8 +3339,8 @@ packages:
   jet-logger@1.2.2:
     resolution: {integrity: sha512-Kbw4G3BC45+Umz5XBnsE50pHplruJTVKGRy5X1YfCu3Te7f8ggTL8Tm10YegAD2QP41MVQ3o/Y9MFAZzfythqw==}
 
-  jiti@1.21.3:
-    resolution: {integrity: sha512-uy2bNX5zQ+tESe+TiC7ilGRz8AtRGmnJH55NC5S0nSUjvvvM2hJHmefHErugGXN4pNv4Qx7vLsnNw9qJ9mtIsw==}
+  jiti@1.21.6:
+    resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
 
   jmespath@0.16.0:
@@ -3854,8 +3833,8 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
-  node-abi@3.63.0:
-    resolution: {integrity: sha512-vAszCsOUrUxjGAmdnM/pq7gUgie0IRteCQMX6d4A534fQCR93EJU5qgzBvU6EkFfK27s0T3HEV3BOyJIr7OMYw==}
+  node-abi@3.64.0:
+    resolution: {integrity: sha512-lxowHVCx3o1zfKJthjWh6WI8Eyi4gdTaK9bUc3oTjYv9j8sp5gSiufkOvoYZ1LgmZKngWUkS5a8G1RSuLWtPgg==}
     engines: {node: '>=10'}
 
   node-addon-api@2.0.2:
@@ -4195,8 +4174,8 @@ packages:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
     engines: {node: '>=10'}
 
-  protobufjs@7.3.0:
-    resolution: {integrity: sha512-YWD03n3shzV9ImZRX3ccbjqLxj7NokGN0V/ESiBV5xWqrommYHYiihuIyavq03pWSGqlyvYUFmfoMKd+1rPA/g==}
+  protobufjs@7.3.2:
+    resolution: {integrity: sha512-RXyHaACeqXeqAKGLDl68rQKbmObRsTIn4TYVUUug1KfS47YWCo5MacGITEryugIgZqORCvJWEk4l449POg5Txg==}
     engines: {node: '>=12.0.0'}
 
   protons-runtime@5.4.0:
@@ -4352,8 +4331,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rotating-file-stream@3.2.2:
-    resolution: {integrity: sha512-d33hF7eyb2Q79eVncK9Z5mEbnzONj9BqyKRX3acN5qCNkw6k8s34ip8X7/geSeL6GuBlONKPzE35WLh/wysBAg==}
+  rotating-file-stream@3.2.3:
+    resolution: {integrity: sha512-cfmm3tqdnbuYw2FBmRTPBDaohYEbMJ3211T35o6eZdr4d7v69+ZeK1Av84Br7FLj2dlzyeZSbN6qTuXXE6dawQ==}
     engines: {node: '>=14.0'}
 
   rpc-utils@0.6.2:
@@ -4559,8 +4538,8 @@ packages:
   sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
 
-  squint-cljs@0.7.110:
-    resolution: {integrity: sha512-ScJv4tJNboSzfrc2br7zr57J5tf/ruQbjGgFeJSkS7JSpJ2rJaX1E/53I8v0gOzNVS1l/d+B6bVmCel9XcR8dA==}
+  squint-cljs@0.7.111:
+    resolution: {integrity: sha512-BZSq3OxqdRN1xpIYBOWDI03tppaOLxtmapUDsS32ViKg2anu6fo44qh3qGAvXcapDwc1mkIS6A2y2GA+SgB2Rw==}
     hasBin: true
 
   ssri@8.0.1:
@@ -4922,8 +4901,8 @@ packages:
       typescript:
         optional: true
 
-  viem@2.13.7:
-    resolution: {integrity: sha512-SZWn9LPrz40PHl4PM2iwkPTTtjWPDFsnLr32UwpqC/Z5f0AwxitjLyZdDKcImvbWZ3vLQ0oPggR1aLlqvTcUug==}
+  viem@2.13.8:
+    resolution: {integrity: sha512-JX8dOrCJKazNVs7YAahXnX+NANp0nlK16GyYjtQXILnar1daCPsLy4uzKgZDBVBD6DdRP2lsbPfo4X7QX3q5EQ==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -5354,11 +5333,11 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@ceramicnetwork/3id-did-resolver@5.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/3id-did-resolver@5.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-tile': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-tile': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       least-recent: 1.0.3
       multiformats: 13.1.1
       uint8arrays: 5.1.0
@@ -5369,9 +5348,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/anchor-listener@4.12.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/anchor-listener@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/anchor-utils': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/anchor-utils': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
       '@ethersproject/providers': 5.7.2
       rxjs: 7.8.1
     transitivePeerDependencies:
@@ -5381,9 +5360,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/anchor-utils@4.12.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/anchor-utils@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
       '@ethersproject/abi': 5.7.0
       multiformats: 13.1.1
       uint8arrays: 5.1.0
@@ -5394,9 +5373,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/blockchain-utils-linking@5.2.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/blockchain-utils-linking@5.3.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/streamid': 5.3.0
       '@didtools/cacao': 3.0.1(typescript@5.0.4)
       '@stablelib/random': 1.0.2
       '@stablelib/sha256': 1.0.1
@@ -5410,10 +5389,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/blockchain-utils-validation@5.12.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/blockchain-utils-validation@5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/blockchain-utils-linking': 5.2.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/blockchain-utils-linking': 5.3.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
       '@ethersproject/contracts': 5.7.0
       '@ethersproject/providers': 5.7.2
       '@ethersproject/wallet': 5.7.0
@@ -5435,23 +5414,23 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/cli@5.13.0(@polkadot/util@7.9.2)(@types/express@4.17.21)(encoding@0.1.13)(pg@8.12.0)(typescript@5.0.4)':
+  '@ceramicnetwork/cli@5.14.0(@polkadot/util@7.9.2)(@types/express@4.17.21)(encoding@0.1.13)(pg@8.12.0)(typescript@5.0.4)':
     dependencies:
       '@awaitjs/express': 0.9.0(@types/express@4.17.21)(express@4.19.2)
-      '@ceramicnetwork/3id-did-resolver': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/codecs': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/core': 5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/3id-did-resolver': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/codecs': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/core': 5.14.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/http-client': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/indexing': 4.13.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)
-      '@ceramicnetwork/ipfs-daemon': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/indexing': 4.14.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)
+      '@ceramicnetwork/ipfs-daemon': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/logger': 5.0.0
       '@ceramicnetwork/model-metrics': 1.2.5(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/observability': 1.5.6
-      '@ceramicnetwork/stream-tile': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/stream-tile': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       '@stablelib/random': 1.0.2
-      aws-sdk: 2.1637.0
+      aws-sdk: 2.1639.0
       commander: 9.5.0
       cors: 2.8.5
       cross-eventsource: 1.0.0
@@ -5469,7 +5448,7 @@ snapshots:
       picocolors: 1.0.1
       pkh-did-resolver: 1.2.0
       reflect-metadata: 0.1.14
-      s3leveldown: 2.2.2(aws-sdk@2.1637.0)(levelup@5.1.1)
+      s3leveldown: 2.2.2(aws-sdk@2.1639.0)(levelup@5.1.1)
       stream-to-array: 2.3.0
       typedjson: 1.8.0
       uint8arrays: 5.1.0
@@ -5501,22 +5480,6 @@ snapshots:
       multiformats: 13.1.1
       uint8arrays: 5.1.0
 
-  '@ceramicnetwork/codecs@4.12.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      cartonne: 3.0.1
-      codeco: 1.2.3
-      dag-jose: 4.0.0
-      multiformats: 13.1.1
-      uint8arrays: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
   '@ceramicnetwork/codecs@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
       '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
@@ -5542,34 +5505,6 @@ snapshots:
       '@didtools/pkh-solana': 0.2.0(typescript@5.0.4)
       '@didtools/pkh-stacks': 0.2.0(encoding@0.1.13)(typescript@5.0.4)
       '@didtools/pkh-tezos': 0.3.0(typescript@5.0.4)
-      '@stablelib/random': 1.0.2
-      caip: 1.1.1
-      flat: 5.0.2
-      it-first: 3.0.6
-      jet-logger: 1.2.2
-      lodash.clonedeep: 4.5.0
-      logfmt: 1.4.0
-      multiformats: 13.1.1
-      rxjs: 7.8.1
-      uint8arrays: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@ceramicnetwork/common@5.12.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/model-metrics': 1.2.5(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      '@didtools/cacao': 3.0.1(typescript@5.0.4)
-      '@didtools/key-webauthn': 2.0.2(typescript@5.0.4)
-      '@didtools/pkh-ethereum': 0.2.1
-      '@didtools/pkh-solana': 0.2.0(typescript@5.0.4)
-      '@didtools/pkh-stacks': 0.2.0(encoding@0.1.13)(typescript@5.0.4)
-      '@didtools/pkh-tezos': 0.3.0(typescript@5.0.4)
-      '@ipld/dag-cbor': 9.2.0
       '@stablelib/random': 1.0.2
       caip: 1.1.1
       flat: 5.0.2
@@ -5615,29 +5550,29 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/core@5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/core@5.14.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/anchor-listener': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/anchor-utils': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/codecs': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/indexing': 4.13.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)
-      '@ceramicnetwork/ipfs-topology': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/job-queue': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/anchor-listener': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/anchor-utils': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/codecs': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/indexing': 4.14.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)
+      '@ceramicnetwork/ipfs-topology': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/job-queue': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/model-metrics': 1.2.5(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/observability': 1.5.6
-      '@ceramicnetwork/pinning-aggregation': 5.12.0
-      '@ceramicnetwork/pinning-ipfs-backend': 5.12.0(encoding@0.1.13)
-      '@ceramicnetwork/stream-caip10-link': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-caip10-link-handler': 5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-handler-common': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-handler': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance-handler': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-tile': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-tile-handler': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/pinning-aggregation': 5.13.0
+      '@ceramicnetwork/pinning-ipfs-backend': 5.13.0(encoding@0.1.13)
+      '@ceramicnetwork/stream-caip10-link': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-caip10-link-handler': 5.14.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-handler-common': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-handler': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance-handler': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-tile': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-tile-handler': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       '@ceramicnetwork/wasm-bloom-filter': 0.1.0
       '@datastructures-js/priority-queue': 6.3.1
       '@ethersproject/providers': 5.7.2
@@ -5701,14 +5636,14 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/indexing@4.13.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)':
+  '@ceramicnetwork/indexing@4.14.0(encoding@0.1.13)(pg@8.12.0)(sqlite3@5.1.7)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/anchor-listener': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/anchor-utils': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/job-queue': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/anchor-listener': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/anchor-utils': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/job-queue': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       '@ethersproject/providers': 5.7.2
       knex: 2.5.1(pg@8.12.0)(sqlite3@5.1.7)
       lodash.clonedeep: 4.5.0
@@ -5732,10 +5667,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/ipfs-daemon@5.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/ipfs-daemon@5.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/ipfs-topology': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/ipfs-topology': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
       express: 4.19.2
       get-port: 7.1.0
       go-ipfs: 0.18.1
@@ -5752,9 +5687,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/ipfs-topology@5.12.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/ipfs-topology@5.13.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -5762,9 +5697,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/job-queue@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/job-queue@4.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
       pg: 8.12.0
       pg-boss: 8.4.2
       rxjs: 7.8.1
@@ -5778,7 +5713,7 @@ snapshots:
 
   '@ceramicnetwork/logger@5.0.0':
     dependencies:
-      rotating-file-stream: 3.2.2
+      rotating-file-stream: 3.2.3
 
   '@ceramicnetwork/model-metrics@1.2.5(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
@@ -5808,12 +5743,12 @@ snapshots:
       '@opentelemetry/semantic-conventions': 1.25.0
       '@types/node': 20.14.2
 
-  '@ceramicnetwork/pinning-aggregation@5.12.0':
+  '@ceramicnetwork/pinning-aggregation@5.13.0':
     dependencies:
       '@stablelib/sha256': 1.0.1
       uint8arrays: 5.1.0
 
-  '@ceramicnetwork/pinning-ipfs-backend@5.12.0(encoding@0.1.13)':
+  '@ceramicnetwork/pinning-ipfs-backend@5.13.0(encoding@0.1.13)':
     dependencies:
       '@stablelib/sha256': 1.0.1
       ipfs-http-client: 60.0.1(encoding@0.1.13)
@@ -5822,30 +5757,16 @@ snapshots:
       - encoding
       - supports-color
 
-  '@ceramicnetwork/stream-caip10-link-handler@5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/stream-caip10-link-handler@5.14.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/blockchain-utils-validation': 5.12.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-caip10-link': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-handler-common': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/blockchain-utils-validation': 5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-caip10-link': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-handler-common': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
     transitivePeerDependencies:
       - '@polkadot/util'
       - bufferutil
       - debug
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@ceramicnetwork/stream-caip10-link@5.12.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      caip: 1.1.1
-      did-resolver: 4.1.0
-      lodash.clonedeep: 4.5.0
-    transitivePeerDependencies:
-      - bufferutil
       - encoding
       - typescript
       - utf-8-validate
@@ -5865,11 +5786,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/stream-handler-common@4.12.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/stream-handler-common@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/observability': 1.5.6
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/streamid': 5.3.0
       lodash.clonedeep: 4.5.0
     transitivePeerDependencies:
       - bufferutil
@@ -5878,12 +5799,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/stream-model-handler@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/stream-model-handler@4.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-handler-common': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-handler-common': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       ajv: 8.16.0
       ajv-formats: 2.1.1(ajv@8.16.0)
       fast-json-patch: 3.1.1
@@ -5898,13 +5819,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/stream-model-instance-handler@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/stream-model-instance-handler@4.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-handler-common': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-handler-common': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       ajv: 8.16.0
       ajv-formats: 2.1.1(ajv@8.16.0)
       fast-json-patch: 3.1.1
@@ -5933,22 +5854,6 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/stream-model-instance@4.13.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      '@ipld/dag-cbor': 7.0.3
-      '@stablelib/random': 1.0.2
-      fast-json-patch: 3.1.1
-      object-sizeof: 2.6.4
-      uint8arrays: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
   '@ceramicnetwork/stream-model-instance@4.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
       '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
@@ -5957,27 +5862,6 @@ snapshots:
       '@stablelib/random': 1.0.2
       fast-json-patch: 3.1.1
       object-sizeof: 2.6.4
-      uint8arrays: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@ceramicnetwork/stream-model@4.12.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/codecs': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      '@ipld/dag-cbor': 7.0.3
-      '@stablelib/random': 1.0.2
-      ajv: 8.16.0
-      ajv-formats: 2.1.1(ajv@8.16.0)
-      codeco: 1.2.3
-      fast-json-patch: 3.1.1
-      json-schema-typed: 8.0.1
-      multiformats: 13.1.1
       uint8arrays: 5.1.0
     transitivePeerDependencies:
       - bufferutil
@@ -6007,33 +5891,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@ceramicnetwork/stream-tile-handler@5.13.0(encoding@0.1.13)(typescript@5.0.4)':
+  '@ceramicnetwork/stream-tile-handler@5.14.0(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-handler-common': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-tile': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-handler-common': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-tile': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       ajv: 8.16.0
       ajv-formats: 2.1.1(ajv@8.16.0)
       fast-json-patch: 3.1.1
       least-recent: 1.0.3
-      lodash.clonedeep: 4.5.0
-      uint8arrays: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-      - zod
-
-  '@ceramicnetwork/stream-tile@5.12.0(encoding@0.1.13)(typescript@5.0.4)':
-    dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
-      '@ipld/dag-cbor': 7.0.3
-      '@stablelib/random': 1.0.2
-      dids: 5.0.2(typescript@5.0.4)
-      fast-json-patch: 3.1.1
       lodash.clonedeep: 4.5.0
       uint8arrays: 5.1.0
     transitivePeerDependencies:
@@ -6070,21 +5937,11 @@ snapshots:
       uint8arrays: 5.1.0
       varint: 6.0.0
 
-  '@ceramicnetwork/streamid@5.2.0':
-    dependencies:
-      '@ipld/dag-cbor': 7.0.3
-      '@stablelib/sha256': 1.0.1
-      cborg: 4.2.0
-      mapmoize: 1.2.1
-      multiformats: 13.1.1
-      uint8arrays: 5.1.0
-      varint: 6.0.0
-
   '@ceramicnetwork/streamid@5.3.0':
     dependencies:
       '@ipld/dag-cbor': 7.0.3
       '@stablelib/sha256': 1.0.1
-      cborg: 4.2.0
+      cborg: 4.2.1
       mapmoize: 1.2.1
       multiformats: 13.1.1
       uint8arrays: 5.1.0
@@ -6101,14 +5958,14 @@ snapshots:
   '@composedb/client@0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
       '@ceramicnetwork/http-client': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
       '@composedb/constants': 0.7.1
       '@composedb/graphql-scalars': 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@composedb/runtime': 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@graphql-tools/batch-execute': 9.0.4(graphql@16.8.1)
       '@graphql-tools/stitch': 9.2.9(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       dataloader: 2.2.2
       graphql: 16.8.1
       graphql-relay: 0.10.1(graphql@16.8.1)
@@ -6156,13 +6013,13 @@ snapshots:
 
   '@composedb/devtools@0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(graphql@16.8.1)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       '@composedb/graphql-scalars': 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@didtools/cacao': 3.0.1(typescript@5.0.4)
       '@graphql-tools/schema': 10.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       change-case: 5.4.4
       json-ptr: 3.1.1
       lodash-es: 4.17.21
@@ -6189,7 +6046,7 @@ snapshots:
 
   '@composedb/graphql-scalars@0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/streamid': 5.3.0
       '@composedb/types': 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       caip: 1.1.1
       graphql: 16.8.1
@@ -6213,8 +6070,8 @@ snapshots:
 
   '@composedb/loader@0.7.1(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       dataloader: 2.2.2
     transitivePeerDependencies:
       - bufferutil
@@ -6226,9 +6083,9 @@ snapshots:
   '@composedb/runtime@0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
       '@ceramicnetwork/http-client': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/streamid': 5.2.0
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/streamid': 5.3.0
       '@composedb/graphql-scalars': 0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@composedb/loader': 0.7.1(encoding@0.1.13)(typescript@5.0.4)
       graphql: 16.8.1
@@ -6275,11 +6132,11 @@ snapshots:
 
   '@composedb/types@0.7.1(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)':
     dependencies:
-      '@ceramicnetwork/common': 5.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/core': 5.13.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/common': 5.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/core': 5.14.0(@polkadot/util@7.9.2)(encoding@0.1.13)(typescript@5.0.4)
       '@ceramicnetwork/http-client': 5.14.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model': 4.12.0(encoding@0.1.13)(typescript@5.0.4)
-      '@ceramicnetwork/stream-model-instance': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model': 4.13.0(encoding@0.1.13)(typescript@5.0.4)
+      '@ceramicnetwork/stream-model-instance': 4.14.0(encoding@0.1.13)(typescript@5.0.4)
       dids: 5.0.2(typescript@5.0.4)
       json-schema-typed: 8.0.1
     transitivePeerDependencies:
@@ -6346,7 +6203,7 @@ snapshots:
       '@ipld/dag-cbor': 9.2.0
       '@noble/curves': 1.4.0
       caip: 1.1.1
-      cborg: 4.2.0
+      cborg: 4.2.1
       multiformats: 13.1.1
       uint8arrays: 5.1.0
       varint: 6.0.0
@@ -6768,7 +6625,7 @@ snapshots:
   '@graphql-tools/batch-delegate@9.0.3(graphql@16.8.1)':
     dependencies:
       '@graphql-tools/delegate': 10.0.11(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       dataloader: 2.2.2
       graphql: 16.8.1
       tslib: 2.6.3
@@ -6776,7 +6633,7 @@ snapshots:
 
   '@graphql-tools/batch-execute@9.0.4(graphql@16.8.1)':
     dependencies:
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       dataloader: 2.2.2
       graphql: 16.8.1
       tslib: 2.6.3
@@ -6787,14 +6644,14 @@ snapshots:
       '@graphql-tools/batch-execute': 9.0.4(graphql@16.8.1)
       '@graphql-tools/executor': 1.2.6(graphql@16.8.1)
       '@graphql-tools/schema': 10.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       dataloader: 2.2.2
       graphql: 16.8.1
       tslib: 2.6.3
 
   '@graphql-tools/executor@1.2.6(graphql@16.8.1)':
     dependencies:
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       '@repeaterjs/repeater': 3.0.6
       graphql: 16.8.1
@@ -6803,14 +6660,14 @@ snapshots:
 
   '@graphql-tools/merge@9.0.4(graphql@16.8.1)':
     dependencies:
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.3
 
   '@graphql-tools/schema@10.0.4(graphql@16.8.1)':
     dependencies:
       '@graphql-tools/merge': 9.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.3
       value-or-promise: 1.0.12
@@ -6822,13 +6679,13 @@ snapshots:
       '@graphql-tools/executor': 1.2.6(graphql@16.8.1)
       '@graphql-tools/merge': 9.0.4(graphql@16.8.1)
       '@graphql-tools/schema': 10.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       '@graphql-tools/wrap': 10.0.5(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.3
       value-or-promise: 1.0.12
 
-  '@graphql-tools/utils@10.2.1(graphql@16.8.1)':
+  '@graphql-tools/utils@10.2.2(graphql@16.8.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       cross-inspect: 1.0.0
@@ -6840,7 +6697,7 @@ snapshots:
     dependencies:
       '@graphql-tools/delegate': 10.0.11(graphql@16.8.1)
       '@graphql-tools/schema': 10.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       graphql: 16.8.1
       tslib: 2.6.3
       value-or-promise: 1.0.12
@@ -6894,7 +6751,7 @@ snapshots:
       '@hapi/boom': 10.0.1
       '@hapi/hoek': 11.0.4
 
-  '@hapi/catbox-memory@6.0.1':
+  '@hapi/catbox-memory@6.0.2':
     dependencies:
       '@hapi/boom': 10.0.1
       '@hapi/hoek': 11.0.4
@@ -6916,7 +6773,7 @@ snapshots:
 
   '@hapi/file@3.0.0': {}
 
-  '@hapi/hapi@21.3.9':
+  '@hapi/hapi@21.3.10':
     dependencies:
       '@hapi/accept': 6.0.3
       '@hapi/ammo': 6.0.1
@@ -6924,7 +6781,7 @@ snapshots:
       '@hapi/bounce': 3.0.1
       '@hapi/call': 9.0.1
       '@hapi/catbox': 12.1.1
-      '@hapi/catbox-memory': 6.0.1
+      '@hapi/catbox-memory': 6.0.2
       '@hapi/heavy': 8.0.1
       '@hapi/hoek': 11.0.4
       '@hapi/mimos': 7.0.1
@@ -7059,12 +6916,12 @@ snapshots:
 
   '@ipld/dag-cbor@9.2.0':
     dependencies:
-      cborg: 4.2.0
+      cborg: 4.2.1
       multiformats: 13.1.1
 
   '@ipld/dag-json@10.2.1':
     dependencies:
-      cborg: 4.2.0
+      cborg: 4.2.1
       multiformats: 13.1.1
 
   '@ipld/dag-pb@4.1.1':
@@ -7141,7 +6998,7 @@ snapshots:
       it-pushable: 3.2.3
       uint8arraylist: 2.4.8
 
-  '@libp2p/interface@1.4.0':
+  '@libp2p/interface@1.4.1':
     dependencies:
       '@multiformats/multiaddr': 12.3.0
       it-pushable: 3.2.3
@@ -7208,7 +7065,7 @@ snapshots:
     dependencies:
       '@chainsafe/is-ip': 2.0.2
       '@chainsafe/netmask': 2.0.0
-      '@libp2p/interface': 1.4.0
+      '@libp2p/interface': 1.4.1
       '@multiformats/dns': 1.0.6
       multiformats: 13.1.1
       uint8-varint: 2.0.4
@@ -7292,13 +7149,13 @@ snapshots:
       '@nomicfoundation/ethereumjs-rlp': 5.0.4
       ethereum-cryptography: 0.1.3
 
-  '@nomicfoundation/hardhat-viem@2.0.2(hardhat@2.22.5(typescript@5.0.4))(typescript@5.0.4)(viem@2.13.7(typescript@5.0.4))':
+  '@nomicfoundation/hardhat-viem@2.0.2(hardhat@2.22.5(typescript@5.0.4))(typescript@5.0.4)(viem@2.13.8(typescript@5.0.4))':
     dependencies:
       abitype: 0.9.10(typescript@5.0.4)
       hardhat: 2.22.5(typescript@5.0.4)
       lodash.memoize: 4.1.2
       typescript: 5.0.4
-      viem: 2.13.7(typescript@5.0.4)
+      viem: 2.13.8(typescript@5.0.4)
     transitivePeerDependencies:
       - zod
 
@@ -8387,7 +8244,7 @@ snapshots:
 
   await-semaphore@0.1.3: {}
 
-  aws-sdk@2.1637.0:
+  aws-sdk@2.1639.0:
     dependencies:
       buffer: 4.9.2
       events: 1.1.1
@@ -8592,7 +8449,7 @@ snapshots:
   browserslist@4.23.1:
     dependencies:
       caniuse-lite: 1.0.30001632
-      electron-to-chromium: 1.4.796
+      electron-to-chromium: 1.4.799
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
@@ -8720,7 +8577,7 @@ snapshots:
 
   cborg@1.10.2: {}
 
-  cborg@4.2.0: {}
+  cborg@4.2.1: {}
 
   chainsaw@0.1.0:
     dependencies:
@@ -9121,7 +8978,7 @@ snapshots:
     dependencies:
       encoding: 0.1.13
 
-  electron-to-chromium@1.4.796: {}
+  electron-to-chromium@1.4.799: {}
 
   elliptic@6.5.4:
     dependencies:
@@ -9414,7 +9271,7 @@ snapshots:
 
   flat@5.0.2: {}
 
-  flowbite-datepicker@1.2.6:
+  flowbite-datepicker@1.2.7:
     dependencies:
       flowbite: 2.3.0
 
@@ -9589,7 +9446,7 @@ snapshots:
       '@envelop/core': 5.0.1
       '@graphql-tools/executor': 1.2.6(graphql@16.8.1)
       '@graphql-tools/schema': 10.0.4(graphql@16.8.1)
-      '@graphql-tools/utils': 10.2.1(graphql@16.8.1)
+      '@graphql-tools/utils': 10.2.2(graphql@16.8.1)
       '@graphql-yoga/logger': 2.0.0
       '@graphql-yoga/subscription': 5.0.0
       '@whatwg-node/fetch': 0.9.18
@@ -9901,7 +9758,7 @@ snapshots:
   ipfs-unixfs@9.0.1:
     dependencies:
       err-code: 3.0.1
-      protobufjs: 7.3.0
+      protobufjs: 7.3.2
 
   ipfs-utils@9.0.14(encoding@0.1.13):
     dependencies:
@@ -9927,7 +9784,7 @@ snapshots:
   ipfsd-ctl@13.0.0(encoding@0.1.13):
     dependencies:
       '@hapi/boom': 10.0.1
-      '@hapi/hapi': 21.3.9
+      '@hapi/hapi': 21.3.10
       '@libp2p/interface-peer-id': 2.0.2
       '@libp2p/logger': 2.1.1
       '@multiformats/multiaddr': 11.6.1
@@ -10059,7 +9916,7 @@ snapshots:
     dependencies:
       colors: 1.3.0
 
-  jiti@1.21.3: {}
+  jiti@1.21.6: {}
 
   jmespath@0.16.0: {}
 
@@ -10590,7 +10447,7 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  node-abi@3.63.0:
+  node-abi@3.64.0:
     dependencies:
       semver: 7.6.2
 
@@ -10893,7 +10750,7 @@ snapshots:
       minimist: 1.2.8
       mkdirp-classic: 0.5.3
       napi-build-utils: 1.0.2
-      node-abi: 3.63.0
+      node-abi: 3.64.0
       pump: 3.0.0
       rc: 1.2.8
       simple-get: 4.0.1
@@ -10913,7 +10770,7 @@ snapshots:
       retry: 0.12.0
     optional: true
 
-  protobufjs@7.3.0:
+  protobufjs@7.3.2:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -11109,7 +10966,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.18.0
       fsevents: 2.3.3
 
-  rotating-file-stream@3.2.2: {}
+  rotating-file-stream@3.2.3: {}
 
   rpc-utils@0.6.2:
     dependencies:
@@ -11127,11 +10984,11 @@ snapshots:
     dependencies:
       tslib: 2.6.3
 
-  s3leveldown@2.2.2(aws-sdk@2.1637.0)(levelup@5.1.1):
+  s3leveldown@2.2.2(aws-sdk@2.1639.0)(levelup@5.1.1):
     dependencies:
       '@types/abstract-leveldown': 5.0.2
       abstract-leveldown: 6.3.0
-      aws-sdk: 2.1637.0
+      aws-sdk: 2.1639.0
       debug: 4.3.5
       inherits: 2.0.4
       levelup: 5.1.1
@@ -11360,7 +11217,7 @@ snapshots:
       - bluebird
       - supports-color
 
-  squint-cljs@0.7.110:
+  squint-cljs@0.7.111:
     dependencies:
       chokidar: 3.6.0
 
@@ -11593,7 +11450,7 @@ snapshots:
     dependencies:
       '@antfu/utils': 0.7.8
       defu: 6.1.4
-      jiti: 1.21.3
+      jiti: 1.21.6
 
   undici-types@5.26.5: {}
 
@@ -11717,7 +11574,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  viem@2.13.7(typescript@5.0.4):
+  viem@2.13.8(typescript@5.0.4):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0

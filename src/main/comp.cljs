@@ -47,13 +47,20 @@
 (defn mutate! [this mutate-map]
   (let [local (:local mutate-map)
         add (or (:add local) (:add mutate-map))
+        remove (or (:remove local) (:remove mutate-map))
         opts {:append (:append (or local mutate-map))
               :replace (:replace (or local mutate-map))}]
     (when add
-      (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))))
+      (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))
+    (when remove
+      (println "remove" remove)
+      (println "ident" (this.ident))
+      (t/remove-ident! this.-ctx (:from mutate-map) remove))))
 
 (def default Comp)
 (def useContext solid/useContext)
 (def pull n/pull)
 (def createMemo solid/createMemo)
+(def createSignal solid/createSignal)
 (def ident? n/ident?)
+(def uuid u/uuid)

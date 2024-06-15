@@ -36,17 +36,18 @@
                :user/ethereum-address address} (first extra)))
 
 (defc User [this {:user/keys [id firstName ethereum-address]}]
-  #jsx [:div {:class "flex items-center text-white"}
-        [b/icon-button {:icon #jsx [:img {:class "rounded-md h-10 w-10"
-                                          :data-dropdown-toggle "header-user-dropdown"
-                                          :draggable false
-                                          :onDragStart nil
-                                          :src (blo (ethereum-address))}
-                                    #_(Show show-name
-                                            [:div {:class "px-2"}]
-                                            (if-not (= first-name "")
-                                              (str first-name " " last-name)
-                                              (subs (str ethereum-address) 0 8)))]}]]
+  #jsx [:div {:class "flex items-center text-black"}
+        [:button {:class "rounded-md h-10 w-10"}
+         [:img {:class "rounded-md"
+                :data-dropdown-toggle "header-user-dropdown"
+                :draggable false
+                :onDragStart nil
+                :src (blo (ethereum-address))}
+          #_(Show show-name
+                  [:div {:class "px-2"}]
+                  (if-not (= first-name "")
+                    (str first-name " " last-name)
+                    (subs (str ethereum-address) 0 8)))]]]
   #_[tt/tooltip {:id "header-user-tt"
                  :content (ethereum-address)}])
 

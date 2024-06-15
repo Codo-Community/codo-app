@@ -21,6 +21,7 @@
   (let [navigate (useNavigate)
         location (useLocation)]
     (onMount (fn []
+               (println "ctx: " ctx)
                (.then (cli/await-session (:compose @cli/client))
                       (fn [r]
                         (eu/request-addresses @ec/wallet-client

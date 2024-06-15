@@ -12,6 +12,7 @@
                 {(first (keys query)) (utils/remove-ns (first (vals query)))}
                 query)
         query (geql/eql->graphql query)]
+    (println "asx: query " query)
     (-> (.executeQuery (:compose @cli/client) query)
         (.then (fn [response]
                  (let [res (-> response :data)]

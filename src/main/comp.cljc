@@ -11,7 +11,9 @@
 
         or-map (let [m (-> bindings second :or)]
                  (zipmap (mapv keywordify (keys m)) (vals m)))
-        a (println or-map)
+
+        local-map (let [m (-> bindings second :local)]
+                    (zipmap (mapv keyword (keys m)) (vals m)))
 
         query (mapv #(if (map? %)
                        {(keywordify (first (keys %))) (first (vals %))}
@@ -22,10 +24,13 @@
 
           (list (with-meta 'field {:static true}) 'query query)
 
+          (list 'field 'local)
+
           (list 'constructor ['this# 'ctx] (list 'println "constructor: " ntmp)
                 (list 'super 'ctx)
                 (list 'set! 'this#.new-data 'this#.constructor.new-data)
                 (list 'set! 'this#.render 'this#.constructor.render))
+
           'Object
           (list (with-meta 'new-data {:static true}) ['_ '& 'data] (list 'let ['v (list 'vals or-map)
                                                                                'k (list 'keys or-map)]
@@ -49,7 +54,15 @@
                                                                       (list `pull 'store (list 'ident) query))))
                                         (list 'fn [] 'props))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]
-                      body
+
+                      (if local-map
+                        (list 'let [['local 'setLocal] (list `createSignal local-map)
+                                    'a (list 'set! 'this#.local 'local)
+                                    'a (list 'set! 'this#.set-local! (list 'fn ['this# 'data] (list 'setLocal (list 'merge (list 'local) 'data))))
+                                    'local-map-k (vec (keys local-map))
+                                    'local-map-k (mapv #(list 'fn [] (list % (list 'local))) (keys local-map))]
+                              body)
+                        body)
                       #_(list 'if 'children [:<>
                                              body
                                              'children] body))))))

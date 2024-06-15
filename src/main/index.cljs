@@ -1,9 +1,7 @@
 (ns index
-  (:require ["./App.cljs" :refer [Root]]
+  (:require ["./App.cljs" :as app]
             ["solid-js/web" :refer [render]]
             ["solid-devtools"]
-            ["virtual:uno.css"]
-            ;["virtual:windi-devtools"]
-            ["./start.cljs" :as s]))
-(s/start)
-(render  Root (js/document.getElementById "root"))
+            ["virtual:uno.css"]))
+
+(render  #jsx [app/ui-root] (js/document.getElementById "root"))

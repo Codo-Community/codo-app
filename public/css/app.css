@@ -1,0 +1,21 @@
+.dark ::-webkit-scrollbar {
+    --tw-bg-opacity: 1;
+    /* background-color: rgb(17 24 39/var(--tw-bg-opacity)); */
+    background-color: transparent;
+}
+::-webkit-scrollbar {
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246/var(--tw-bg-opacity));
+    height: 0.25rem;
+    width: 0.25rem;
+}
+.dark ::-webkit-scrollbar-thumb {
+    --tw-border-opacity: 1;
+    --tw-bg-opacity: 1;
+    background-color: rgb(55 65 81/var(--tw-bg-opacity));
+}
+
+::-webkit-scrollbar-thumb {
+    --tw-bg-opacity: 1;
+    background-color: rgb(209 213 219/var(--tw-bg-opacity));
+}

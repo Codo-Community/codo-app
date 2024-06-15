@@ -1,14 +1,8 @@
 (ns start
-  (:require ["flowbite" :as fb]))
+  (:require ["flowbite" :as fb]
+            ["./Context.cljs" :as c]))
 
 (defn start []
-
-  (js/console.log "start")
-  #_(d/authenticate)
-
-  (fb/initFlowbite)
-
-  #_(.then (a/init-auth)
-           #(a/authenticate-user)))
+  (js/console.log "start"))
 
 (def default start)
