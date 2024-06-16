@@ -22,28 +22,52 @@
   }
 }")
 
-(def category-mutation
+(def update-link-mut
+  "mutation createCategoryLink($i: CreateCategoryLinkInput!) {
+   createCategoryLink(input: $i) {
+    document {
+      childID
+      parentID
+    }
+  }
+}")
+
+
+(def create-mutation
   "mutation createCategory($i: CreateCategoryInput!){
      createCategory(input: $i){
        document { id name }
      }
 }")
 
+(def update-mutation
+  "mutation updateCategory($i: UpdateCategoryInput!){
+     updateCategory(input: $i){
+       document { name }
+     }
+}")
+
+
 (defn add-category-remote [ctx data parent-id]
-  (println "da2: " (utils/remove-ns data))
-  (println "a " {:i {:content (utils/drop-false (utils/remove-ns data))}})
-  (cu/execute-gql-mutation ctx
-                           category-mutation
-                           {:i {:content (dissoc (utils/drop-false (utils/remove-ns data)) :id)}}
-                           (fn [r] (println "add c: " r)
-                             (let [category (utils/nsd (get-in r [:createCategory :document]) :category)]
-                               (println (:category/id category) " " parent-id)
-                               #_(t/add! ctx category
-                                         {:append [:category/id id :category/children]})
-                               (cu/execute-gql-mutation ctx create-link-mut
-                                                        {:i {:content {:parentID parent-id :childID (:category/id category)}}}
-                                                        (fn [r] (println "re: " r)
-                                                          ))))))
+  (let [vars (utils/drop-false (utils/remove-ns data))
+        vars (dissoc vars :id)
+        vars {:i {:content vars}}
+        vars (if-not (u/uuid? (:id vars)) (assoc-in vars [:i :id] (:category/id data)) vars)
+        mutation (if (u/uuid? (:id vars)) {:name "createCategory"
+                                           :fn create-mutation}  {:name "updateCategory"
+                                                                  :fn update-mutation})]
+    (println vars)
+    (cu/execute-gql-mutation ctx
+                             (:fn mutation)
+                             vars
+                             (fn [r] (println "add c: " r)
+                               (let [category (utils/nsd (get-in r [(:name mutation) :document]) :category)]
+                                 #_(t/add! ctx category
+                                           {:append [:category/id id :category/children]})
+                                 (if (u/uuid? (:id vars))
+                                   (cu/execute-gql-mutation ctx create-link-mut
+                                                            {:i {:content {:parentID parent-id :childID (:category/id category)}}}
+                                                            (fn [r] #_(println "re: " r)))))))))
 
 (declare ui-category)
 (declare Category)
@@ -69,9 +93,11 @@
                                (setLocal (assoc (local) :open? (not (:open? (local))))))}]
           [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
                                                                            :value name
+                                                                           :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
                                                                            :on-change (fn [e]
                                                                                         (setLocal (assoc (local) :editing? false))
                                                                                         (comp/set! ctx (:ident props) :category/name e)
+                                                                                        ; TODO: need to auto swap uuids for streamIDs
                                                                                         (add-category-remote ctx (data) (:parent props)))}]}
            [:span {:class "flex flex-inline gap-2 rounded-md dark:bg-zinc-800 p-2 mouse-pointer hover:ring-2"
                    :onClick #(setLocal (assoc (local) :editing? true))}

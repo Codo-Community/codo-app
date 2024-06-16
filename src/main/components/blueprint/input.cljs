@@ -7,7 +7,7 @@
             (fn [x]
               (update-in x [(second ident) :counter/value] value))))
 
-(defn input [{:keys [id ident label placeholder on-submit value copy on-change on-click readonly required extra-class left-icon value datepicker type ref]
+(defn input [{:keys [id ident label placeholder on-submit value copy on-change on-click readonly required extra-class left-icon value datepicker type ref on-focus-out]
               :as data
               :or {required false extra-class "" copy true readonly false left-icon false label nil datepicker false type "" ref false
                    value (fn [] "")
@@ -40,6 +40,7 @@
                     :placeholder placeholder
                     :type type
                     :onChange on-change
+                    :onFocusOut on-focus-out
                     :onSubmit on-submit
                     ;:onClick (if datepicker (fn [e] (aget @datepicker-el "show")))
                     :value (or (value) "")

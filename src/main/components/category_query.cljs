@@ -69,3 +69,9 @@
     }
   }
 }"))
+
+
+#_(defn filter-c [thing]
+  (cond (vector? thing) (mapv filter-c thing)
+        ;(string? thing) (or (second (string/split thing "/")) thing)
+        (map? thing) (cond  (zipmap (mapv filter-c (keys thing)) (remove-ns (vals thing))))))
