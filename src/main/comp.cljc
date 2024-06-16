@@ -25,6 +25,7 @@
           (list (with-meta 'field {:static true}) 'query query)
 
           (list 'field 'local)
+          (list 'field 'set-local!)
 
           (list 'constructor ['this# 'ctx] (list 'println "constructor: " ntmp)
                 (list 'super 'ctx)
@@ -38,28 +39,28 @@
 
           (list (with-meta 'render {:static true}) ['this# 'props '& 'children]
                 (list 'let [(first bindings) 'this#
-                            'a (list 'println "render: " ntmp " props: " 'props)
+                            ;'a (list 'println "render: " ntmp " props: " 'props)
                             'ctx (list `useContext 'this#.ctx)
-                            'a (list 'set! 'this#.-ctx 'ctx)
                             'ident (list 'get 'props :ident)
                             'ident (list 'if-not (list 'fn? 'ident) (list 'fn [] 'ident) 'ident)
-                            'a (list 'println ntmp ": p " 'props " i: " (list 'ident))
+                            ;'a (list 'println ntmp ": p " 'props " i: " (list 'ident))
                             {:keys ['store 'setStore]} 'ctx
                             'data (list 'if (list 'comp/ident? (list 'ident))
                                         (list 'do
                                               (list 'set! 'this#.ident 'ident)
                                               (list `createMemo (list 'fn []
-                                                                      (list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
-                                                                      (list 'println "data: " (list `pull 'store (list 'ident) query))
+                                                                      ;(list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
+                                                                      ;(list 'println "data: " (list `pull 'store (list 'ident) query))
                                                                       (list `pull 'store (list 'ident) query))))
                                         (list 'fn [] 'props))
-                            val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))]
+                            val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))
 
+                            ['local 'setLocal] (list `createSignal local-map)]
+                      (list 'set! 'this#.-ctx 'ctx)
+                      (list 'set! 'this#.local 'local)
+                      (list 'set! 'this#.set-local! (list 'fn ['this# 'data] (list 'setLocal (list 'merge (list 'local) 'data))))
                       (if local-map
-                        (list 'let [['local 'setLocal] (list `createSignal local-map)
-                                    'a (list 'set! 'this#.local 'local)
-                                    'a (list 'set! 'this#.set-local! (list 'fn ['this# 'data] (list 'setLocal (list 'merge (list 'local) 'data))))
-                                    'local-map-k (vec (keys local-map))
+                        (list 'let ['local-map-k (vec (keys local-map))
                                     'local-map-k (mapv #(list 'fn [] (list % (list 'local))) (keys local-map))]
                               body)
                         body)

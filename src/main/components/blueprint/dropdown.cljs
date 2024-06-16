@@ -2,16 +2,16 @@
   (:require ["solid-js" :refer [For Show]]
             ["./label.cljs" :as l]))
 
-(defn dropdown-select [{:keys [id title items on-change selected]}; & {:keys [extra-class] :or {extra-class nil}}
+(defn dropdown-select [{:keys [id title items on-change selected extra-class]}; & {:keys [extra-class] :or {extra-class nil}}
                        ]
   #jsx [:div {:id id
               :class (str " w-full " #_(first extra-class))}
         [Show {:when (not (nil? title))}
          (l/label title)]
         [:select {:onChange on-change
-                  :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 p-3 pr-6
+                  :class (str "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 p-3 pr-6
                           focus:border-blue-500 block h-11 w-full dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
-                          dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"}
+                          dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer " extra-class)}
          #jsx [For {:each (items)}
                (fn [{:keys [value href id] :as item} i]
                  #jsx [:option {:selected (if (= id (selected))

@@ -1,5 +1,6 @@
 (ns utils
-  (:require [squint.string :as string]))
+  (:require [squint.string :as string]
+            ["lodash" :refer [camelCase startCase kebabCase]]))
 
 (defn ident?
   "Check if x is a EQL ident."
@@ -20,6 +21,12 @@
 
 (defn uuid [] (js/crypto.randomUUID))
 
+(def camel-case camelCase)
+(def kebab-case kebabCase)
+
+(defn pascal-case [s]
+  (startCase (camelCase s)))
+
 (defn e->v [e]
   (-> e :target :value))
 
@@ -36,6 +43,11 @@
 
 (defn drop-false [m]
   (into {} (filterv (fn [x] (and (not (false? (second x))) (not (nil? (second x))))) m)))
+
+(defn distribute [f m]
+  (cond (map? m) (zipmap (keys m) (mapv f (vals m)))
+        (vector? m) (mapv f m)
+        :else m))
 
 (defn nsd [data ns]
   (zipmap (mapv (fn [x] (str ns "/" x)) (keys data)) (vals data))

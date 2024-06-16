@@ -10,8 +10,8 @@
 (def remotes (atom {}))
 
 (defn set!
-  ([ctx ident field event]
-   (t/set-field! ctx (conj ident field) (u/e->v event)))
+  ([this ident field event]
+   (t/set-field! this.-ctx (conj ident field) (u/e->v event)))
   ([this field event]
    (t/set-field! this.-ctx (conj (this.ident) field) (u/e->v event))))
 

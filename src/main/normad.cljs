@@ -39,8 +39,8 @@
 
 (defn add [{:keys [store setStore] :as ctx} & data]
   (let [res (traverse-and-transform (or (first data) store) acc)]
-    (println "res " res)
-    (println "acc " @acc)
+    #_(println "res " res)
+    #_(println "acc " @acc)
 
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) @acc)
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) res)
@@ -88,6 +88,34 @@
                    {nk (pull store data (vals query))})
 
     :else (get entity query)))
+
+
+(declare update-uuid-in-map)
+
+(defn update-uuid-in-coll [coll old-uuid new-uuid]
+  (mapv (fn [item]
+          (cond
+            (map? item) (update-uuid-in-map item old-uuid new-uuid)
+            (vector? item) (if (= (second item) old-uuid)
+                             (assoc item 1 new-uuid)
+                             (update-uuid-in-coll item old-uuid new-uuid))
+            :else item))
+        coll))
+
+(defn update-uuid-in-map [m old-uuid new-uuid]
+  (reduce-kv (fn [acc k v]
+               (cond
+                 (map? v) (assoc acc k (update-uuid-in-map v old-uuid new-uuid))
+                 (vector? v) (assoc acc k (update-uuid-in-coll v old-uuid new-uuid))
+                 (and (vector? v) (= (second v) old-uuid)) [k new-uuid]
+                 (= v old-uuid) [k new-uuid]
+                 :else (assoc acc k v)))
+             {}
+             m))
+
+(defn swap-uuids! [{:keys [store setStore] :as ctx} old-uuid new-id]
+  (setStore (fn [state]
+              (update-uuid-in-map state old-uuid new-id))))
 
 (comment (let [[store setStore] (normalize-store (createStore {:counters [{:counter/id 0
                                                                            :counter/value 1}
