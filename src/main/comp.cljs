@@ -53,8 +53,6 @@
     (when add
       (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))
     (when remove
-      (println "remove" remove)
-      (println "ident" (this.ident))
       (t/remove-ident! this.-ctx (:from mutate-map) remove))))
 
 (def default Comp)

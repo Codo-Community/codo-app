@@ -1,14 +1,15 @@
 (ns pages.search
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["@solidjs/router" :refer [useSearchParams]]
+            ["@solidjs/router" :refer [useSearchParams cache]]
             ["../components/project_list.cljs" :as p]
             ["../composedb/client.cljs" :as cli]
             ["../utils.cljs" :as utils]
             ["../transact.cljs" :as t]
+            ["../comp.cljs" :as comp]
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(def query "query {
+(def list-query "query {
   projectIndex(last: 10) {
     edges {
       node {
@@ -25,18 +26,17 @@
 }
 ")
 
-(defn SearchPage []
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        params (useSearchParams)
-        ident (fn [] [:component/id :project-list])]
-    (onMount (fn []
-               (if (empty? (get-in store [:component/id :project-list :projects]))
-                 (-> (.executeQuery (:compose @cli/client) query)
-                     (.then (fn [response]
-                              (let [res (-> response :data :projectIndex :edges)]
-                                (doall (for [v res]
-                                         (let [v (:node v)
-                                               val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
-                                           (t/add! ctx val
-                                                   {:append [:component/id :project-list :projects]})))))))))))
-    #jsx [p/ui-project-list {:& {:ident ident}}]))
+(def load-projects (cache (fn [] (let [ctx (useContext AppContext)]
+                                   (-> (.executeQuery (:compose @cli/client) list-query)
+                                       (.then (fn [response]
+                                                (let [res (-> response :data :projectIndex :edges)]
+                                                  (doall (for [v res]
+                                                           (let [v (:node v)
+                                                                 val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
+                                                             (t/add! ctx val {:append [:component/id :project-list :projects]}))))))))))))
+
+(defc SearchPage [this {:keys [component/id projects]}]
+  #jsx [:div {}
+        [p/ui-project-list {:& {:ident [:component/id :project-list]}}]])
+
+(def ui-search-page (comp/comp-factory SearchPage AppContext))

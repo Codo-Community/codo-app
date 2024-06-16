@@ -8,7 +8,7 @@
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc ProjectItem [this {:project/keys [id name description chain {contract [:contract/id :contract/chain]}]
+(defc ProjectItem [this {:project/keys [id name description {contract [:contract/id :contract/chain]}]
                          ;:local-storage/keys [bookmarked-projects]
                          }]
   #jsx [A {:href (str "/project/" (id))}
@@ -29,12 +29,13 @@
              [:img {:class "rounded-md"
                     :draggable false
                     :onDragStart nil
-                    :src (get wi/icons (contract))}]
+                    :src (get wi/icons (:contract/chain (contract)))}]
              #_(:contract/chain (contract)) #_(get-in chains [:project.chain/polygon :icon])]]]
           [:div {:class "px-2 col-span-2"}
            [:div {:class "flex items-start justify-between w-full"}
-            (let [icon (if  (some #(= (id) %) bookmarked-projects) "i-tabler-bookmark-filled" "i-tabler-bookmark")]
-              [:div {:role "img" :aria-label "bookmark" :class (str "i-tabler-bookmark hover:i-tabler-bookmark-filled")
+            #_(let [icon (if  (some #(= (id) %) (u/get-item :bookmarked-projects)) "i-tabler-bookmark-filled" "i-tabler-bookmark")]
+              [:div {:role "img" :aria-label "bookmark"
+                     :class (str "hover:i-tabler-bookmark-filled " icon)
                      :onClick #(u/set-item! :bookmarked-projects [(id)])}])]
            [:p {:class "focus:outline-none text-sm leading-5 py-4 text-gray-600 dark:text-gray-200"}
             (or (description) "No comprehensive description yet ...")]

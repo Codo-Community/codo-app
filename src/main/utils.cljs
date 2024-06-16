@@ -24,9 +24,9 @@
   (-> e :target :value))
 
 (defn remove-ns [thing]
-  (mapv #(if (string? %)
-           (second (.split % "/"))
-           (if (map? %) (zipmap (mapv (fn [k] (second (.split k "/"))) (keys %)) (vals %)))) thing))
+  (cond (vector? thing) (mapv remove-ns thing)
+        (string? thing) (or (second (string/split thing "/")) thing)
+        (map? thing) (zipmap (mapv remove-ns (keys thing)) (remove-ns (vals thing)))))
 
 (defn copy-to-clipboard [text-to-copy]
   (.writeText (.-clipboard js/navigator) text-to-copy))

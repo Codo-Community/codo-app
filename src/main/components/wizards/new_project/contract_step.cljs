@@ -1,6 +1,7 @@
 (ns main.components.wizards.new-project.contract-step
   (:require ["solid-js" :refer [Show onMount]]
             ["solid-spinner" :as spinner]
+            ["@solidjs/router" :refer [HashRouter Route useParams cache]]
             ["../../../evm/client.cljs" :as ec]
             ["../../../evm/lib.cljs" :as el]
             ["../../../evm/util.cljs" :as eu]
@@ -24,6 +25,7 @@
  } }"))
 
 (defn  ^:async fetch-abi [pid ctx]
+  (println "pid: " pid)
   (let [res (js-await (js/fetch "http://localhost:3000/abi/Project.json"))
         [account] (js-await (.getAddresses @ec/wallet-client))
         data (js-await ((aget res "json")))
@@ -47,16 +49,15 @@
                                                     (println response)))))))))
 
 (defc ContractStep [this {:project/keys [id contract] :as data}]
-  (let [;[contract-data] (createResource fetch-abi)
-        ]
-    (onMount #(fetch-abi (id) ctx))
+  (let [params (useParams)]
+    (onMount #(fetch-abi (:id params) ctx))
     #jsx [:div {}
           [Show {:when (and (not (nil? (contract)))
+                            (not (= undefined (second (contract))))
                             (not (u/uuid? (contract))))
-                 :fallback #jsx [:div {}
-                                 [:span {:class "flex gap-4 items-center"}
-                                  "Deploying contract "
-                                  [spinner/TailSpin]]]}
+                 :fallback #jsx [:span {:class "flex gap-4 items-center"}
+                                 "Deploying contract "
+                                 [spinner/TailSpin]]}
            "Project Contract Deployed!"]]))
 
 (def ui-contract-step (comp/comp-factory ContractStep AppContext))

@@ -8,13 +8,15 @@
     "watch": "npx squint watch",
     "dev": "concurrently --kill-others \"./wait_for_ceramic.sh && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005"
   },
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.24.7",
     "@ceramicnetwork/cli": "^5.14.0",
     "@ceramicnetwork/http-client": "^5.14.0",
+    "@composedb/cli": "^0.7.1",
     "@composedb/devtools": "^0.7.1",
     "@composedb/devtools-node": "^0.7.1",
     "@iconify-json/tabler": "^1.1.113",

@@ -46,7 +46,7 @@
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) res)
 
     (if-not (first data)
-      (setStore (reconcile (merge res @acc)))
+      (setStore (reconcile (merge-with merge res @acc)))
       (mapv #(if (nil? (get store %))
                (setStore % (fn [x] (get @acc %)))
                (setStore % (fn [x] (merge-with merge x (get @acc %))))) (keys @acc))
