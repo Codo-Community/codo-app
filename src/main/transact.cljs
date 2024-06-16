@@ -22,22 +22,20 @@
 
 (defn remove-ident! [{:keys [store setStore] :as ctx} path ident]
   (setStore (first path) (fn [x]
-                           (println "x " (get-in x (rest path)))
-                           (println "ident " (second ident))
+                           #_(println "x " (get-in x (rest path)))
+                           #_(println "ident " (second ident))
 
-                           (println (mapv (fn [y]
+                           #_(println (mapv (fn [y]
                                             (not (= (second y)
                                                     (second ident)))) (get-in x (rest path))))
 
-                           (println (filterv (fn [y] (not (= (second y)
+                           #_(println (filterv (fn [y] (not (= (second y)
                                                              (second ident)))) (get-in x (rest path))))
 
                            (update-in x (rest path) (fn [a]
                                                       (let [v (filterv (fn [y] (not (= (second y)
                                                                                        (second ident)))) a)]
-                                                        (println v)
-                                                        v
-                                                        ))))))
+                                                        v))))))
 
 (defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace] :or {append false replace false} :as params}]
   (n/add ctx value #_(merge {:data value} params))

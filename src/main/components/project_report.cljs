@@ -2,7 +2,7 @@
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["../comp.cljs" :as comp]
             ["../composedb/util.cljs" :as cu]
-            ["./category.cljs" :as c]
+            ["./category/category.cljs" :as c]
             ["../transact.cljs" :as t]
             ["../utils.cljs" :as u]
             ["./project_item.cljs" :as pi]

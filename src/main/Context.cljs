@@ -17,7 +17,6 @@
                                                                         :contract nil
                                                                         :transactions []}}})
         {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
-    (println "new store:" store)
     (set! (.-store js/window) store)
     ctx))
 

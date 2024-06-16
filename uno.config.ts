@@ -1,32 +1,32 @@
-import { defineConfig, presetAttributify, presetUno } from 'unocss'
-import { presetFlowbite } from '@julr/unocss-preset-flowbite'
-import transformerVariantGroup from '@unocss/transformer-variant-group'
+import { defineConfig, presetAttributify, presetUno, transformerDirectives, transformerCompileClass, transformerVariantGroup } from 'unocss'
 import presetWebFonts from '@unocss/preset-web-fonts'
 import presetIcons from '@unocss/preset-icons'
-import { transformerDirectives } from 'unocss'
-import presetWind from '@unocss/preset-wind'
+import { presetWind } from '@unocss/preset-wind'
 
 export default defineConfig({
  transformers: [
     transformerVariantGroup(),
     transformerDirectives(),
+    transformerCompileClass(),
   ],
   content: {
-    filesystem: ['./node_modules/flowbite/**/*.js'],
+    //filesystem: ['/home/daniel/repos/solid-squint/node_modules/.pnpm/flowbite@2.3.0/node_modules/flowbite/**/*{.js,.ts}'],
     pipeline: {
       include: [
         // the default
         /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
         // include js/ts files
-        './dist/**/*.{js,ts}',
+        //'./**/*.{js,ts}',
+        //'./node_modules/flowbite/**/*{.js,.ts}'
       ],
       // exclude files
       // exclude: []
     },
   },
   presets: [
+    presetUno(),
     presetWind(),
-    presetFlowbite(),
+    //presetFlowbite(),
     presetIcons({ /* options */ }),
     presetWebFonts({
   provider: 'google', // default provider

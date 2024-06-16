@@ -45,7 +45,7 @@
               [si/SearchInput {:& {:on-submit (fn [signal]
                                                 (navigate (str "/search/&search=" (:search (signal)))))}}]]
              [cm/ui-chain-menu {:& {:ident (fn [])}}]
-             [:button {:class (str "w-12 h-12 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
+             [:button {:class (str "w-16 h-16 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
              [user/ui-user {:& {:ident user}}]
              [ud/ui-user-drop-down {:& {:ident user}}]]]]]))

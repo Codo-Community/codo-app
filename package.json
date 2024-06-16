@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite",
     "watch": "npx squint watch",
+    "preview": "pnpm vite preview",
     "dev": "concurrently --kill-others \"./wait_for_ceramic.sh && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview",
@@ -25,6 +26,8 @@
     "@unocss/preset-icons": "^0.60.4",
     "@unocss/preset-web-fonts": "^0.60.4",
     "@unocss/preset-wind": "^0.60.4",
+    "@unocss/reset": "^0.61.0",
+    "@unocss/transformer-compile-class": "^0.61.0",
     "@unocss/transformer-variant-group": "^0.60.4",
     "concurrently": "^8.2.2",
     "dids": "^5.0.2",
@@ -40,11 +43,14 @@
     "vite-plugin-squint": "link:../vite-plugin-squint"
   },
   "dependencies": {
+    "@ceramicnetwork/codecs": "^4.13.0",
     "@composedb/client": "^0.7.1",
     "@didtools/pkh-ethereum": "^0.5.0",
     "@solidjs/router": "^0.13.5",
     "@thisbeyond/solid-dnd": "^0.7.5",
     "blo": "^1.2.0",
+    "codeco": "^1.2.3",
+    "cross-eventsource": "^1.0.0",
     "did-session": "^3.1.0",
     "flowbite": "^2.3.0",
     "flowbite-datepicker": "^1.2.7",

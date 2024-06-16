@@ -38,7 +38,6 @@
 
 (defn comp-factory [comp-class ctx]
   (let [c (new comp-class ctx)]
-    (println "new factory: " c.render)
     #(c.render %)))
 
 (defn new-data [this]
