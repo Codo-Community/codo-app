@@ -1,4 +1,4 @@
-type Category @createModel(accountRelation: LIST, description: "A category to group other categories and/or requirements, tasks.") {
+type Category @createModel(description: "A category to group other categories and/or requirements, tasks.") {
   name: String! @string(minLength: 3, maxLength: 400)
   mainReviewer: DID @accountReference
   color: String @string(minLength: 3, maxLength: 50)

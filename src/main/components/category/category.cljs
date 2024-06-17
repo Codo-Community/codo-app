@@ -1,10 +1,12 @@
 (ns components.category
   (:require ["solid-js" :refer [Show createSignal onMount]]
+            ["@solid-primitives/active-element" :refer [createFocusSignal]]
             ["../../comp.cljs" :as comp]
             ["../blueprint/input.cljs" :as in]
             ["../../utils.cljs" :as utils]
             ["../../composedb/util.cljs" :as cu]
             ["../../utils.cljs" :as u]
+            ["flowbite" :as fb]
             ["./query.cljs" :as cq]
             ["./menu.cljs" :as cm]
             ["../../transact.cljs" :as t]
@@ -92,9 +94,9 @@
 
 (defc Category [this {:category/keys [id name color children] :as data :or {id (u/uuid) name "Category" children nil color :gray}
                       ;:props [parent]
-                      :local {editing? false open? false hovering? false}}]
+                      :local {editing? false open? false hovering? false selected nil}}]
   #jsx [:div {:class "flex flex-col ml-3 gap-1"}
-        [:span {:class "flex flex-inline gap-2"
+        [:span {:class "flex flex-inline gap-2 mouse-pointer"
                 :onMouseEnter #(setLocal (assoc (local) :hovering? true))
                 :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
          [:div {:class "flex gap-1 items-center"}
@@ -111,13 +113,14 @@
                                                                                         (comp/set! this (:ident props) :category/name e)
                                         ; TODO: need to auto swap uuids for streamIDs
                                                                                         (add-category-remote ctx (data) (:parent props)))}]}
-           [:span {:class (str "flex flex-inline gap-2 rounded-md p-2 mouse-pointer hover:ring-2 " (condp = (color)
+           [:div {:class (str "flex flex-inline gap-2 rounded-md p-2 mouse-pointer focus:ring-2 " (condp = (color)
                                                                                                      :green "bg-green-800"
                                                                                                      :blue "bg-blue-800"
                                                                                                      :red "bg-red-800"
                                                                                                      :yellow "bg-yellow-800"
                                                                                                      :gray "bg-zinc-800"
                                                                                                      "bg-zinc-800"))
+                   :tabindex 0
                    :onClick #(setLocal (assoc (local) :editing? true))}
             [:h2 {:class "text-bold"} (name)]]]]
          [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}

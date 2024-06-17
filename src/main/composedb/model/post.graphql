@@ -1,0 +1,11 @@
+type Posts
+  @createModel(accountRelation: LIST, description: "A simple Post")
+  @createIndex(fields: [{ path: "title" }])
+  @createIndex(fields: [{ path: "tag" }])
+  @createIndex(fields: [{ path: "created_at" }]) {
+  title: String! @string(minLength: 1, maxLength: 100)
+  body: String! @string(minLength: 1, maxLength: 100)
+  tag: String! @string(minLength: 1, maxLength: 100)
+  ranking: Int!
+  created_at: DateTime!
+}

@@ -29,8 +29,7 @@
              [:img {:class "rounded-md"
                     :draggable false
                     :onDragStart nil
-                    :src (get wi/icons (:contract/chain (contract)))}]
-             #_(:contract/chain (contract)) #_(get-in chains [:project.chain/polygon :icon])]]]
+                    :src (get wi/icons (:contract/chain (contract)))}]]]]
           [:div {:class "px-2 col-span-2"}
            [:div {:class "flex items-start justify-between w-full"}
             #_(let [icon (if  (some #(= (id) %) (u/get-item :bookmarked-projects)) "i-tabler-bookmark-filled" "i-tabler-bookmark")]

@@ -9,7 +9,6 @@
             ["./blueprint/searchinput.cljs" :as si]
             ["./blueprint/dropdown.cljs" :as dr]
             ["./userdropdown.cljs" :as ud]
-            ;["/images/codo_new_white.svg" :as codo-logo]
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
             ["./chain_menu.cljs" :as cm]
             ["../Context.cljs" :refer [AppContext]])
@@ -17,7 +16,7 @@
 
 (def codo-logo (js/URL. "/images/codo_new_black.svg" import.meta.url))
 
-(defc Header [this {:keys [component/id user]}]
+(defc Header [this {:keys [component/id user chain]}]
   (let [navigate (useNavigate)
         location (useLocation)]
     (onMount (fn []
@@ -43,8 +42,8 @@
              [:span {:class "lt-md:hidden"}
               [si/SearchInput {:& {:on-submit (fn [signal]
                                                 (navigate (str "/search/&search=" (:search (signal)))))}}]]
-             [cm/ui-chain-menu {:& {:ident (fn [])}}]
-             [:button {:class (str "w-16 h-16 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
+             [cm/ui-chain-menu #_{:& {:ident chain}}]
+             [:button {:class (str "text-gray-600 dark:text-gray-400 w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
              [user/ui-user {:& {:ident user}}]
              [ud/ui-user-drop-down {:& {:ident user}}]]]]]))

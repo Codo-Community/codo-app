@@ -7,6 +7,8 @@
 
 (defn init-context []
   (let [[store setStore] (createStore {:component/id {:header {:component/id :header
+                                                               :chain {:chain/id 31337
+                                                                       :chain/name "Hardhat"}
                                                                :user {:user/id 0
                                                                       :user/ethereum-address "0x0"}}
                                                       :project-wizard {:project []}
