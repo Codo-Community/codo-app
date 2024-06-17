@@ -39,7 +39,7 @@
              [:span {:class "flex items-center dark:text-white font-bold lt-md:hidden max-w-2/3 "}
               [:text (str location.pathname)]]]
             [:div {:class "flex items-center md:order-2 gap-4"}
-             [:span {:class "lt-md:hidden"}
+             #_[:span {:class "lt-md:hidden"}
               [si/SearchInput {:& {:on-submit (fn [signal]
                                                 (navigate (str "/search/&search=" (:search (signal)))))}}]]
              [cm/ui-chain-menu #_{:& {:ident chain}}]

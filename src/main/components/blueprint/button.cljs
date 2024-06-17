@@ -2,7 +2,7 @@
   (:requre ["solid-js" :refer [Show]]))
 
 (defn button [{:keys [title on-click color icon extra-class] :or {color "dark:bg-black"}}]
-  #jsx [:button {:class (str "text-white focus:outline-none max-w-48 overflow-hidden
+  #jsx [:button {:class (str "text-white focus:outline-none max-w-48 overflow-hidden bg-blue-400
                             rounded-md text-sm p-2 border border-2 border-gray-400 dark:border-zinc-800
                             h-fit w-fit " color " " extra-class)
                  :onClick on-click}

@@ -1,11 +1,18 @@
-type Posts
-  @createModel(accountRelation: LIST, description: "A simple Post")
-  @createIndex(fields: [{ path: "title" }])
-  @createIndex(fields: [{ path: "tag" }])
-  @createIndex(fields: [{ path: "created_at" }]) {
-  title: String! @string(minLength: 1, maxLength: 100)
-  body: String! @string(minLength: 1, maxLength: 100)
-  tag: String! @string(minLength: 1, maxLength: 100)
-  ranking: Int!
-  created_at: DateTime!
+type User @loadModel(id: "$USER_ID") {
+    id: ID!
+}
+
+
+type Post
+    @createModel(accountRelation: LIST, description: "A simple Post")
+    @createIndex(fields: [{ path: "created" }])
+    @createIndex(fields: [{ path: "edited" }])
+    @createIndex(fields: [{ path: "tag" }]) {
+    author: DID! @documentAccount
+    body: String! @string(minLength: 1, maxLength: 100)
+    tag: String! @string(minLength: 1, maxLength: 100)
+    edited: DateTime
+    created: DateTime!
+    userId: StreamID! @documentReference(model: "User")
+    user: User! @relationDocument(property: "userId")
 }
