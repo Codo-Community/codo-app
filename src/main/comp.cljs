@@ -59,5 +59,5 @@
 (def pull n/pull)
 (def createMemo solid/createMemo)
 (def createSignal solid/createSignal)
-(def ident? n/ident?)
+(def ident? u/ident?)
 (def uuid u/uuid)

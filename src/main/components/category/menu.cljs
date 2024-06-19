@@ -6,7 +6,7 @@
             ["flowbite" :refer [initDropdowns initTooltips]]))
 
 (defn ui-category-menu [{:keys [this data parent id] :as props}]
-  (onMount #(do (println "init") (initDropdowns) (initTooltips)))
+  (onMount #(do (initDropdowns) (initTooltips)))
   #jsx [:div {:class "flex flex-col relative w-fit"}
         [to/tooltip {:id "tooltip-color" :content "Color"}]
         [:span {:class "flex gap-2 items-center"}

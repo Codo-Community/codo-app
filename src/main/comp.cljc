@@ -39,18 +39,18 @@
 
           (list (with-meta 'render {:static true}) ['this# 'props '& 'children]
                 (list 'let [(first bindings) 'this#
-                            ;'a (list 'println "render: " ntmp " props: " 'props)
+                            'a (list 'println "render: " ntmp " props: " 'props)
                             'ctx (list `useContext 'this#.ctx)
                             'ident (list 'get 'props :ident)
                             'ident (list 'if-not (list 'fn? 'ident) (list 'fn [] 'ident) 'ident)
-                            ;'a (list 'println ntmp ": p " 'props " i: " (list 'ident))
+                            'a (list 'println ntmp ": p " 'props " i: " (list 'ident))
                             {:keys ['store 'setStore]} 'ctx
                             'data (list 'if (list 'comp/ident? (list 'ident))
                                         (list 'do
                                               (list 'set! 'this#.ident 'ident)
                                               (list `createMemo (list 'fn []
-                                                                      ;(list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
-                                                                      ;(list 'println "data: " (list `pull 'store (list 'ident) query))
+                                                                      (list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
+                                                                      (list 'println "data: " (list `pull 'store (list 'ident) query))
                                                                       (list `pull 'store (list 'ident) query))))
                                         (list 'fn [] 'props))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))

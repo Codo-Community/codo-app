@@ -8,9 +8,12 @@
 (def account-id-resolver (atom nil))
 (def auth-method-resolver (atom nil))
 
-(def auth (atom {:addresses (js/Promise. (fn [resolve _] (reset! addresses-resolver resolve)))
-                 :account-id (js/Promise. (fn [resolve _] (reset! account-id-resolver resolve)))
-                 :auth-method (js/Promise. (fn [resolve _] (reset! auth-method-resolver resolve)))}))
+(def auth (atom nil))
+
+(defn reset-auth! []
+  (reset! auth {:addresses (js/Promise. (fn [resolve _] (reset! addresses-resolver resolve)))
+                :account-id (js/Promise. (fn [resolve _] (reset! account-id-resolver resolve)))
+                :auth-method (js/Promise. (fn [resolve _] (reset! auth-method-resolver resolve)))}))
 
 (defn ^:async init-auth []
   #_(let [session-str (u/get-item "ceramic:eth_did")
@@ -18,6 +21,8 @@
 
       (if (or (not session-str)
               (and session.hasSession session.isExpired))))
+  (reset-auth!)
+
   (let [ethProvider @wallet-client
         addresses (js-await (.request @wallet-client {:method "eth_requestAccounts"}))
         account-id (js-await (getAccountId ethProvider (first addresses)))

@@ -8,7 +8,7 @@
   (and (vector? x)
        (string? (first x))
        (= 2 (count x))
-       (or (string? (second x)) (number? (second x)))))
+       (or (string? (second x)) (number? (second x)) (undefined? (second x)))))
 
 (defn string? [thing]
   (= (js/typeof thing) "string"))

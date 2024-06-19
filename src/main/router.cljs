@@ -35,18 +35,21 @@
                                 (f)))))
 
 (defn load-project [{:keys [params location]}]
-  (get-project [:project/id (:id params)]))
+  (let [ctx (useContext AppContext)]
+    (pr/load-project ctx [:project/id (:id params)]))
+  #_(get-project [:project/id (:id params)]))
 
 (defn create-project [{:keys [params location]}]
   (create-p (:id params)))
 
 (defc Router [this {:keys []}]
   #jsx [HashRouter {:root main/ui-main}
-        [Route {:path "/projects" :component (fn [props] (let [ident [:component/id :project-list]] #jsx [sp/ui-search-page {:& {:ident ident}}]))
+        [Route {:path "/projects" :component sp/ui-search-page #_{:& {:ident [:component/id :project-list]}}
                 :load (fn [{:keys [params location]}] (sp/load-projects))}]
         [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
-                                                                  ident (fn [] [:project/id (:id params)])]
-                                                              #jsx [pr/ui-project-report {:& {:ident ident}}]))
+                                                                  ident [:project/id (:id params)]]
+                                                              #jsx [pr/ui-project-report {:& {:ident ident}}]
+                                                              ))
                 :load load-project}]
         [Route {:path "/transaction-builder" :component tbp/TransactionBuilderPage}]
         [Route {:path "/user/:id" :component (fn [props] (let [params (useParams)

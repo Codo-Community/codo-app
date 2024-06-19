@@ -2,7 +2,6 @@
   (:require ["@composedb/client" :refer [ComposeClient]]
             ["@ceramicnetwork/http-client" :refer [CeramicClient]]
             ["did-session" :refer [DIDSession]]
-            ;["./composite.cljs" :as c :refer [composite]]
             ["../../__generated__/definition.js" :refer [definition]]
             ["./auth.cljs" :as a]))
 
@@ -25,5 +24,6 @@
                          (.setDID (:compose @client) (aget session "did"))
                          (aset (:ceramic @client)  "did" (aget session "did"))
                          session))]
+    (println (:compose @client))
     (println "composedb client init OK")
     (js/Promise.resolve session)))

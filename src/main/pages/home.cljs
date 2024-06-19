@@ -15,9 +15,6 @@
         navigate (useNavigate)
         data (createMemo #(n/pull store [:pages/id :home] [:activity]))]
     #jsx [:div {:class ""}
-          [:div {:class "absolute right-6 top-20 flex flex-col gap-2 lt-lg:hidden"}
-           [:span {:class "flex gap-2 items-center justify-end flex"} [A {:href "/users"} "Users"] [:div {:class "i-tabler-user"}]]
-           [:span {:class "flex gap-2 items-center justify-end flex"} [A {:href "/projects"} "Projects"] [:div {:class "i-tabler-stack"}]]]
           [:div {:class "grid h-fit xl:grid-cols-3 xl:grid-rows-4 md:(grid-cols-2 grid-rows-3 h-full) grid-flow-row w-full dark:(text-white) p-3 gap-3 w-screen"}
            [c/card {:& {:title "Activity"
                         :icon "i-tabler-activity"}}

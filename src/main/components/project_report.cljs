@@ -10,7 +10,14 @@
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
-(defc ProjectReport [this {:project/keys [id name start description {category [:category/id :category/name]} {contract [:contract/id :contract/chain]}]}]
+(defc ProjectReport [this {:project/keys [id name start description
+                                          {category [:category/id :category/name]}
+                                          {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
+                                                                                          :name "Proj"
+                                                                                          :start "2021-01-01"
+                                                                                          :description "Desc"
+                                                                                          :category {:category/id (u/uuid)
+                                                                                                     :category/name "Category"}}}]
   #jsx [:div {:class "flex flex-row w-screen"}
         #_[:aside {:id "sidebar"
                    :class "w-16 h-full"
@@ -20,21 +27,20 @@
              [:li
               [:a {:href "#"
                    :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
-        #jsx [c/ui-category {:& {:ident [:category/id (:category/id (category))]}}]
+        [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])}}]
 
         #_(str "n " (name) (id) (description) (contract) (category))])
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}
                         (fn [r] (let [c (u/nsd (get-in r [:node :category]) :category)
-                                         co (u/nsd (get-in r [:node :contract]) :contract)
-                                         project (u/nsd (get-in r [:node]) :project)]
+                                      co (u/nsd (get-in r [:node :contract]) :contract)
+                                      project (u/nsd (get-in r [:node]) :project)
+                                      project (assoc (assoc project :project/category c) :project/contract co)]
+
                                      (println "r: " r)
                                      (println "asx: d" (u/nsd (get r :node) :project))
-                                     (t/add! ctx (assoc (assoc project :project/category c) :project/contract co))
-                                     (t/add-ident! ctx [:category/id (:category/id c)] {:replace [:project/id (:project/id project) :project/category]})
-                                     (t/add-ident! ctx [:contract/id (:contract/id co)] {:replace [:project/id (:project/id project) :project/contract]})
-                                     #_(t/add! ctx (u/nsd (get r :node) :project))))))
+                                     (t/add! ctx project)))))
 
 (def ui-project-report (comp/comp-factory ProjectReport AppContext))
 

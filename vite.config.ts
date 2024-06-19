@@ -10,6 +10,7 @@ import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
 server: {
+cors: { origin:     ["http://localhost:3000", "http://localhost:7007"] },
 watch: {
       ignored: ['**/.clj-kondo/**',
                 '**/node_modules/**'],

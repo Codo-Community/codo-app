@@ -1,5 +1,5 @@
 (ns components.category
-  (:require ["solid-js" :refer [Show createSignal onMount]]
+  (:require ["solid-js" :refer [Show createSignal onMount useContext]]
             ["@solid-primitives/active-element" :refer [createFocusSignal]]
             ["../../comp.cljs" :as comp]
             ["../blueprint/input.cljs" :as in]
@@ -9,6 +9,7 @@
             ["flowbite" :as fb]
             ["./query.cljs" :as cq]
             ["./menu.cljs" :as cm]
+            ["@solidjs/router" :refer [cache createAsync]]
             ["../../transact.cljs" :as t]
             ["../blueprint/button.cljs" :as b]
             ["../../composedb/client.cljs" :as cli]
@@ -92,9 +93,17 @@
                                                              (assoc (utils/nsd (-> r :node) :category)
                                                                     :category/children new-children))))))
 
-(defc Category [this {:category/keys [id name color children] :as data :or {id (u/uuid) name "Category" children nil color :gray}
-                      ;:props [parent]
-                      :local {editing? false open? false hovering? false selected nil}}]
+(def load-category-c (cache (fn [id]
+                              (let [ctx (useContext AppContext)]
+                                (println "loading category" id)
+                                (load-category ctx id)))))
+
+(defn load-category-cache [id]
+  (load-category-c id))
+
+(defc Category [this {:category/keys [id name color children] :or {id (u/uuid) name "Category" children nil color :gray}
+                                        ;:props [parent]
+                          :local {editing? false open? false hovering? false selected nil}}]
   #jsx [:div {:class "flex flex-col ml-3 gap-1"}
         [:span {:class "flex flex-inline gap-2 mouse-pointer"
                 :onMouseEnter #(setLocal (assoc (local) :hovering? true))
@@ -102,7 +111,7 @@
          [:div {:class "flex gap-1 items-center"}
           [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
                     :onClick (fn [e]
-                               (if-not (:open? (local))
+                               (when-not (:open? (local))
                                  (load-category ctx (id)))
                                (setLocal (assoc (local) :open? (not (:open? (local))))))}]
           [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
@@ -114,14 +123,14 @@
                                         ; TODO: need to auto swap uuids for streamIDs
                                                                                         (add-category-remote ctx (data) (:parent props)))}]}
            [:div {:class (str "flex flex-inline gap-2 rounded-md p-2 mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                     :green "bg-green-800"
-                                                                                                     :blue "bg-blue-800"
-                                                                                                     :red "bg-red-800"
-                                                                                                     :yellow "bg-yellow-800"
-                                                                                                     :gray "bg-zinc-800"
-                                                                                                     "bg-zinc-800"))
-                   :tabindex 0
-                   :onClick #(setLocal (assoc (local) :editing? true))}
+                                                                                                    :green "bg-green-800"
+                                                                                                    :blue "bg-blue-800"
+                                                                                                    :red "bg-red-800"
+                                                                                                    :yellow "bg-yellow-800"
+                                                                                                    :gray "bg-zinc-800"
+                                                                                                    "bg-zinc-800"))
+                  :tabindex 0
+                  :onClick #(setLocal (assoc (local) :editing? true))}
             [:h2 {:class "text-bold"} (name)]]]]
          [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
           [cm/ui-category-menu {:&  (conj props {:this this :data data})}]]]

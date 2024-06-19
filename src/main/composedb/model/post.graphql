@@ -2,7 +2,6 @@ type User @loadModel(id: "$USER_ID") {
     id: ID!
 }
 
-
 type Post
     @createModel(accountRelation: LIST, description: "A simple Post")
     @createIndex(fields: [{ path: "created" }])

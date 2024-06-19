@@ -16,9 +16,6 @@
                 ;; TODO: fetch abi here
                 (println "init")
                 (cdf/init-listeners ctx events/handle)
-                (.then (cda/init-auth)
-                       (fn [r] (.then (cdb/init-clients)
-                                      (fn [r]))))
                 (fb/initFlowbite)))
       #jsx [AppContext.Provider {:value ctx}
             #jsx [r/ui-router]]))
