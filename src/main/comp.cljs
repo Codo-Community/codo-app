@@ -18,7 +18,6 @@
 (defclass Comp
   (field ctx)
   (^:static field query)
-  (field mew-data)
   (field -data)
   (field ident)
 

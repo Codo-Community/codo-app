@@ -23,7 +23,7 @@
            [c/card {:& {:title "Projects"
                         :icon "i-tabler-stack"}}
             [:div {:class "flex gap-2"}
-             [:p {:class "text-zinc-400 ml-1"} "No projects joined, join one today!"]]]
+             [:p {:class "text-zinc-400 ml-1"} "No projects joined, join or create one today!"]]]
 
            [c/card {:& {:title "Wizards"
                         :extra-class "md:row-start-2 row-span-2"
@@ -33,8 +33,8 @@
              [b/button {:icon "i-tabler-plus"
                         :extra-class ""
                         :on-click #(navigate (str "/wizards/new-project/" (js/crypto.randomUUID)))}]
-             [:h2 {:class "text-bold text-xl"} "Verification"]
-             [:button {:class "hover:ring-2 ring-blue-500 bg-white rounded-md w-fit h-fit"}
+             #_[:h2 {:class "text-bold text-xl"} "Verification"]
+             #_[:button {:class "hover:ring-2 ring-blue-500 bg-white rounded-md w-fit h-fit"}
               [A {:href (str "/wizards/verification/user/" "xyz")}
                [:img {:src (js/URL. "/images/sumsub.png" import.meta.url)
                       :class "w-20 h-20"}]]]]]]]))

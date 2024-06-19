@@ -16,6 +16,9 @@
 (defn uuid? [s]
   (re-matches #"^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$" s))
 
+(defn stream-id? [s]
+  (re-matches #"^kjz[a-zA-Z0-9]{43,}$" s))
+
 (defn remove-item [v item]
   (vec (filter #(not= % item) v)))
 

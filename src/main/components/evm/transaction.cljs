@@ -41,7 +41,7 @@
            (l/label (id))]
           [Show {:when (open?)}
            [:div {}
-            [f/ui-function (function)]
+            [f/ui-function {:& {:ident function}}]
             [:span {:class "flex gap-3"}
              [b/button {:title "Transact"
                         :on-click #()       ;execute-fn

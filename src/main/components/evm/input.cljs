@@ -2,19 +2,14 @@
   (:require ["./inputs.cljs" :as i]
             ["../blueprint/input.cljs" :as in]))
 
-(defn dummy []
-  #jsx[:div])
-
 (defn input [{:keys [type name] :as entry}]
   (condp = type
-      "address" [i/address-input entry]
-      "uint256" [in/number-input entry]
-      "uint8" [in/number-input (conj entry {:label name})]
-      "uint48" [in/number-input (conj entry {:label name})]
-      "bool" [in/boolean-input (conj entry {:label name})]
-      ""))
-
-
+    "address" #jsx [i/address-input {:& entry}]
+    "uint256" #jsx [in/number-input {:& (conj entry {:label name})}]
+    "uint8" #jsx [in/number-input {:& (conj entry {:label name})}]
+    "uint48" #jsx [in/number-input {:& (conj entry {:label name})}]
+    "bool" #jsx [in/boolean-input {:& (conj entry {:label name})}]
+    ""))
 
 (defn set-abi-field [{:keys [store setStore] :as ctx} path value & convert-fn]
   (setStore (first path)

@@ -24,13 +24,12 @@
         location (useLocation)]
     (onMount (fn []
                ((user/init-auth ctx))
-               (eu/add-accounts-changed (user/init-auth ctx))
-               ))
+               (eu/add-accounts-changed (user/init-auth ctx))))
     #jsx [:header {:class "min-w-96"}
           [:nav {:class "text-gray-900
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
                     dark:border-gray-700 dark:text-gray-400"}
-           [:div {:class "flex flex-wrap justify-between items-center mx-auto px-6"}
+           [:div {:class "flex flex-wrap justify-between items-center mx-auto px-4  py-1"}
             [:span {:class "flex gap-3"}
              [:a {:draggable "false"
                   :href "#" :class "flex items-center"}
@@ -49,6 +48,8 @@
                                                                                        (eu/request-addresses @ec/wallet-client
                                                                                                              (user/init-auth ctx)))}]}
               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])}}]]
-             [ud/ui-user-drop-down {:& {:ident (fn [] [:user/id (:user/id (user))])}}]]]]]))
+             [dr/dropdown {:id "header-user-dropdown"
+                           :items (fn [] [{:value "My Projects" :href (str "/user/" (:user/id (user)) "/projects") :icon "i-tabler-stack"}
+                                          {:value "Profile" :href (str "/user/" (:user/id (user))) :icon "i-tabler-user-circle"}])}]]]]]))
 
 (def ui-header (comp/comp-factory Header AppContext))

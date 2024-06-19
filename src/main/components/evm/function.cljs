@@ -20,13 +20,13 @@
           [:h3 {:class "font-bold text-sm"} (str "Inputs: ")]
           [For {:each (inputs)}
            (fn [entry i]
-             (ein/input (conj entry {:on-change (fn [e]
-                                                   (println (i))
-                                                   (ein/set-abi-field ctx [:function/id (id) :inputs (i) :value] e.target.value))})))]]
+             #jsx [ein/input {:& (conj entry {:value #(:value entry)
+                                              :on-change #(ein/set-abi-field ctx [:function/id (id) :inputs (i) :value] (-> % :target :value))})}])]]
          [Show {:when (not (empty? (outputs)))}
           [:h2 {:class "font-bold"} (str "Outputs: ")]
           [For {:each (outputs)}
            (fn [entry i]
-             (ein/input entry #_{:readonly true}))]]]])
+             #jsx [ein/input {:& (conj entry {:value #(:value entry)
+                                              :readonly true})}])]]]])
 
 (def ui-function (comp/comp-factory Function c/AppContext))

@@ -27,7 +27,8 @@
              [:li
               [:a {:href "#"
                    :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
-        [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])}}]
+        [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
+                            :open? true}}]
 
         #_(str "n " (name) (id) (description) (contract) (category))])
 

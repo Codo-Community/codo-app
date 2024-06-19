@@ -9,6 +9,19 @@
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
+(def my-projects
+  "query {
+  viewer {
+    projectList(last: 10) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}")
+
 (def list-query "query {
   projectIndex(last: 10) {
     edges {
@@ -26,8 +39,8 @@
 }
 ")
 
-(def load-projects (cache (fn [] (let [ctx (useContext AppContext)]
-                                   (-> (.executeQuery (:compose @cli/client) list-query)
+(def load-projects (cache (fn [query] (let [ctx (useContext AppContext)]
+                                   (-> (.executeQuery (:compose @cli/client) query)
                                        (.then (fn [response]
                                                 (let [res (-> response :data :projectIndex :edges)]
                                                   (doall (for [v res]

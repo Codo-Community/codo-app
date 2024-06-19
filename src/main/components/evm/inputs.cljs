@@ -12,7 +12,7 @@
   #jsx [:span {:class "gap-3 flex flex-row w-full items-center"}
         [i/input {:label name
                   :left-icon (fn [value] #jsx [:img {:class "rounded-md"
-                                                     :src (blo (value))}])
+                                                     :src (blo (or (value) "0x0"))}])
                   :value value
                   :place-holder "0x..."
                   :readonly readonly

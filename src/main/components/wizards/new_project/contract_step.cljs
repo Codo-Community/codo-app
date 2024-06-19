@@ -25,7 +25,6 @@
  } }"))
 
 (defn  ^:async fetch-abi [pid ctx]
-  (println "pid: " pid)
   (let [res (js-await (js/fetch "http://localhost:3000/abi/Project.json"))
         [account] (js-await (.getAddresses @ec/wallet-client))
         data (js-await ((aget res "json")))
@@ -50,7 +49,7 @@
 
 (defc ContractStep [this {:project/keys [id contract] :as data}]
   (let [params (useParams)]
-    (onMount #(fetch-abi (:id params) ctx))
+    (onMount #(when-not (u/stream-id? (:id params)) (fetch-abi (:id params) ctx)))
     #jsx [:div {}
           [Show {:when (and (not (nil? (contract)))
                             (not (= undefined (second (contract))))

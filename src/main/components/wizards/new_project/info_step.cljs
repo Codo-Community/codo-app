@@ -19,11 +19,12 @@
 (defn basic-project-mutation []
   (str "mutation CreateProject($i: CreateProjectInput!){
           createProject(input: $i){
-            document { id name description start categoryID }
+            document { id name description start categoryID created}
  } }"))
 
-(defn mutation-vars [{:project/keys [id name description start categoryID] :as data}]
-  {:i {:content {:name name :description description :start start :categoryID categoryID}}})
+
+(defn mutation-vars [{:project/keys [id name description start categoryID created] :as data}]
+  {:i {:content {:name name :description description :start start :categoryID categoryID :created created}}})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName] :as data} navigate]
   (fn [e]
@@ -34,20 +35,20 @@
                        (category-mutation)
                        {:i {:content {:name "Root"}}})
         (.then (fn [response]
-                 (js/console.log response)
+                 (println "response: cat:" response)
                  (let [res (-> response :data :createCategory :document)]
                    ;; add project
                    (-> (.executeQuery (:compose @cli/client)
                                       (basic-project-mutation)
-                                      (mutation-vars (merge (data) {:project/categoryID (:id res)})))
+                                      (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")})))
                        (.then (fn [response]
-                                (js/console.log response)
+                                (println "response: " response)
                                 (let [res (-> response :data :createProject :document)]
                                   (t/add! ctx (u/nsd res :project)
                                           {:replace [:component/id :project-wizard :project]})
                                   (navigate (str "/wizards/new-project/" (:id res)))))))))))))
 
-(defc BasicInfoStep [this {:project/keys [id name description start] :as data}]
+(defc BasicInfoStep [this {:project/keys [id name description start created] :as data}]
   (let [navigate (useNavigate)
         params (useParams)]
     #jsx [:form {:class "flex flex-col min-w-96 gap-3"
