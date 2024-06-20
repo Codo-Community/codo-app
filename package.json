@@ -32,6 +32,7 @@
     "concurrently": "^8.2.2",
     "dids": "^5.0.2",
     "dotenv": "^16.4.5",
+    "git": "link:github.com:zertan/vite-plugin-squint.git",
     "hardhat": "^2.22.5",
     "key-did-provider-ed25519": "^4.0.2",
     "key-did-resolver": "^4.0.0",
