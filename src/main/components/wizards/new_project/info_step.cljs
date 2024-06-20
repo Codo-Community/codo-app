@@ -26,7 +26,7 @@
 (defn mutation-vars [{:project/keys [id name description start categoryID created] :as data}]
   {:i {:content {:name name :description description :start start :categoryID categoryID :created created}}})
 
-(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName] :as data} navigate]
+(defn on-click-mutation [{:keys [store setStore] :as ctx} data navigate]
   (fn [e]
     (if e (.preventDefault e))
 

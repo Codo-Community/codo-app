@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@ceramicnetwork/codecs": "^4.13.0",
+    "@ceramicnetwork/streamid": "^5.4.0",
     "@composedb/client": "^0.7.1",
     "@didtools/pkh-ethereum": "^0.5.0",
     "@solid-primitives/active-element": "^2.0.20",
@@ -55,9 +56,11 @@
     "did-session": "^3.1.0",
     "flowbite": "^2.3.0",
     "flowbite-datepicker": "^1.2.7",
+    "graphql": "^16.8.2",
     "lodash": "^4.17.21",
     "solid-js": "^1.8.17",
     "solid-spinner": "^0.2.0",
+    "string-template": "^1.0.0",
     "viem": "^2.13.8"
   }
 }

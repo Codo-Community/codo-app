@@ -9,44 +9,53 @@
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(def my-projects
-  "query {
-  viewer {
-    projectList(last: 10) {
-      edges {
-        node {
-          name
-        }
-      }
-    }
-  }
-}")
-
-(def list-query "query {
-  projectIndex(last: 10) {
-    edges {
-      node {
+(def project-fragment
+ "fragment ProjectFragment on Node {
+  ...on Project {
         id
         name
+        description
         contract {
           id
           chain
           address
         }
       }
+}\n\n")
+
+(def my-projects ["query {
+  viewer {
+    projectList(last: 100) {
+      edges {
+        node {
+            ...ProjectFragment
+        }
+      }
+    }
+  }
+}" [:data :viewer :projectList :edges]])
+
+(def list-query ["query {
+  projectIndex(last: 10) {
+    edges {
+      node {
+        ...ProjectFragment
+        }
+      }
     }
   }
 }
-")
+" [:data :projectIndex :edges]])
 
 (def load-projects (cache (fn [query] (let [ctx (useContext AppContext)]
-                                   (-> (.executeQuery (:compose @cli/client) query)
-                                       (.then (fn [response]
-                                                (let [res (-> response :data :projectIndex :edges)]
-                                                  (doall (for [v res]
-                                                           (let [v (:node v)
-                                                                 val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
-                                                             (t/add! ctx val {:append [:component/id :project-list :projects]}))))))))))))
+                                        (-> (.executeQuery (:compose @cli/client) (str project-fragment (first query)))
+                                            (.then (fn [response]
+                                                     (let [res (get-in response (second query))]
+                                                       (println "response: " response)
+                                                       (doall (for [v res]
+                                                                (let [v (:node v)
+                                                                      val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
+                                                                  (t/add! ctx val {:append [:component/id :project-list :projects]}))))))))))))
 
 (defc SearchPage [this {:keys [component/id projects]}]
   #jsx [:div {}

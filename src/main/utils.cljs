@@ -1,6 +1,6 @@
 (ns utils
   (:require [squint.string :as string]
-            ["lodash" :refer [camelCase startCase kebabCase]]))
+            ["lodash" :as l :refer [camelCase startCase kebabCase]]))
 
 (defn ident?
   "Check if x is a EQL ident."
@@ -18,6 +18,9 @@
 
 (defn stream-id? [s]
   (re-matches #"^kjz[a-zA-Z0-9]{43,}$" s))
+
+(defn template [s]
+  (l/template s))
 
 (defn remove-item [v item]
   (vec (filter #(not= % item) v)))

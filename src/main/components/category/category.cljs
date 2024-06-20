@@ -110,35 +110,36 @@
                       (load-category ctx (id))
                       (setLocal (assoc (local) :open? (:open? props))))))
     #jsx [:div {:class "flex flex-col ml-3 gap-1"}
-          [:span {:class "flex flex-inline gap-2 mouse-pointer"
-                  :onMouseEnter #(setLocal (assoc (local) :hovering? true))
-                  :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
-           [:div {:class "flex gap-1 items-center"}
-            [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
-                      :onClick (fn [e]
-                                 (when-not (:open? (local))
-                                   (load-category ctx (id)))
-                                 (setLocal (assoc (local) :open? (not (:open? (local))))))}]
-            [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
-                                                                             :value name
-                                                                             :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
-                                                                             :on-change (fn [e]
-                                                                                          (setLocal (assoc (local) :editing? false))
-                                                                                          (comp/set! this (:ident props) :category/name e)
+          [Show {:when (not (= (name) "Root"))}
+           [:span {:class "flex flex-inline gap-2 mouse-pointer"
+                   :onMouseEnter #(setLocal (assoc (local) :hovering? true))
+                   :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
+            [:div {:class "flex gap-1 items-center"}
+             [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
+                       :onClick (fn [e]
+                                  (when-not (:open? (local))
+                                    (load-category ctx (id)))
+                                  (setLocal (assoc (local) :open? (not (:open? (local))))))}]
+             [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
+                                                                              :value name
+                                                                              :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
+                                                                              :on-change (fn [e]
+                                                                                           (setLocal (assoc (local) :editing? false))
+                                                                                           (comp/set! this (:ident props) :category/name e)
                                         ; TODO: need to auto swap uuids for streamIDs
-                                                                                          (add-category-remote ctx (data) (:parent props)))}]}
-             [:div {:class (str "flex flex-inline gap-2 rounded-md p-2 mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                      :green "bg-green-800"
-                                                                                                      :blue "bg-blue-800"
-                                                                                                      :red "bg-red-800"
-                                                                                                      :yellow "bg-yellow-800"
-                                                                                                      :gray "bg-zinc-800"
-                                                                                                      "bg-zinc-800"))
-                    :tabindex 0
-                    :onClick #(setLocal (assoc (local) :editing? true))}
-              [:h2 {:class "text-bold"} (name)]]]]
-           [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
-            [cm/ui-category-menu {:&  (conj props {:this this} (data))}]]]
+                                                                                           (add-category-remote ctx (data) (:parent props)))}]}
+              [:div {:class (str "flex flex-inline gap-2 rounded-md p-2 mouse-pointer focus:ring-2 " (condp = (color)
+                                                                                                       :green "bg-green-800"
+                                                                                                       :blue "bg-blue-800"
+                                                                                                       :red "bg-red-800"
+                                                                                                       :yellow "bg-yellow-800"
+                                                                                                       :gray "bg-zinc-800"
+                                                                                                       "bg-zinc-800"))
+                     :tabindex 0
+                     :onClick #(setLocal (assoc (local) :editing? true))}
+               [:h2 {:class "text-bold"} (name)]]]]
+            [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
+             [cm/ui-category-menu {:&  (conj props {:this this} (data))}]]]]
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
             [For {:each (children)}

@@ -31,8 +31,8 @@
              [:button {:class (str  "w-5 h-5 absolute right-2 top-3 hover:text-white text-gray-400 i-tabler-clipboard")
                        :data-copy-to-clipboard-target in-el}]]]
            [:input {:id in-el
-                    :class (str "truncate bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
-                                                            focus:border-blue-500 block w-full pr-8 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400
+                    :class (str "truncate bg-gray-50 border border-zinc-400 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
+                                                            focus:border-blue-500 block w-full pr-8 dark:bg-black dark:border-zinc-400 dark:placeholder-gray-400
                                                             dark:text-white dark:focus:ring-blue-500
                                                             dark:focus:border-blue-500
                                                             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-12" "pl-3"))

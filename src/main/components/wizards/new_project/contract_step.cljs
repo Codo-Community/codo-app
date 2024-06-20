@@ -49,11 +49,13 @@
 
 (defc ContractStep [this {:project/keys [id contract] :as data}]
   (let [params (useParams)]
-    (onMount #(when-not (u/stream-id? (:id params)) (fetch-abi (:id params) ctx)))
+    (onMount #(when (or (nil? (contract))
+                        (= undefined (second (contract)))
+                        (u/uuid? (second (contract)))) (fetch-abi (:id params) ctx)))
     #jsx [:div {}
           [Show {:when (and (not (nil? (contract)))
                             (not (= undefined (second (contract))))
-                            (not (u/uuid? (contract))))
+                            (not (u/uuid? (second (contract)))))
                  :fallback #jsx [:span {:class "flex gap-4 items-center"}
                                  "Deploying contract "
                                  [spinner/TailSpin]]}

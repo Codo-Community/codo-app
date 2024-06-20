@@ -28,7 +28,6 @@
 (defn load-viewer-user [f]
   (-> (.executeQuery (:compose @cli/client) query-from-acc)
       (.then (fn [response]
-               (println "r " response)
                (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
                                {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
                      res (if-not (:user/id res)
@@ -45,20 +44,17 @@
 
 (defc User [this {:user/keys [id firstName ethereum-address]}]
   (do
-    (onMount (fn []
-               (initDropdowns)))
-    #jsx [:div {:class "flex items-center text-black"}
-          [:button {:class "rounded-md h-10 w-10"}
-           [:img {:class "rounded-md"
-                  :data-dropdown-toggle "header-user-dropdown"
-                  :draggable false
-                  :onDragStart nil
-                  :src (blo (ethereum-address))}
-            #_(Show show-name
-                    [:div {:class "px-2"}]
-                    (if-not (= first-name "")
-                      (str first-name " " last-name)
-                      (subs (str ethereum-address) 0 8)))]]])
+    (onMount #(initDropdowns))
+    #jsx [:div {:class "flex items-center text-black flex items-center justify-center rounded-md"
+                :data-dropdown-toggle "header-user-dropdown"}
+          [b/button {:extra-class "!h-11 !w-11 !p-0 !border-0"
+                     :img-class ""
+                     :img (blo (ethereum-address))}]
+          #_(Show show-name
+                  [:div {:class "px-2"}]
+                  (if-not (= first-name "")
+                    (str first-name " " last-name)
+                    (subs (str ethereum-address) 0 8)))])
   #_[tt/tooltip {:id "header-user-tt"
                  :content (ethereum-address)}])
 

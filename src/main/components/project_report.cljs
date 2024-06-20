@@ -4,6 +4,7 @@
             ["../composedb/util.cljs" :as cu]
             ["./category/category.cljs" :as c]
             ["../transact.cljs" :as t]
+            ["./blueprint/split.cljs" :as s]
             ["../utils.cljs" :as u]
             ["./project_item.cljs" :as pi]
             ["../Context.cljs" :refer [AppContext]]
@@ -18,7 +19,7 @@
                                                                                           :description "Desc"
                                                                                           :category {:category/id (u/uuid)
                                                                                                      :category/name "Category"}}}]
-  #jsx [:div {:class "flex flex-row w-screen"}
+  #jsx [s/Split {}
         #_[:aside {:id "sidebar"
                    :class "w-16 h-full"
                    :aria-label "Sidebar"}
@@ -27,10 +28,14 @@
              [:li
               [:a {:href "#"
                    :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
-        [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
-                            :open? true}}]
-
-        #_(str "n " (name) (id) (description) (contract) (category))])
+        [s/SplitItem {}
+         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-list-tree"}]  [:h1 {:class "font-bold text-lg"} "Categories"]]
+         [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
+                             :open? true}}]]
+        [s/SplitItem {}
+         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-notes"}]  [:h1 {:class "font-bold text-lg"} "Proposals"]]
+         [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
+                             :open? true}}]]])
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}

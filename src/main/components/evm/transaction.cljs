@@ -1,5 +1,5 @@
 (ns co-who.components.evm.transaction
-  (:require ["solid-js" :refer [createSignal]]
+  (:require ["solid-js" :refer [createSignal Show]]
             ["./function.cljs" :as f]
             ["./inputs.cljs" :as ein]
             ["../blueprint/button.cljs" :as b]
@@ -48,6 +48,6 @@
                         }]
              [b/button {:title "Remove"
                         :on-click (remove-evm-transaction ctx [:transaction/id (id)])
-                        :color "dark:bg-red-600 dark:hover:bg-red-700"}]]]]]))
+                        :extra-class "!dark:(ring-red-500 text-red-500 border-red-500)"}]]]]]))
 
 (def ui-transaction (comp/comp-factory Transaction AppContext))
