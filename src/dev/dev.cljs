@@ -66,5 +66,5 @@
                                 (println ceramic)
                                 (.then (write-composite ceramic) (fn [r] r))))
 
-(.then (authenticate ceramic)
+#_(.then (authenticate ceramic)
        (.then (write-composite ceramic) (fn [r] (println "r2: " r))))

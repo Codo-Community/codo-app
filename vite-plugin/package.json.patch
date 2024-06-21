@@ -1,0 +1,10 @@
+--- package.json	2024-06-22 00:20:24.037945498 +0200
++++ p2.json	2024-06-22 00:05:36.590241214 +0200
+@@ -49,6 +49,7 @@
+               "./index.js": "./index.js",
+               "./core.js": "./core.js",
+               "./string.js": "./string.js",
++              "./node-api.js": "./node-api.js",
+               "./src/squint/core.js": "./src/squint/core.js",
+               "./src/squint/set.js": "./src/squint/set.js",
+               "./src/squint/string.js": "./src/squint/string.js",

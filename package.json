@@ -10,7 +10,8 @@
     "dev": "concurrently --kill-others \"./wait_for_ceramic.sh && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview",
-    "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005"
+    "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005",
+    "postinstall": "patch -N -t node_modules/squint-cljs/package.json ./vite-plugin/package.json.patch"
   },
   "license": "MIT",
   "devDependencies": {
@@ -32,16 +33,16 @@
     "concurrently": "^8.2.2",
     "dids": "^5.0.2",
     "dotenv": "^16.4.5",
-    "git": "link:github.com:zertan/vite-plugin-squint.git",
     "hardhat": "^2.22.5",
     "key-did-provider-ed25519": "^4.0.2",
     "key-did-resolver": "^4.0.0",
+    "patch-package": "^8.0.0",
     "solid-devtools": "^0.30.1",
     "squint-cljs": "^0.7.111",
     "unocss": "^0.60.4",
     "vite": "^5.2.13",
     "vite-plugin-solid": "^2.10.2",
-    "vite-plugin-squint": "link:../vite-plugin-squint"
+    "vite-plugin-squint": "github:zertan/vite-plugin-squint"
   },
   "dependencies": {
     "@ceramicnetwork/codecs": "^4.13.0",
@@ -61,7 +62,6 @@
     "lodash": "^4.17.21",
     "solid-js": "^1.8.17",
     "solid-spinner": "^0.2.0",
-    "string-template": "^1.0.0",
     "viem": "^2.13.8"
   }
 }

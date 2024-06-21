@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import squint from "vite-plugin-squint";
+import squint from "./vite-plugin/vite_plugin.js";
 import solidPlugin from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
 //import WindiCSS from 'vite-plugin-windicss';
@@ -47,6 +47,9 @@ port: 3000,
   },
   build: {
     outDir: "dist/",
+    rollupOptions: {
+      external: ['/src/dev/.*']
+    },
     target: 'esnext',
   },
 });
