@@ -4,6 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
+      "preinstall": "pnpm store prune",
     "start": "vite",
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
