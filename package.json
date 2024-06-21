@@ -4,7 +4,6 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "preinstall": "pnpm env use --global lts",
     "start": "vite",
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
