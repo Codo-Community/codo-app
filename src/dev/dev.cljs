@@ -10,12 +10,13 @@
     ["key-did-resolver" :refer [getResolver]]
     ["uint8arrays/from-string" :refer [fromString]]))
 
-(def ceramic (CeramicClient. "http://localhost:7007"))
+(def ceramic (let [url (or (-> js/process :env :CERAMIC_API) "http://localhost:7007")]
+               (CeramicClient. url)))
 
 (defn ^:async authenticate [ceramic]
-  (let [seed (-> js/process :env :DID_PRIVATE_KEY)
-        key (fromString seed "base16")
-        did (DID. {:resolver (getResolver) :provider (Ed25519Provider. key)})]
+  (let [key (-> js/process :env :DID_PRIVATE_KEY)
+        did-string (fromString key "base16")
+        did (DID. {:resolver (getResolver) :provider (Ed25519Provider. did-string)})]
     (-> (.authenticate did)
         (.then #(aset ceramic "did" did)))))
 
@@ -62,9 +63,5 @@
     #_(copyFile "./src/__generated__/definition.js" "./resources/definition.mjs" (fn [err] (js/console.log err)))
     (js-await (merged.startIndexingOn ceramic))))
 
-#_(.then (authenticate ceramic) (fn [r]
-                                (println ceramic)
-                                (.then (write-composite ceramic) (fn [r] r))))
-
-#_(.then (authenticate ceramic)
-       (.then (write-composite ceramic) (fn [r] (println "r2: " r))))
+(.then (authenticate ceramic)
+       (.then (write-composite ceramic) (fn [r] (println "wrote composite"))))
