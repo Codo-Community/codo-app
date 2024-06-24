@@ -34,10 +34,4 @@
     query))
 
 (defn execute-eql-query [ctx query & f]
-  (apply (partial execute-gql-mutation ctx (remap-query query) {}) f)
-  #_(-> (.executeQuery (:compose @cli/client) query)
-        (.then (fn [response]
-                 (let [res (-> response :data)]
-                   (if (first f)
-                     ((first f) res)
-                     (t/add! ctx (utils/nsd res ns))))))))
+  (apply (partial execute-gql-mutation ctx (remap-query query) {}) f))

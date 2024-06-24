@@ -8,7 +8,7 @@
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
       "deploy-composite": "export CERAMIC_API=${CERAMIC_API} && export DID_PRIVATE_KEY=${DID_PRIVATE_KEY} && echo ${CERAMIC_API} && npx squint run src/dev/dev.cljs",
-    "dev": "concurrently --kill-others \"source ./.env && ./wait_for_ceramic.sh && pnpm deploy-composite && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
+    "dev": "concurrently --kill-others \"source ./.env.development && ./wait_for_ceramic.sh && pnpm deploy-composite && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview",
     "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005",

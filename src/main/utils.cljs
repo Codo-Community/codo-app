@@ -75,3 +75,5 @@
   "Remove the browser's localStorage value for the given `key`"
   [key]
   (.removeItem (.-localStorage js/window) key))
+
+(def ipfs-folder "https://ipfs.io/ipfs/bafybeicl5xvnj7xtc4dfle5qwrcyoa2dq373y6ygtsyeso6ctjh2xdfg3i")

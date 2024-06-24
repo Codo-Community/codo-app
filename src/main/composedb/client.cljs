@@ -5,10 +5,10 @@
             ["../../__generated__/definition.js" :refer [definition]]
             ["./auth.cljs" :as a]))
 
-(def client (atom {:ceramic (CeramicClient. "http://localhost:7007")
-                   :compose (ComposeClient. {:ceramic "http://localhost:7007"
+(def client (atom {:ceramic (CeramicClient. js/import.meta.env.VITE_CERAMIC_API)
+                   :compose (ComposeClient. {:ceramic js/import.meta.env.VITE_CERAMIC_API
                                              :definition definition})
-                   #_(js/Promise. (fn [resolve reject] (resolve) (reject) ))
+                   #_(js/Promise. (fn [resolve reject] (resolve) (reject)))
                    :session nil}))
 
 (defn ^:async await-session [compose auth]

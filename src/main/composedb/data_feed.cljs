@@ -1,10 +1,9 @@
 (ns main.composedb.data-feed
   (:require ["cross-eventsource" :as es]
             ["@ceramicnetwork/codecs" :refer [JsonAsString AggregationDocument]]
-            ["@ceramicnetwork/streamid" :refer [StreamID]]
             ["codeco" :refer [decode]]))
 
-(def source (es/EventSource. "http://localhost:7007/api/v0/feed/aggregation/documents"))
+(def source (es/EventSource. (str js/import.meta.env.VITE_CERAMIC_API "/api/v0/feed/aggregation/documents")))
 
 (def Codec (-> JsonAsString (.pipe AggregationDocument)))
 

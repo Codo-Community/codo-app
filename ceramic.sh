@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-. ./.env
+. ./.env.development
 
 comp_path=./src/main/composedb/model/
 out_path=./dist/
