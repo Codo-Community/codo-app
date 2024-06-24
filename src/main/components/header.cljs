@@ -18,8 +18,8 @@
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
-#_(def codo-logo (str  u/ipfs-folder "/images/codo_new_black.svg"))
-(def codo-logo (js/URL. "/images/codo_new_black.svg" import.meta.url))
+(def codo-logo (str  u/ipfs-folder "/images/codo_new_black.svg"))
+#_(def codo-logo (js/URL. "/images/codo_new_black.svg" import.meta.url))
 
 
 (defc Header [this {:keys [component/id {user [:user/id :user/session]} chain active-project]}]
