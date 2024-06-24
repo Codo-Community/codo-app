@@ -64,11 +64,13 @@ export default function viteSquint(opts = {}) {
 
       if (/\.graphql$/.test(file)) {
         console.log("graphql file changed");
-        write_composite(ceramic).then((res) => {
+        authenticate(ceramic).then((r) => {
+          write_composite(ceramic).then((res) => {
               console.log(res);
                 }).catch((error) => {
                     console.error(error);
                       });
+        });
       }
 
       if (/\.cljs$/.test(file)) {
