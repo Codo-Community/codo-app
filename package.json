@@ -4,7 +4,6 @@
   "description": "",
   "type": "module",
   "scripts": {
-      "preinstall": "pnpm store prune",
     "start": "vite",
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
@@ -12,7 +11,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005",
-    "postinstall": "patch -N -t node_modules/squint-cljs/package.json ./vite-plugin/package.json.patch"
+    "postinstall": "patch --forward ./node_modules/squint-cljs/package.json ./vite-plugin/package.json.patch || echo "
   },
   "license": "MIT",
   "devDependencies": {
@@ -40,10 +39,10 @@
     "patch-package": "^8.0.0",
     "solid-devtools": "^0.30.1",
     "squint-cljs": "^0.7.111",
+    "uint8arrays": "^5.1.0",
     "unocss": "^0.60.4",
     "vite": "^5.2.13",
-    "vite-plugin-solid": "^2.10.2",
-    "vite-plugin-squint": "github:zertan/vite-plugin-squint"
+    "vite-plugin-solid": "^2.10.2"
   },
   "dependencies": {
     "@ceramicnetwork/codecs": "^4.13.0",
