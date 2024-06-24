@@ -1,9 +1,9 @@
-(ns main.components.blueprint.textarea)
+(ns main.components.blueprint.textarea
+  (:require ["./label.cljs" :as l]))
 
 (defn textarea [{:keys [title on-change value placeholder]}]
   #jsx  [:div {:class "rounded-md"}
-         [:label {:class "block mb-3 text-sm font-medium text-gray-900 dark:text-white"}
-          title]
+         (l/label title)
          [:textarea {:rows 4
                      :placeholder placeholder
                      :onChange on-change

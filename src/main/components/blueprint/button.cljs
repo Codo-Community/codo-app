@@ -12,5 +12,6 @@
                 :draggable false
                 :onDragStart nil
                 :src props.img}]]
-        [Show {:when props.title} props.title]
+        [Show {:when props.title}
+         [:h3 {:class "truncate"} props.title]]
         [Show {:when props.children} props.children]])

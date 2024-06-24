@@ -32,7 +32,7 @@
                (.then (eu/get-chain) switch)
                (eu/add-chain-changed switch)))
     #jsx [:div {:data-dropdown-toggle "chain-menu"}
-          [b/button {:extra-class "!h-11"
+          [b/button {:extra-class "!h-10 lt-md:hidden"
                      :title (-> (get id-to-chain (local)) :name)
                      :img (get wi/icons (local))}
            [:div {:class "w-5 h-5 i-tabler-chevron-down"}]]

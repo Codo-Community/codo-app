@@ -25,7 +25,7 @@
  } }"))
 
 (defn  ^:async fetch-abi [pid ctx]
-  (let [res (js-await (js/fetch "http://localhost:3000/abi/Project.json"))
+  (let [res (js-await (js/fetch (str js/import.meta.env.VITE_APP_URL "/abi/Project.json")))
         [account] (js-await (.getAddresses @ec/wallet-client))
         data (js-await ((aget res "json")))
         tx (js-await (el/deploy-contract @ec/wallet-client (:abi data) account (:bytecode data)))

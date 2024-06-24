@@ -19,7 +19,7 @@
                                                                                           :description "Desc"
                                                                                           :category {:category/id (u/uuid)
                                                                                                      :category/name "Category"}}}]
-  #jsx [s/Split {}
+  #jsx [s/Split {:& {:extra-class "mt-2"}}
         #_[:aside {:id "sidebar"
                    :class "w-16 h-full"
                    :aria-label "Sidebar"}
@@ -29,12 +29,13 @@
               [:a {:href "#"
                    :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
         [s/SplitItem {}
-         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-list-tree"}]  [:h1 {:class "font-bold text-lg"} "Categories"]]
+         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-list-tree"}]  [:h1 {:class "font-bold text-xl"} "Categories"]]
          [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
                              :open? true}}]]
         [s/SplitItem {}
-         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-notes"}]  [:h1 {:class "font-bold text-lg"} "Proposals"]]
+         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-notes"}]  [:h1 {:class "font-bold text-xl"} "Proposals"]]
          [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
+                             :indent? false
                              :open? true}}]]])
 
 (defn load-project [ctx ident]

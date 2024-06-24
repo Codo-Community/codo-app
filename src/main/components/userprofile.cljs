@@ -46,7 +46,7 @@
         (.then (fn [response] (js/console.log response))))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
-  #jsx [:form {:class "flex flex-col min-w-96 gap-3"
+  #jsx [:form {:class "flex flex-col gap-4 px-4"
                :onSubmit (on-click-mutation ctx data)}
         [:span {:class "flex w-full gap-3"}
          [in/input {:label "First Name"

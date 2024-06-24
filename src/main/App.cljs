@@ -1,8 +1,6 @@
 (ns App
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
             ["./router.cljs" :as r]
-            ["./composedb/client.cljs" :as cdb]
-            ["./composedb/auth.cljs" :as cda]
             ["./composedb/data_feed.cljs" :as cdf]
             ["./composedb/events.cljs" :as events]
             ["./comp.cljs" :as comp :refer [Comp]]

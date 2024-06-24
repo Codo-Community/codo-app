@@ -28,12 +28,11 @@
                                                  :active? false
                                                  :icon :cube}]})
         params (useParams)]
-    #jsx [:div {:class "flex justify-center w-screen"}
-          [:div {:class "mt-4 w-fit h-fit"}
+    #jsx [:div {:class "flex justify-center w-screen px-4"}
+          [:div {:class "mt-4 w-fit h-fit lt-md:hidden"}
            [s/ui-stepper {:& (local)}]]
-          [:div {:class "ml-24 relative"}
-           [:div {:class "my-4"}
-            [:h1 {:class "text-2xl mb-4"} "Create Project"]]
+          [:div {:class "md:ml-24 relative"}
+           [:h1 {:class "text-2xl mb-4 mt-2"} "Create Project"]
 
            props.children
 

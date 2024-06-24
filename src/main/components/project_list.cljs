@@ -6,8 +6,8 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectList [this {:keys [component/id projects]}]
-  #jsx [:div {:class "flex flex-col mt-4 mb-4 p-2 items-center"}
-        [:div {:class "flex flex-col gap-3"}
+  #jsx [:div {:class "flex flex-col px-4 items-center"}
+        [:div {:class "flex flex-col gap-4"}
          [Index {:each (projects)}
           (fn [entity i]
             #jsx [pi/ui-project-item {:& {:ident entity}}])]]])

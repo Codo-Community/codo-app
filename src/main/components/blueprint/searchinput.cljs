@@ -13,7 +13,7 @@
             [:div {:class "i-tabler-search"}]]
            [:input {:type "search"
                     :id "default-search"
-                    :class "dark:bg-black bg-white block w-fit h-11 p-4 pl-10 text-sm text-gray-900 border
+                    :class "dark:bg-black bg-white block w-fit h-10 p-4 pl-10 text-sm text-gray-900 border
                                 border-gray-300 rounded-md rounded
                                 focus:ring-blue-500 focus:border-blue-500
                                 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white

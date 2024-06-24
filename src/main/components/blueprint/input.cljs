@@ -31,7 +31,7 @@
              [:button {:class (str  "w-5 h-5 absolute right-2 top-3 hover:text-white text-gray-400 i-tabler-clipboard")
                        :data-copy-to-clipboard-target in-el}]]]
            [:input {:id in-el
-                    :class (str "truncate bg-gray-50 border border-zinc-400 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-11
+                    :class (str "truncate bg-gray-50 border border-zinc-400 text-gray-900 text-sm rounded-md focus:ring-blue-500 h-10
                                                             focus:border-blue-500 block w-full pr-8 dark:bg-black dark:border-zinc-400 dark:placeholder-gray-400
                                                             dark:text-white dark:focus:ring-blue-500
                                                             dark:focus:border-blue-500
@@ -53,7 +53,7 @@
         (l/label label)
         [:input {:type "number"
                                         ;:aria-describedby "helper-text-explanation"
-                 :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full h-11
+                 :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full h-10
                                   p-3 dark:bg-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  :placeholder placeholder
                  :onChange on-change

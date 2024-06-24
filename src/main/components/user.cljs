@@ -46,8 +46,8 @@
   (do
     (onMount #(initDropdowns))
     #jsx [:div {:class "flex items-center text-black flex items-center justify-center rounded-md"
-                :data-dropdown-toggle "header-user-dropdown"}
-          [b/button {:extra-class "!h-11 !w-11 !p-0 !border-0"
+                :data-dropdown-toggle (:data-dropdown-toggle props)}
+          [b/button {:extra-class "!h-10 !w-10 !p-0 !border-0"
                      :img-class ""
                      :img (blo (ethereum-address))}]
           #_(Show show-name

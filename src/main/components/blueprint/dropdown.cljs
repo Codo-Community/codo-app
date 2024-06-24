@@ -11,7 +11,7 @@
          (l/label title )]
         [:select {:onChange on-change
                   :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 p-3 pr-6
-                          focus:border-blue-500 block h-11 w-full
+                          focus:border-blue-500 block h-10 w-full
                           dark:(bg-black border-zinc-400 ring-zinc-400 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500) cursor-pointer grow "}
          [For {:each (items)}
           (fn [{:keys [value icon href id] :as item} i]
