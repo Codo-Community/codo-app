@@ -7,7 +7,7 @@
     "start": "vite",
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
-      "deploy-composite": "export CERAMIC_API=${CERAMIC_API} && export DID_PRIVATE_KEY=${DID_PRIVATE_KEY} && echo ${CERAMIC_API} && npx squint run src/dev/dev.cljs",
+    "deploy-composite": "export VITE_CERAMIC_API=${CERAMIC_API} && export DID_PRIVATE_KEY=${DID_PRIVATE_KEY} && echo ${VITE_CERAMIC_API} && npx squint run src/dev/dev.cljs",
     "dev": "concurrently --kill-others \"source ./.env.development && ./wait_for_ceramic.sh && pnpm deploy-composite && pnpm dlx vite\" \"source ./ceramic.sh && ceramic_daemon\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview",

@@ -76,4 +76,4 @@
   [key]
   (.removeItem (.-localStorage js/window) key))
 
-(def ipfs-folder "https://ipfs.io/ipfs/bafybeienp7rackyzq77j67nmxfvcuptxyuvkwkgi3xagkni7jasykhlw2u")
+(def ipfs-folder "https://harlequin-miniature-termite-179.mypinata.cloud/ipfs/QmduDf2YrctSn6oJeSpAjaBKZwKEgqxvAreeaCyD8gsnGc")

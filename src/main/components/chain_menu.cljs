@@ -7,14 +7,19 @@
             ["../Context.cljs" :refer [AppContext]]
             ["../evm/client.cljs" :as ec]
             ["../evm/util.cljs" :as eu]
+            ["../utils.cljs" :as u]
             ["flowbite" :refer [initDropdowns initTooltips]]
-            ["viem/chains" :refer [sepolia hardhat]])
+            ["viem/chains" :refer [sepolia hardhat mainnet polygon arbitrum]])
   (:require-macros [comp :refer [defc]]))
 
-(def id-to-chain {(:id sepolia) sepolia
+(def chain-vec (if js/import.meta.env.PROD
+              [mainnet polygon arbitrum]
+              [sepolia hardhat]))
+
+(def id-to-chain (into {} (mapv (fn [c] {(:id c) c}) chain-vec)) #_{(:id sepolia) sepolia
                   (:id hardhat) hardhat})
 
-(def chains {(:name sepolia) sepolia
+(def chains (into {} (mapv (fn [c] {(:name c) c}) chain-vec)) #_{(:name sepolia) sepolia
              (:name hardhat) hardhat})
 
 (defn switch-chain [setLocal]
@@ -34,14 +39,15 @@
     #jsx [:div {:data-dropdown-toggle "chain-menu"}
           [b/button {:extra-class "!h-10 lt-md:hidden"
                      :title (-> (get id-to-chain (local)) :name)
-                     :img (get wi/icons (local))}
+                     :img (str u/ipfs-folder (get wi/icons (local)))}
            [:div {:class "w-5 h-5 i-tabler-chevron-down"}]]
           [d/dropdown {:& {:id "chain-menu"
                            :items #(mapv (fn [c] {:id (:id c)
                                                   :value (:name c)
-                                                  :img (get wi/icons (:id c))})
+                                                  :img (str u/ipfs-folder (get wi/icons (:id c)))})
                                          (vals chains))
-                           :on-change #(.then (.switchChain @ec/wallet-client {:id (get-in chains [(-> % :target :text) :id])}))
+                           :on-change #(do (println %  " " (get-in chains [(-> % :target :textContent) :id]))
+                                         (.then (.switchChain @ec/wallet-client {:id (get-in chains [(-> % :target :textContent) :id])})))
                            :selected local}}]]))
 
 (def ui-chain-menu (comp/comp-factory ChainMenu AppContext))

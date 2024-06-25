@@ -47,6 +47,7 @@ port: 3000,
   },
   build: {
     outDir: "dist/",
+    copyPublicDir: false,
     rollupOptions: {
       external: ['/src/dev/.*']
     },
