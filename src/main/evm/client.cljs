@@ -1,8 +1,6 @@
 (ns co-who.evm.client
   (:require ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
-            ["viem/chains" :refer [sepolia hardhat]]))
-
-(defonce chains [sepolia hardhat])
+            ["./walletconnect.cljs" :refer [chains]]))
 
 (defonce wallet-client (atom (createWalletClient {:chain (first chains)
                                                   :transport (custom js/window.ethereum)})))
