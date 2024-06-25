@@ -12,6 +12,7 @@
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
             ["../composedb/client.cljs" :as cdb]
             ["./chain_menu.cljs" :as cm]
+            ["./web3_modal.cljs" :as w3m]
             ["./blueprint/button.cljs" :as b]
             ["../Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initDropdowns]]
@@ -27,8 +28,8 @@
         location (useLocation)]
     (onMount (fn []
                (initDropdowns)
-               ((user/init-auth ctx))
-               (eu/add-accounts-changed (user/init-auth ctx))))
+               #_((user/init-auth ctx))
+               #_(eu/add-accounts-changed (user/init-auth ctx))))
     #jsx [:header {:class ""}
           [:nav {:class "text-gray-900
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
@@ -47,6 +48,7 @@
                                                   (navigate (str "/search/&search=" (:search (signal)))))}}]]
              [:button {:class (str "lt-md:hidden text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
+             [w3m/ui-web3-modal]
              [cm/ui-chain-menu #_{:& {:ident chain}}]
              [Show {:when (:user/session (user))
                     :fallback #jsx [b/button {:title "Log in"

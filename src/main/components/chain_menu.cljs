@@ -8,19 +8,13 @@
             ["../evm/client.cljs" :as ec]
             ["../evm/util.cljs" :as eu]
             ["../utils.cljs" :as u]
+            ["../evm/walletconnect.cljs" :refer [chains]]
             ["flowbite" :refer [initDropdowns initTooltips]]
-            ["viem/chains" :refer [sepolia hardhat mainnet polygon arbitrum]])
+            )
   (:require-macros [comp :refer [defc]]))
 
-(def chain-vec (if js/import.meta.env.PROD
-              [mainnet polygon arbitrum]
-              [sepolia hardhat]))
-
-(def id-to-chain (into {} (mapv (fn [c] {(:id c) c}) chain-vec)) #_{(:id sepolia) sepolia
-                  (:id hardhat) hardhat})
-
-(def chains (into {} (mapv (fn [c] {(:name c) c}) chain-vec)) #_{(:name sepolia) sepolia
-             (:name hardhat) hardhat})
+(def id-to-chain (into {} (mapv (fn [c] {(:id c) c}) chains)))
+(def chain-map (into {} (mapv (fn [c] {(:name c) c}) chains)))
 
 (defn switch-chain [setLocal]
   (fn [r]
@@ -45,9 +39,8 @@
                            :items #(mapv (fn [c] {:id (:id c)
                                                   :value (:name c)
                                                   :img (str u/ipfs-folder (get wi/icons (:id c)))})
-                                         (vals chains))
-                           :on-change #(do (println %  " " (get-in chains [(-> % :target :textContent) :id]))
-                                         (.then (.switchChain @ec/wallet-client {:id (get-in chains [(-> % :target :textContent) :id])})))
+                                         chains)
+                           :on-change #(.then (.switchChain @ec/wallet-client {:id (get-in chain-map [(-> % :target :textContent) :id])}))
                            :selected local}}]]))
 
 (def ui-chain-menu (comp/comp-factory ChainMenu AppContext))
