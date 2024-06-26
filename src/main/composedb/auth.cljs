@@ -1,5 +1,6 @@
 (ns co-who.composedb.auth
   (:require ["../evm/client.cljs" :refer [wallet-client]]
+            ["../evm/walletconnect.cljs" :refer [config]]
             ["../evm/util.cljs" :as eu]
             ["did-session" :refer [DIDSession]]
             ["@didtools/pkh-ethereum" :refer [EthereumWebAuth getAccountId]]))
@@ -11,7 +12,7 @@
 (def auth (atom nil))
 
 (defn reset-auth! []
-  (reset! auth {:addresses (js/Promise. (fn [resolve _] (reset! addresses-resolver resolve)))
+  (reset! auth {
                 :account-id (js/Promise. (fn [resolve _] (reset! account-id-resolver resolve)))
                 :auth-method (js/Promise. (fn [resolve _] (reset! auth-method-resolver resolve)))}))
 
@@ -23,18 +24,15 @@
               (and session.hasSession session.isExpired))))
   (reset-auth!)
 
-  (let [ethProvider @wallet-client
-        addresses (js-await (.request @wallet-client {:method "eth_requestAccounts"}))
-        account-id (js-await (getAccountId ethProvider (first addresses)))
-        auth-method (js-await (EthereumWebAuth.getAuthMethod @wallet-client account-id))]
-    (@addresses-resolver addresses)
-    (@account-id-resolver account-id)
-    (@auth-method-resolver auth-method)
-    (println "ComposeDB auth OK: " account-id)
-    #_(reset! auth {:addresses addresses :account-id account-id :auth-method auth-method})
-    (js/Promise.resolve @auth)))
+  (println "wc: " @wallet-client)
 
-#_(defstate auth :start  (init-auth))
+  (when @wallet-client
+    (let [account-id (js-await (getAccountId @wallet-client (-> @wallet-client :account :address)))
+          auth-method (js-await (EthereumWebAuth.getAuthMethod @wallet-client account-id))]
+      (@account-id-resolver account-id)
+      (@auth-method-resolver auth-method)
+      (println "ComposeDB auth OK: " account-id)
+      (js/Promise.resolve @auth))))
 
 
 (comment (init-auth)

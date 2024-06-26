@@ -17,8 +17,10 @@
 (defn add-ident! [{:keys [store setStore] :as ctx} ident {:keys [append replace] :or {append false replace []} :as params}]
   (if (or append replace)
     (let [path (or append replace)
-          action (if append #(update-in % (vec (rest path)) conj ident) #(assoc-in % (vec (rest path)) ident))]
-      (setStore (first path) (fn [x] (if x (action x) (if append [ident] ident)))))))
+          action (if append
+                   #(update-in % (vec (rest path)) conj ident)
+                   #(assoc-in % (vec (rest path)) ident))]
+      (setStore (first path) (fn [x] (action x))))))
 
 (defn remove-ident! [{:keys [store setStore] :as ctx} path ident]
   (setStore (first path) (fn [x]
@@ -38,7 +40,7 @@
                                                         v))))))
 
 (defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace] :or {append false replace false} :as params}]
-  (n/add ctx value #_(merge {:data value} params))
+  (n/add ctx value #_(merge with-merge value {:component/id {:project-list {:projects [ident]}}}))
   (if (or append replace)
     (add-ident! ctx (n/get-ident value) params)))
 

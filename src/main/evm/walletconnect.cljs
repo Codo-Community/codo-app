@@ -12,7 +12,8 @@
 (ns main.evm.walletconnect
   (:require ["@web3modal/wagmi" :refer [defaultWagmiConfig]]
             ["viem/chains" :refer [sepolia hardhat mainnet polygon arbitrum]]
-            ["@wagmi/core" :refer [reconnect]]))
+            ["@wagmi/core" :refer [reconnect]]
+            ))
 
 (def chains (if js/import.meta.env.PROD
               [mainnet polygon arbitrum]
@@ -30,5 +31,7 @@
 (def config (defaultWagmiConfig {:chains chains
                                  :projectId project-id
                                  :metadata metadata}))
+
+#_(defonce unwatch (watchConnectors config  {:onChange (fn [connectors] (println "connectors: " connectors))}))
 
 (reconnect config)

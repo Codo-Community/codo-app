@@ -49,11 +49,10 @@
              [:button {:class (str "lt-md:hidden text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
              [w3m/ui-web3-modal]
-             [cm/ui-chain-menu #_{:& {:ident chain}}]
+             #_[cm/ui-chain-menu #_{:& {:ident chain}}]
              [Show {:when (:user/session (user))
-                    :fallback #jsx [b/button {:title "Log in"
-                                              :on-click #(eu/request-addresses @ec/wallet-client
-                                                                              (user/init-auth ctx))}]}
+                    :fallback #jsx [b/button {:title "login"
+                                              :on-click #(user/init-auth ctx)}]}
               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
                                  :data-dropdown-toggle "header-user-dropdown"}}]]
              [dr/dropdown {:id "header-user-dropdown"

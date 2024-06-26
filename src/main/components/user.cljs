@@ -28,6 +28,7 @@
 (defn load-viewer-user [f]
   (-> (.executeQuery (:compose @cli/client) query-from-acc)
       (.then (fn [response]
+               (println "load-viewer-user: response: " response)
                (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
                                {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
                      res (if-not (:user/id res)
@@ -35,12 +36,12 @@
                            res)]
                  (f res))))))
 
-(defn init-auth [ctx]
-  (fn [ethereum-address]
-    (.then (cda/init-auth)
-           (fn [r] (.then (cdb/init-clients)
-                          (fn [r]
-                            (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]}))))))))
+(defn ^:async init-auth [ctx]
+  (.then (cda/init-auth)
+         (fn [r] (.then (cdb/init-clients)
+                   (fn [r]
+                     (println "wc: r: " r)
+                     (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))))
 
 (defc User [this {:user/keys [id firstName ethereum-address]}]
   (do

@@ -1,17 +1,31 @@
 (ns co-who.evm.client
-  (:require ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
-            ["./walletconnect.cljs" :refer [chains]]))
+  (:require ["solid-js" :refer [useContext]]
+            ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
+            ["@wagmi/core" :refer [getWalletClient getPublicClient watchClient watchPublicClient watchConnections]]
+            ["../Context.cljs" :refer [AppContext]]
+            ["../components/user.cljs" :as u]
+            ["./walletconnect.cljs" :refer [config]]))
 
-(defonce wallet-client (atom (createWalletClient {:chain (first chains)
-                                                  :transport (custom js/window.ethereum)})))
+(defonce wallet-client (atom nil))
+(defonce public-client (atom nil))
+(defonce unwatch-wallet (atom nil))
+(defonce unwatch-public (atom nil))
+(defonce unwatch-connections (atom nil))
 
-(defonce public-client (atom (createPublicClient {:chain (first chains)
-                                                  :transport (http)})))
-
-(defn init-clients [wallet-client public-client chain]
-  (reset! wallet-client (createWalletClient {:chain chain
-                                             :transport (custom js/window.ethereum)}))
-  (reset! public-client (createPublicClient {:chain chain
-                                             :transport (http (get-in chain [:rpcUrls :default :http 0]))})))
+(defn ^:async init-clients []
+  (let [wc (js-await (getWalletClient config))
+        pc (js-await (getPublicClient config))]
+    (reset! wallet-client wc)
+    (reset! public-client pc))
+  (reset! unwatch-wallet (watchClient config  {:onChange (fn [client]
+                                                           (println "change wallet: " client)
+                                                           (reset! wallet-client client))}))
+  (reset! unwatch-public (watchPublicClient config  {:onChange (fn [client]
+                                                                 (println "change wallet: " client)
+                                                                 (reset! public-client client))}))
+  (reset! unwatch-connections (watchConnections config  {:onChange (fn [connections]
+                                                                     (let [ctx (useContext AppContext)]
+                                                                       (println "change connections: " ctx)
+                                                                       (u/init-auth {:store (first ctx) :setStore (second ctx)})))})))
 
 (def default wallet-client)
