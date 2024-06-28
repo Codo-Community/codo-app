@@ -6,5 +6,5 @@
         props.children])
 
 (defn SplitItem [props]
-  #jsx [:div {:class (str "grid col-span-full md:col-span-1 xl:col-span-1 dark:border-gray-600 border-gray-200 px-4 flex flex-col gap-3 " props.extra-class)}
+  #jsx [:div {:class (str "grid col-span-full md:col-span-1 xl:col-span-1 dark:border-gray-600 border-gray-200 px-4 flex flex-col gap-3 overflow-auto " props.extra-class)}
         props.children])
