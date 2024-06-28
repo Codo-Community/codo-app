@@ -13,6 +13,7 @@
             ["../composedb/client.cljs" :as cdb]
             ["./chain_menu.cljs" :as cm]
             ["./web3_modal.cljs" :as w3m]
+            ["../evm/client.cljs" :refer [wallet-client]]
             ["./blueprint/button.cljs" :as b]
             ["../Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initDropdowns]]

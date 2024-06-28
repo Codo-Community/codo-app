@@ -15,17 +15,19 @@
 (defn ^:async init-clients []
   (let [wc (js-await (getWalletClient config))
         pc (js-await (getPublicClient config))]
+    (println "init c:" wc pc)
     (reset! wallet-client wc)
-    (reset! public-client pc))
-  (reset! unwatch-wallet (watchClient config  {:onChange (fn [client]
-                                                           (println "change wallet: " client)
-                                                           (reset! wallet-client client))}))
-  (reset! unwatch-public (watchPublicClient config  {:onChange (fn [client]
-                                                                 (println "change wallet: " client)
-                                                                 (reset! public-client client))}))
-  (reset! unwatch-connections (watchConnections config  {:onChange (fn [connections]
-                                                                     (let [ctx (useContext AppContext)]
-                                                                       (println "change connections: " ctx)
-                                                                       (u/init-auth {:store (first ctx) :setStore (second ctx)})))})))
+    (reset! public-client pc)
+    (reset! unwatch-wallet (watchClient config  {:onChange (fn [client]
+                                                             (println "change wallet: " client)
+                                                             (reset! wallet-client client))}))
+    (reset! unwatch-public (watchPublicClient config  {:onChange (fn [client]
+                                                                   (println "change wallet: " client)
+                                                                   (reset! public-client client))}))
+    (reset! unwatch-connections (watchConnections config  {:onChange (fn [connections]
+                                                                       (let [ctx (useContext AppContext)]
+                                                                         (println "change connections: " ctx)
+                                                                         (u/init-auth {:store (first ctx) :setStore (second ctx)})))}))
+    wc))
 
 (def default wallet-client)

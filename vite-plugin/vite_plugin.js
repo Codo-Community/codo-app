@@ -88,7 +88,7 @@ export default function viteSquint(opts = {}) {
           // invalidate dependants
           server.moduleGraph.onFileChange(resolveId);
           // hot reload
-          console.log( "r ", [...modules, module ]);
+          // console.log( "r ", [...modules, module ]);
           return [...modules, module ]
         }
         return modules;

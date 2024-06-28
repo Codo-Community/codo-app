@@ -58,6 +58,7 @@
                             (not (u/uuid? (second (contract)))))
                  :fallback #jsx [:span {:class "flex gap-4 items-center"}
                                  "Deploying contract "
+                                 #_[:button {:onClick (fn [e] (.then (fetch-abi (:id params) ctx) #(println %)))} "de"]
                                  [spinner/TailSpin]]}
            "Project Contract Deployed!"]]))
 

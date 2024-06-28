@@ -16,7 +16,8 @@
         auth-method (js-await (:auth-method @a/auth))]
     (.get DIDSession account-id auth-method  {:resources (aget compose "resources")})))
 
-(defn ^:async init-clients []
+(defn ^:async init-clients [r]
+  (println "got acc-id etc." r)
   (let [account-id (js-await (:account-id @a/auth))
         auth-method (js-await (:auth-method @a/auth))
         session (.then (.get DIDSession account-id auth-method {:resources (aget (:compose @client) "resources")})

@@ -5,7 +5,8 @@
             ["./blueprint/button.cljs" :as b]
             ["../comp.cljs" :as comp]
             ["../transact.cljs" :as t]
-            ["../composedb/client.cljs" :as cdb]
+            ["../evm/client.cljs" :refer [wallet-client]]
+            ["../composedb/client.cljs" :as cdc]
             ["../composedb/auth.cljs" :as cda]
             ["../utils.cljs" :as utils]
             ["../composedb/client.cljs" :as cli]
@@ -38,10 +39,10 @@
 
 (defn ^:async init-auth [ctx]
   (.then (cda/init-auth)
-         (fn [r] (.then (cdb/init-clients)
-                   (fn [r]
-                     (println "wc: r: " r)
-                     (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))))
+         (fn [r]
+           (.then (cdc/init-clients)
+                  (fn [r]
+                    (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))))
 
 (defc User [this {:user/keys [id firstName ethereum-address]}]
   (do
