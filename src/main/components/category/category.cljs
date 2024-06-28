@@ -132,7 +132,7 @@
                                                                                                       :blue "bg-blue-800"
                                                                                                       :red "bg-red-800"
                                                                                                       :yellow "bg-yellow-800"
-                                                                                                      :gray "bg-zinc-800"
+                                                                                                      :gray "bg-zinc-800 text-white"
                                                                                                       "bg-none"))
                     :tabindex 0
                     :onClick #(setLocal (assoc (local) :editing? true))}
