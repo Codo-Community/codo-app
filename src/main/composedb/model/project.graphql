@@ -8,17 +8,18 @@ type Contract @loadModel(id: "$CONTRACT_ID") {
 
 type Project
   @createModel(accountRelation: LIST, description: "A Codo Project")
-  @createIndex(fields: [{ path: "name" }])
-  @createIndex(fields: [{ path: "start" }])
-  @createIndex(fields: [{ path: "created" }]) {
-  name: String! @string(minLength: 3, maxLength: 50)
-  description: String @string(minLength: 1, maxLength: 100)
-  image: String @string(minLength: 1, maxLength: 1000)
-  tags: [String] @list(maxLength: 50) @string(minLength: 1, maxLength: 100)
-  categoryID: StreamID! @documentReference(model: "Category")
-  category: Category! @relationDocument(property: "categoryID")
-  contractID: StreamID @documentReference(model: "Contract")
-  contract: Contract @relationDocument(property: "contractID")
-  created: Date!
-  start: Date!
+    @createIndex(fields: [{ path: "name" }])
+    @createIndex(fields: [{ path: "start" }])
+    @createIndex(fields: [{ path: "created" }]) {
+      name: String! @string(minLength: 3, maxLength: 50)
+      description: String @string(minLength: 1, maxLength: 5000)
+      image: String @string(minLength: 1, maxLength: 1000)
+      tags: [String] @list(maxLength: 50) @string(minLength: 1, maxLength: 100)
+      categoryID: StreamID! @documentReference(model: "Category")
+      category: Category! @relationDocument(property: "categoryID") @immutable
+      contractID: StreamID @documentReference(model: "Contract")
+      contract: Contract @relationDocument(property: "contractID")
+      announcements: [String] @list(maxLength: 5000) @string(minLength: 1, maxLength: 10000)
+      created: Date!
+      start: Date!
 }

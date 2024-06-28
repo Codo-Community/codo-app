@@ -12,6 +12,17 @@ type Post
     tag: String! @string(minLength: 1, maxLength: 100)
     edited: DateTime
     created: DateTime!
-    userId: StreamID! @documentReference(model: "User")
-    user: User! @relationDocument(property: "userId")
+    parentId: StreamID @documentReference(model: "Node")
+    userId: StreamID @documentReference(model: "User")
+    user: User @relationDocument(property: "userId")
+}
+
+type Comment @createModel(accountRelation: LIST, description: "A comment on a Post") {
+  postID: StreamID! @documentReference(model: "Post")
+  post: Post! @relationDocument(property: "postID")
+  text: String! @string(maxLength: 500)
+  author: DID! @documentAccount
+  created: DateTime!
+  userId: StreamID @documentReference(model: "User")
+  user: User @relationDocument(property: "userId")
 }

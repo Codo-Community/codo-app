@@ -1,8 +1,17 @@
-type Category @createModel(description: "A category to group other categories and/or requirements, tasks.") {
-  name: String! @string(minLength: 3, maxLength: 400)
-  mainReviewer: DID @accountReference
-  color: String @string(minLength: 3, maxLength: 50)
-  children: [CategoryLink] @list(maxLength: 100) @relationFrom(model: "CategoryLink", property: "parentID")
+type Proposal @loadModel(id: "$PROPOSAL_ID") {
+    id: ID!
+}
+
+type Category
+  @createModel(accountRelation: LIST, description: "A category to group other categories and/or requirements, tasks.")
+  @createIndex(fields: [{ path: ["name"] }])
+  @createIndex(fields: [{ path: ["mainReviewer"] }]) {
+    name: String! @string(minLength: 3, maxLength: 400)
+    description: String @string(minLength: 1, maxLength: 5000)
+    mainReviewer: DID @accountReference
+    color: String @string(minLength: 3, maxLength: 50)
+    children: [CategoryLink] @list(maxLength: 100) @relationFrom(model: "CategoryLink", property: "parentID")
+    proposals: [Proposal] @list(maxLength: 100) @relationFrom(model: "Proposal", property: "parentID")
 }
 
 type CategoryLink @createModel(description: "Collection of category contents") {

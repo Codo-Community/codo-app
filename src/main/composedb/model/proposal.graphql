@@ -1,0 +1,44 @@
+type User @loadModel(id: "$USER_ID") {
+    id: ID!
+}
+
+type Post @loadModel(id: "$POST_ID") {
+    id: ID!
+}
+
+enum ProposalStatus {
+  ACCEPTED
+  EVALUATION
+  REJECTED
+}
+
+type Proposal
+  @createModel(accountRelation: LIST, description: "A generic proposal type.")
+    @createIndex(fields: [{ path: ["name"] }])
+    @createIndex(fields: [{ path: ["status"] }])
+    @createIndex(fields: [{ path: ["created"] }]) {
+      name: String! @string(minLength: 3, maxLength: 400)
+      color: String @string(minLength: 3, maxLength: 50)
+      description: String @string(minLength: 3, maxLength: 100000)
+      author: DID! @documentAccount
+      userID: StreamID! @documentReference(model: "User")
+      user: User! @relationDocument(property: "userID")
+      created: Date!
+      parentID: StreamID! @documentReference(model: "Node")
+      parent: Node! @relationDocument(property: "parentID")
+      status: ProposalStatus!
+      posts: [Post] @list(maxLength: 1000000) @relationFrom(model: "Post", property: "parentID")
+      votes: [Vote] @list(maxLength: 1000000) @relationFrom(model: "Vote", property: "parentID")
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+type Vote @createModel(description: "A vote on a proposal", accountRelation: SET, accountRelationFields: ["parentID"]) {
+  parentID: StreamID! @documentReference(model: "Proposal")
+  voter: DID! @documentAccount
+  type: VoteType!
+  proposal: Proposal! @relationDocument(property: "parentID")
+}
