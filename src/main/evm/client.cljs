@@ -11,7 +11,7 @@
 (defonce public-client (atom nil))
 (defonce mainnet-client (atom (createPublicClient
                                {:chain mainnet
-                                :transport (http)})))
+                                :transport (http (:href (js/URL. (str "/v2/" js/import.meta.env.VITE_ALCHEMY_API_KEY) js/import.meta.env.VITE_ALCHEMY_MAINNET)))})))
 (defonce unwatch-wallet (atom nil))
 (defonce unwatch-public (atom nil))
 (defonce unwatch-connections (atom nil))
