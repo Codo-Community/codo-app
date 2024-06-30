@@ -1,6 +1,7 @@
 (ns co-who.evm.client
   (:require ["solid-js" :refer [useContext]]
             ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
+            ["viem/chains" :refer [mainnet]]
             ["@wagmi/core" :refer [getWalletClient getPublicClient watchClient watchPublicClient watchConnections]]
             ["../Context.cljs" :refer [AppContext]]
             ["../components/user.cljs" :as u]
@@ -8,6 +9,9 @@
 
 (defonce wallet-client (atom nil))
 (defonce public-client (atom nil))
+(defonce mainnet-client (atom (createPublicClient
+                               {:chain mainnet
+                                :transport (http)})))
 (defonce unwatch-wallet (atom nil))
 (defonce unwatch-public (atom nil))
 (defonce unwatch-connections (atom nil))
