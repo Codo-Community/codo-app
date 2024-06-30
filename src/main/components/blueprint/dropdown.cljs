@@ -1,7 +1,8 @@
 (ns components.blueprint.dropdown
-  (:require ["solid-js" :refer [For Show]]
+  (:require ["solid-js" :refer [For Show onMount]]
             ["./button.cljs" :as b]
             ["@solidjs/router" :refer [A]]
+            ["flowbite" :refer [initDropdowns]]
             ["./label.cljs" :as l]))
 
 (defn dropdown-select [{:keys [id title items on-change selected extra-class]}]
@@ -20,11 +21,12 @@
                value])]]])
 
 (defn dropdown [{:keys [id title items on-change selected extra-class]}]
+  (onMount #(initDropdowns))
   #jsx [:div {:id id
               :class "z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-fit dark:(bg-black divide-gray-600 border-gray-600) border-1"}
-        [Show {:when (not (nil? title))}
+        [Show {:when title}
          [:div {:class "px-4 py-3 text-sm text-gray-900 dark:text-white"}
-          (l/label title)]]
+          (title)]]
         [:ul {:class "py-2 text-sm text-gray-700 dark:text-gray-200"}
          #jsx [For {:each (items)}
                (fn [{:keys [value icon img href id] :as item} i]

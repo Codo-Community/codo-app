@@ -6,6 +6,7 @@
             ["../comp.cljs" :as comp]
             ["../transact.cljs" :as t]
             ["../evm/client.cljs" :as ec :refer [wallet-client]]
+            ["../evm/gc_passport.cljs" :as gcp]
             ["../composedb/client.cljs" :as cdc]
             ["../composedb/auth.cljs" :as cda]
             ["../utils.cljs" :as utils]
@@ -45,20 +46,31 @@
                   (fn [r]
                     (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))))
 
-(defc User [this {:user/keys [id name ethereum-address avatar]}]
+(defc User [this {:user/keys [id name ethereum-address avatar passport-score]}]
   (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]
                                                                           (.then  (.getEnsName @ec/mainnet-client {:address source})
                                                                                   (fn [name]
                                                                                     (.then (.getEnsAvatar @ec/mainnet-client {:name (normalize name)})
                                                                                            (fn [avatar]
-                                                                                             (t/add! ctx {:user/id (id) :user/name name :user/avatar avatar})
-                                                                                             (initDropdowns) (initTooltips)
-                                                                                             {:name name :avatar avatar}))))))]
+                                                                                             (.then  (gcp/get-passport-score (ethereum-address))
+                                                                                                     (fn [score]
+                                                                                                       (let [data {:user/id (id) :user/name name :user/avatar avatar
+                                                                                                                   :user/passport-score score}]
+                                                                                                         (t/add! ctx data {:after (fn []
+                                                                                                                                    (initDropdowns) (initTooltips)
+                                                                                                                                    data)}))))))))))
+        score-colors (fn [score] (if (> score 19)
+                                   "bg-green-400"
+                                   (if (> score 10)
+                                     "bg-yellow-400"
+                                     "bg-red-400")))]
     (onMount (do (initDropdowns) (initTooltips)))
     #jsx [:div {}
-          [:div {:class "flex items-center text-black flex items-center justify-center rounded-md"
+          [:div {:class "flex items-center text-black flex items-center justify-center rounded-md relative"
                  :data-dropdown-toggle (:data-dropdown-toggle props)
                  :data-tooltip-target (str "user-tooltip-" (ethereum-address))}
+           [:span {:class (str "absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white dark:text-white
+                                rounded-full -top-1 -left-1.5 border-zinc-400 border-1 " (score-colors (passport-score)))}]
            [b/button {:extra-class "!h-10 !w-10 !p-0 !border-0"
                       :img-class ""
                       :img (or (avatar) (blo (ethereum-address)))}]]

@@ -8,7 +8,7 @@
             ["../composedb/client.cljs" :as cli]
             ["../transact.cljs" :as t]
             ["./blueprint/searchinput.cljs" :as si]
-            ["./blueprint/dropdown.cljs" :as dr]
+            ["./user/user_dropdown.cljs" :as userdd]
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
             ["../composedb/client.cljs" :as cdb]
             ["./chain_menu.cljs" :as cm]
@@ -54,10 +54,10 @@
              [Show {:when (:user/session (user))
                     :fallback #jsx [b/button {:title "login"
                                               :on-click #(user/init-auth ctx)}]}
-              [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                 :data-dropdown-toggle "header-user-dropdown"}}]]
-             [dr/dropdown {:id "header-user-dropdown"
-                           :items (fn [] [{:value "My Projects" :href (str "/user/" (:user/id (user)) "/projects") :icon "i-tabler-stack"}
-                                          {:value "Profile" :href (str "/user/" (:user/id (user))) :icon "i-tabler-user-circle"}])}]]]]]))
+              [:div {}
+               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                  :data-dropdown-toggle "header-user-dropdown"}}]
+               [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                              :data-dropdown-id "header-user-dropdown"}}]]]]]]]))
 
 (def ui-header (comp/comp-factory Header AppContext))

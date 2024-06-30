@@ -1,0 +1,59 @@
+(ns main.evm.gc-passport
+  (:require ["./client.cljs" :as ec]))
+
+(def headers {"Content-Type" "application/json"
+              "X-API-KEY" js/import.meta.env.VITE_GITCOIN_API_KEY})
+(def SCORERID js/import.meta.env.VITE_GITCOIN_SUBMIT_PASSPORT_SCOREID)
+
+(defn get-signing-message []
+  ;; TODO:
+  ;; use the tanstack query client from @tanstack/solid-query injected in App.cljs
+  (-> (js/fetch js/import.meta.env.VITE_GITCOIN_SIGNING_MESSAGE_URL {:headers headers})
+      (.then (fn [response] (.json response)))
+      (.then (fn [json] json))
+      (.catch (fn [err] (js/console.log "error: " err)))))
+
+(defn submit-passport [address]
+  (-> (get-signing-message)
+      (.then (fn [{:keys [message nonce]}]
+               (.then (.signMessage @ec/wallet-client)
+                      (fn [signature]
+                        (let [body {:address address
+                                    :scorer_id SCORERID
+                                    :signature signature
+                                    :nonce nonce}]
+                          (.then (js/fetch (str js/import.meta.env.VITE_GITCOIN_API_REGISTRY_URL)
+                                           {:method "POST"
+                                            :headers headers
+                                            :body (js/JSON.stringify body)})
+                                 (fn [response]
+                                   (.then (.json response)
+                                          (fn [data]
+                                            (js/console.log "data:" data))))))))))
+      (.catch (fn [err]
+                (js/console.log "error:" err)))))
+
+(defn get-passport-stamps [current-address]
+  (js/console.log "in getStamps()")
+  (let [GET_PASSPORT_STAMPS_URI (str "https://api.scorer.gitcoin.co/registry/stamps/" current-address)]
+    (.then (js/fetch GET_PASSPORT_STAMPS_URI {:headers headers})
+           (fn [response]
+             (.then (.json response)
+                    (fn [data]
+                      (js/console.log data)))))
+    #_(.catch (fn [err]
+              (js/console.log "error: " err)))))
+
+(defn ^:async get-passport-score [current-address]
+  (js/console.log "in getScore()")
+  (let [GET_PASSPORT_SCORE_URI (str "https://api.scorer.gitcoin.co/registry/score/" SCORERID "/" current-address)]
+    (.then (js/fetch GET_PASSPORT_SCORE_URI {:headers headers})
+           (fn [response]
+             (.then (.json response)
+                    (fn [passportData]
+                      (if (.-score passportData)
+                        (let [roundedScore (/ (Math/round (* (.-score passportData) 100)) 100)]
+                          roundedScore)
+                        (js/console.log "No score available, please add Stamps to your passport and then resubmit.")))))
+    #_(.catch (fn [err]
+              (js/console.log "error: " err))))))
