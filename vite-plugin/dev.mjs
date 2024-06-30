@@ -49,8 +49,5 @@ const merged20 = (await readEncodedComposite(ceramic, "./src/__generated__/defin
 const new$21 = (await writeRuntimeDefinition(merged20, "./src/__generated__/definition-merged.json"));
 return (await merged20.startIndexingOn(ceramic));
 };
-authenticate(ceramic).then(write_composite(ceramic).then((function (r) {
-return squint_core.println("wrote composite");
-})));
 
 export { ceramic, authenticate, write_composite }

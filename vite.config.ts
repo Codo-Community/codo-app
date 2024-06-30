@@ -2,10 +2,6 @@ import { defineConfig } from 'vite';
 import squint from "./vite-plugin/vite_plugin.js";
 import solidPlugin from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
-//import WindiCSS from 'vite-plugin-windicss';
-//import formsPlugin from 'windicss/plugin/forms';
-//import flowbite from 'flowbite/plugin-windicss';
-import flowbite from "flowbite";
 import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
