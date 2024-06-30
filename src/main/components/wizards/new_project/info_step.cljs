@@ -31,16 +31,14 @@
     (if e (.preventDefault e))
 
     ;; add category
-    (-> (.executeQuery (:compose @cli/client)
-                       (category-mutation)
-                       {:i {:content {:name "Root"}}})
+    (-> (cli/exec-mutation (category-mutation)
+                           {:i {:content {:name "Root"}}})
         (.then (fn [response]
                  (println "response: cat:" response)
                  (let [res (-> response :data :createCategory :document)]
                    ;; add project
-                   (-> (.executeQuery (:compose @cli/client)
-                                      (basic-project-mutation)
-                                      (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")})))
+                   (-> (cli/exec-mutation (basic-project-mutation)
+                                          (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")})))
                        (.then (fn [response]
                                 (println "response: " response)
                                 (let [res (-> response :data :createProject :document)]

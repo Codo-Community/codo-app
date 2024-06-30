@@ -28,15 +28,15 @@
 ")
 
 (defn load-viewer-user [f]
-  (-> (.executeQuery (:compose @cli/client) query-from-acc)
-      (.then (fn [response]
-               (println "load-viewer-user: response: " response)
-               (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
-                               {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
-                     res (if-not (:user/id res)
-                           (conj res {:user/id (js/crypto.randomUUID)})
-                           res)]
-                 (f res))))))
+  (.then (cli/exec-query query-from-acc)
+         (fn [response]
+           (println "load-viewer-user: response: " response)
+           (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
+                           {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
+                 res (if-not (:user/id res)
+                       (conj res {:user/id (js/crypto.randomUUID)})
+                       res)]
+             (f res)))))
 
 (defn ^:async init-auth [ctx]
   (.then (cda/init-auth)

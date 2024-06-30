@@ -44,10 +44,7 @@
                                       co (u/nsd (get-in r [:node :contract]) :contract)
                                       project (u/nsd (get-in r [:node]) :project)
                                       project (assoc (assoc project :project/category c) :project/contract co)]
-
-                                     (println "r: " r)
-                                     (println "asx: d" (u/nsd (get r :node) :project))
-                                     (t/add! ctx project)))))
+                                  (t/add! ctx project)))))
 
 (def ui-project-report (comp/comp-factory ProjectReport AppContext))
 

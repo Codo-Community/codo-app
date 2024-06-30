@@ -40,10 +40,9 @@
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
   (fn [e]
     (if e (.preventDefault e))
-    (-> (.executeQuery (:compose @cli/client)
-                       (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
-                       (mutation-vars (data)))
-        (.then (fn [response] (js/console.log response))))))
+    (.then (cli/exec-mutation (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
+                              (mutation-vars (data)))
+           (fn [response] (println response)))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
   #jsx [:form {:class "flex flex-col gap-4 px-4"
@@ -68,7 +67,7 @@
   (let [query UserProfile.query
         query (mapv #(second (string/split % "/")) query)
         query (geql/eql->graphql {ident query})]
-    (-> (.executeQuery (:compose @cli/client) query)
+    (-> (cli/exec-query query)
         (.then (fn [response]
                  (let [res (-> response :data :node)]
                    (t/add! ctx (utils/nsd res :user))))))))
