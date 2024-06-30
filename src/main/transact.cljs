@@ -23,25 +23,14 @@
       (setStore (first path) (fn [x] (action x))))))
 
 (defn remove-ident! [{:keys [store setStore] :as ctx} path ident]
-  (setStore (first path) (fn [x]
-                           #_(println "x " (get-in x (rest path)))
-                           #_(println "ident " (second ident))
-
-                           #_(println (mapv (fn [y]
-                                            (not (= (second y)
-                                                    (second ident)))) (get-in x (rest path))))
-
-                           #_(println (filterv (fn [y] (not (= (second y)
-                                                             (second ident)))) (get-in x (rest path))))
-
-                           (update-in x (rest path) (fn [a]
+  (setStore (first path) (fn [x] (update-in x (rest path) (fn [a]
                                                       (let [v (filterv (fn [y] (not (= (second y)
                                                                                        (second ident)))) a)]
                                                         v))))))
 
 (defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace] :or {append false replace false} :as params}]
-  (n/add ctx value #_(merge with-merge value {:component/id {:project-list {:projects [ident]}}}))
-  (if (or append replace)
-    (add-ident! ctx (n/get-ident value) params)))
+  (let [res (n/add ctx value)]
+    (if (or append replace)
+      (add-ident! ctx res params))))
 
 (defn remove-entity! [])

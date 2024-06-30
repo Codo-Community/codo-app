@@ -56,7 +56,7 @@
     (reset! acc {})
     #_(js/chrome.runtime.sendMessage {:action "updateData" :data store})
     #_(println "store" store)
-    ctx))
+    res))
 
 (defn pull [store entity query]
   (cond

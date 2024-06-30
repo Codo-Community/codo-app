@@ -1,5 +1,5 @@
 (ns App
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
+  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy Suspense]]
             ["./router.cljs" :as r]
             ["./evm/client.cljs" :as ec]
             ["./composedb/data_feed.cljs" :as cdf]
@@ -18,10 +18,10 @@
                 ;; TODO: fetch abi here
                 (println "init")
                 #_(cdf/init-listeners ctx events/handle)
-                (ec/init-clients)
+                (.then  (ec/init-clients) (fn [res] (println "init-clients" res)))
                 (fb/initFlowbite)))
     #jsx [AppContext.Provider {:value ctx}
           [QueryClientProvider {:client queryClient}
-           #jsx [r/ui-router]]]))
+           [r/ui-router]]]))
 
 (def ui-root (comp/comp-factory Root AppContext))

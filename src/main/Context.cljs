@@ -18,7 +18,8 @@
                                                   :transaction-builder {:contracts []
                                                                         :contract nil
                                                                         :transactions []}}})
-        {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
+        ctx {:store store :setStore setStore}]
+    (norm/add ctx)
     (set! (.-store js/window) store)
     ctx))
 
