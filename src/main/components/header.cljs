@@ -54,10 +54,9 @@
              [Show {:when (:user/session (user))
                     :fallback #jsx [b/button {:title "login"
                                               :on-click #(user/init-auth ctx)}]}
-              [:div {}
-               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                  :data-dropdown-toggle "header-user-dropdown"}}]
-               [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                              :data-dropdown-id "header-user-dropdown"}}]]]]]]]))
+              [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                 :data-dropdown-toggle "header-user-dropdown"}}]]
+             [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                           :data-dropdown-id "header-user-dropdown"}}]]]]]))
 
 (def ui-header (comp/comp-factory Header AppContext))

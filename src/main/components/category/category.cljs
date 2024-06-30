@@ -41,20 +41,20 @@
 (def create-mutation
   "mutation createCategory($i: CreateCategoryInput!){
      createCategory(input: $i){
-       document { id name }
+       document { id name color}
      }
 }")
 
 (def update-mutation
   "mutation updateCategory($i: UpdateCategoryInput!){
      updateCategory(input: $i){
-       document { name }
+       document { name color }
      }
 }")
 
 
-(defn add-category-remote [ctx {:category/keys [id name color children] :as data} parent-id]
-  (let [vars (utils/remove-ns data)
+(defn add-category-remote [ctx {:category/keys [id name color] :as data} parent-id]
+  (let [vars {:name name :color color} #_(utils/remove-ns data)
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
         vars (if-not (u/uuid? id)
@@ -87,7 +87,8 @@
 (declare Category)
 
 (defn load-category [ctx id]
-  (cu/execute-gql-mutation ctx (cq/simple id) {} (fn [r]
+  (println "load ctg: " id)
+  (cu/execute-gql-query ctx (cq/simple id) {} (fn [r]
                                                    (let [new-children (mapv #(utils/nsd (->  % :node :child) :category) (-> r :node :children :edges))]
                                                      (t/add! ctx
                                                              (assoc (utils/nsd (-> r :node) :category)
@@ -101,7 +102,7 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(defc Category [this {:category/keys [id name color children] :or {id (u/uuid) name "Category" children nil color :gray}
+(defc Category [this {:category/keys [id name color children {creator [:id :isViewer]}] :or {id (u/uuid) name "Category" children nil color :gray}
                                         ;:props [parent]
                       :local {editing? false open? false hovering? false selected nil indent? true}}]
   (do

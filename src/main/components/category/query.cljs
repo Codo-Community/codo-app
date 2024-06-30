@@ -56,12 +56,17 @@
   node(id: \"" id "\") {
     ... on Category {
       id
+      creator { id isViewer }
+      color
+      mainReviewer { id }
       children(first: 100) {
         edges {
           node {
             child {
               name
+              color
               id
+              creator { id isViewer }
             }
           }
         }

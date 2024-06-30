@@ -31,6 +31,7 @@
 (def config (defaultWagmiConfig {:chains chains
                                  :projectId project-id
                                  :metadata metadata
+                                 :analytics false
                                  }))
 
 #_(defonce unwatch (watchConnectors config  {:onChange (fn [connectors] (println "connectors: " connectors))}))

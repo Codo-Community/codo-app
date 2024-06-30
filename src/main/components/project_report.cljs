@@ -1,10 +1,12 @@
 (ns pages.search
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
+  (:require ["solid-js" :refer [For createSignal]]
+            ["solid-js/web" :refer [Dynamic]]
             ["../comp.cljs" :as comp]
             ["../composedb/util.cljs" :as cu]
             ["./category/category.cljs" :as c]
             ["../transact.cljs" :as t]
             ["./blueprint/split.cljs" :as s]
+            ["./blueprint/tabs.cljs" :as tabs]
             ["../utils.cljs" :as u]
             ["./project_item.cljs" :as pi]
             ["../Context.cljs" :refer [AppContext]]
@@ -19,24 +21,32 @@
                                                                                           :description "Desc"
                                                                                           :category {:category/id (u/uuid)
                                                                                                      :category/name "Category"}}}]
-  #jsx [s/Split {:& {:extra-class "mt-2"}}
-        #_[:aside {:id "sidebar"
-                   :class "w-16 h-full"
-                   :aria-label "Sidebar"}
-           [:div {:class "h-full px-3 py-4 overflow-hidden bg-gray-50 dark:bg-black"}
-            [:ul {:class "space-y-2 font-medium"}
-             [:li
-              [:a {:href "#"
-                   :class "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group i-tabler-search"}]]]]]
-        [s/SplitItem {}
-         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-list-tree"}]  [:h1 {:class "font-bold text-xl"} "Categories"]]
-         [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
-                             :open? true}}]]
-        [s/SplitItem {}
-         [:span {:class "flex gap-3 items-center"} [:div {:class "i-tabler-notes"}]  [:h1 {:class "font-bold text-xl"} "Proposals"]]
-         [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
-                             :indent? false
-                             :open? true}}]]])
+  (let [[local setLocal] (createSignal {:split-items [{:selected 0
+                                                       :tabs [{:title "Category"
+                                                               :type :category
+                                                               :props {:indent? false
+                                                                       :open? true}
+                                                               :comp (fn [props] #jsx [c/ui-category {:& props}])}]}]})]
+    #jsx [:div {:class "flex flex-col w-full"}
+          [s/Split {:& {:extra-class "mt-2"}}
+           [For {:each (:split-items (local))}
+            (fn [item i]
+              #jsx [s/SplitItem {}
+                    [tabs/Tabs {:& {:id "" :data-tabs-toggle "default-tab-content"
+                                      :items #(:tabs item)}}]
+                    [Dynamic {:component (:comp (nth (:tabs item) (:selected item)))
+                              :ident (fn [] [:category/id (:category/id (category))])}
+
+                     #_[tabs/TabContent {:& {:id "default-tab-content"
+                                             :item (first (:tabs (local)))}}]]])]
+           #_[s/SplitItem {}
+              [tabs/Tabs {:& {:id "" :data-tabs-toggle "default-tab-content"
+                              :items (fn [] (:tabs (local)))}}]
+              [tabs/TabContent {:& {:id "default-tab-content"}}]
+
+              [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
+                                  :indent? false
+                                  :open? true}}]]]]))
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}

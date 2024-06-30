@@ -51,13 +51,14 @@
         [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
                                                                   ident [:project/id (:id params)]]
                                                               #jsx [pr/ui-project-report {:& {:ident ident}}]))
-                :load load-project}]
+                :load load-project}
+         #_[Route {:path "/transaction-builder" :component pr/Planner}]]
         [Route {:path "/transaction-builder" :component tbp/TransactionBuilderPage}]
         [Route {:path "/user/:id"}
          [Route {:path "/" :component (fn [props] (let [params (useParams)
-                                                               ident (fn [] [:user/id (:id params)])]
-                                                           #jsx [up/ui-user-profile {:& {:ident ident}}]))
-                :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
+                                                        ident (fn [] [:user/id (:id params)])]
+                                                    #jsx [up/ui-user-profile {:& {:ident ident}}]))
+                 :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
          [Route {:path "/projects" :component sp/ui-search-page
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
         [Route {:path "/wizards/new-project/:id"

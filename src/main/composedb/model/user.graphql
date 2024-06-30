@@ -2,6 +2,5 @@ type User @createModel(accountRelation: SINGLE, description: "A category to grou
   firstName: String! @string(minLength: 3, maxLength: 100)
   lastName: String! @string(minLength: 3, maxLength: 100)
   introduction: String @string(minLength: 0, maxLength: 600)
-
   #image: [Aarweave]
 }

@@ -7,10 +7,10 @@
             ["../transact.cljs" :as t]
             ["../evm/client.cljs" :as ec :refer [wallet-client]]
             ["../evm/gc_passport.cljs" :as gcp]
-            ["../composedb/client.cljs" :as cdc]
             ["../composedb/auth.cljs" :as cda]
             ["../utils.cljs" :as utils]
             ["../composedb/client.cljs" :as cli]
+            ["../composedb/util.cljs" :as cu]
             ["../Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initDropdowns initTooltips]]
             ["viem/ens" :refer [normalize]]
@@ -28,23 +28,24 @@
 }
 ")
 
-(defn load-viewer-user [f]
-  (.then (cli/exec-query query-from-acc)
-         (fn [response]
-           (println "load-viewer-user: response: " response)
-           (let [res (conj (utils/nsd (-> response :data :viewer :user) :user)
-                           {:user/ethereum-address (nth (string/split (-> response :data :viewer :id) ":") 4)})
-                 res (if-not (:user/id res)
-                       (conj res {:user/id (js/crypto.randomUUID)})
-                       res)]
-             (f res)))))
+(defn load-viewer-user [ctx]
+  (cu/execute-gql-query ctx query-from-acc {}
+            (fn [response]
+              (let [a (println "res" response)
+                    res (conj (utils/nsd (-> response :viewer :user) :user)
+                              {:user/ethereum-address (nth (string/split (-> response :viewer :id) ":") 4)})
+
+                    res (if-not (:user/id res)
+                          (conj res {:user/id (js/crypto.randomUUID)})
+                          res)]
+                (t/add! ctx (conj res {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))
 
 (defn ^:async init-auth [ctx]
   (.then (cda/init-auth)
          (fn [r]
-           (.then (cdc/init-clients)
+           (.then (cli/init-clients)
                   (fn [r]
-                    (load-viewer-user #(t/add! ctx (conj % {:user/session (-> (:compose @cli/client) :did :_id)}) {:replace [:component/id :header :user]})))))))
+                    (load-viewer-user ctx))))))
 
 (defc User [this {:user/keys [id name ethereum-address avatar passport-score]}]
   (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]

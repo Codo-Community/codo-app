@@ -3,6 +3,7 @@
             ["./comp.cljs" :as comp]
             ["@solidjs/router" :refer [A]]
             ["./Context.cljs" :refer [AppContext]]
+            ["./components/alert.cljs" :as alert]
             ["./components/header.cljs" :as h]
             ["./components/footer.cljs" :as f]
             ["./components/chat/input.cljs" :as ci])
@@ -18,15 +19,14 @@
 
            props.children
 
-
-
            #_[:div {:class "absolute lg:right-6 top-20 flex lg:flex-col gap-2 lt-lg:bottom-1"}
               [:span {:class "flex gap-2 items-center justify-end flex"} [A {:href "/users"} "Users"] [:div {:class "i-tabler-user"}]]
               [:span {:class "flex gap-2 items-center justify-end flex"} [A {:href "/projects"} "Projects"] [:div {:class "i-tabler-stack"}]]]]
           #_[ci/ChatInput]
 
-          [f/ui-footer]]))
+          [f/ui-footer]
+          [alert/ui-alert {:& {:ident [:component/id :alert]}}]]))
 
-(def ui-main (comp/comp-factory Main AppContext))
+  (def ui-main (comp/comp-factory Main AppContext))
 
                                         ; dark bg? [#101014]

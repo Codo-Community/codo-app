@@ -14,20 +14,33 @@
         (t/add! ctx (utils/nsd res ns))))))
 
 (defn execute-gql-query [ctx query vars & f]
-  (-> (cli/exec-query query vars)
-      (.then (fn [response]
-               (let [res (-> response :data)]
-                 (if (first f)
-                   ((first f) res)
-                   (t/add! ctx (utils/nsd res ns))))))))
+  (.catch
+   (.then (cli/exec-query query vars) (fn [response]
+                                        (println "resp: " response)
+                                        (let [res (-> response :data)]
+                                          (if (first f)
+                                            ((first f) res)
+                                            (t/add! ctx (utils/nsd res ns))))))
+   (fn [error]
+     (println "error query " query)
+     (println "error" error)
+     (t/add! ctx {:component/id :alert
+                  :title "Error"
+                  :type :error
+                  :message error}))))
 
 (defn execute-gql-mutation [ctx mutation vars & f]
-  (-> (cli/exec-mutation mutation vars)
-      (.then (fn [response]
-               (let [res (-> response :data)]
-                 (if (first f)
-                   ((first f) res)
-                   (t/add! ctx (utils/nsd res ns))))))))
+  (.catch (.then (cli/exec-mutation mutation vars) (fn [response]
+                                                     (let [res (-> response :data)]
+                                                       (if (first f)
+                                                         ((first f) res)
+                                                         (t/add! ctx (utils/nsd res ns))))))
+          (fn [error]
+            (println "error" error)
+            (t/add! ctx {:component/id :alert
+                         :title "Error"
+                         :type :error
+                         :message error}))))
 
 (defn remap-query [query]
   (let [k (if (first (keys query)) (str/split (first (keys query)) ","))
