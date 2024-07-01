@@ -11,6 +11,7 @@
 (defc Web3Modal [this {:keys [] :or {}}]
   (let [modal (createWeb3Modal {:wagmiConfig config
                                 :enableAnalytics false
+                                :enableEmail false
                                 :enableOnRamp false
                                 :projectId project-id})
         [local setLocal] (createSignal {:open? false

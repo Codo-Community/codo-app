@@ -27,7 +27,9 @@
      (t/add! ctx {:component/id :alert
                   :title "Error"
                   :type :error
-                  :message error}))))
+                  :visible? true
+                  :interval 4000
+                  :message (str error)}))))
 
 (defn execute-gql-mutation [ctx mutation vars & f]
   (.catch (.then (cli/exec-mutation mutation vars) (fn [response]
@@ -39,8 +41,10 @@
             (println "error" error)
             (t/add! ctx {:component/id :alert
                          :title "Error"
+                         :visible? true
                          :type :error
-                         :message error}))))
+                         :interval 4000
+                         :message (str error)}))))
 
 (defn remap-query [query]
   (let [k (if (first (keys query)) (str/split (first (keys query)) ","))
