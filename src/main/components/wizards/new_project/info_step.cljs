@@ -7,13 +7,14 @@
             ["../../../transact.cljs" :as t]
             ["../../blueprint/button.cljs" :as b]
             ["../../../composedb/client.cljs" :as cli]
+            ["../../../composedb/util.cljs" :as cu]
             ["../../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
 (defn category-mutation []
   (str "mutation CreateCategory($i: CreateCategoryInput!){
           createCategory(input: $i){
-            document { id name }
+            document { id name created }
  } }"))
 
 (defn basic-project-mutation []
@@ -31,22 +32,22 @@
     (if e (.preventDefault e))
 
     ;; add category
-    (-> (cli/exec-mutation (category-mutation)
-                           {:i {:content {:name "Root"}}})
-        (.then (fn [response]
-                 (println "response: cat:" response)
-                 (let [res (-> response :data :createCategory :document)]
-                   ;; add project
-                   (-> (cli/exec-mutation (basic-project-mutation)
-                                          (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")})))
-                       (.then (fn [response]
-                                (println "response: " response)
-                                (let [res (-> response :data :createProject :document)]
-                                  (t/add! ctx (u/nsd res :project)
-                                          {:replace [:component/id :project-wizard :project]})
-                                  (navigate (str "/wizards/new-project/" (:id res)))))))))))))
+    (cu/execute-gql-mutation ctx (category-mutation)
+                             {:i {:content {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}}}
+                             (fn [response]
+                               (println "response: cat:" response)
+                               (let [res (-> response :createCategory :document)]
+                                 ;; add project
+                                 (cu/execute-gql-mutation ctx (basic-project-mutation)
+                                                          (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")}))
+                                                          (fn [response]
+                                                            (println "response: " response)
+                                                            (let [res (-> response :createProject :document)]
+                                                              (t/add! ctx (u/nsd res :project)
+                                                                      {:replace [:component/id :project-wizard :project]})
+                                                              (navigate (str "/wizards/new-project/" (:id res)))))))))))
 
-(defc BasicInfoStep [this {:project/keys [id name description start created] :as data}]
+(defc BasicInfoStep [this {:project/keys [id name description start created] :or {name ""} :as data}]
   (let [navigate (useNavigate)
         params (useParams)]
     #jsx [:form {:class "flex flex-col gap-3"

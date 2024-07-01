@@ -8,13 +8,13 @@
          [:li {:class "me-2" :role "presentation"}
           [For {:each (items)}
            (fn [{:keys [title]} _]
-             #jsx [:button {:class "inline-block p-2 border-b-1 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+             #jsx [:button {:class "inline-block pb-2 border-b-1 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-100"
                        :id "dashboard-tab"
                        :data-tabs-target (str "#" "dashboard")
                        :type "button" :role "tab" :aria-controls "dashboard" :aria-selected "false"}
               [:span {:class "flex gap-2 items-center"} [:div {:class "i-tabler-list-tree w-4 h-4"}] title]])]]]])
 
-(defn TabContent [{:keys [id item]}]
-  #jsx [:div {:id id
-              :class "hidden p-2 rounded-lg bg-gray-50 dark:bg-gray-800" :role "tabpanel" :aria-labelledby (str id "-tab")}
-        ])
+(defn TabContent [props]
+  #jsx [:div {:id props.id
+              :class "hidden p-2 rounded-lg bg-gray-50 dark:bg-gray-800" :role "tabpanel" :aria-labelledby (str props.id "-tab")}
+        (str props)])

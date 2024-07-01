@@ -7,6 +7,7 @@
             ["./blueprint/button.cljs" :as b]
             ["../geql.cljs" :as geql]
             ["../composedb/client.cljs" :as cli]
+            ["../composedb/util.cljs" :as cu]
             ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
@@ -40,9 +41,9 @@
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
   (fn [e]
     (if e (.preventDefault e))
-    (.then (cli/exec-mutation (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
-                              (mutation-vars (data)))
-           (fn [response] (println response)))))
+    (cu/execute-gql-mutation ctx (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
+                             (mutation-vars (data))
+                             (fn [response] (println response)))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
   #jsx [:form {:class "flex flex-col gap-4 px-4"

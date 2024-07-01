@@ -10,6 +10,7 @@ type Category
     description: String @string(minLength: 1, maxLength: 5000)
     mainReviewer: DID @accountReference
     creator: DID! @documentAccount
+    created: Date!
     color: String @string(minLength: 3, maxLength: 50)
     children: [CategoryLink] @list(maxLength: 100) @relationFrom(model: "CategoryLink", property: "parentID")
     proposals: [Proposal] @list(maxLength: 100) @relationFrom(model: "Proposal", property: "parentID")

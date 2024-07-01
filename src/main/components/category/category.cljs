@@ -6,14 +6,15 @@
             ["../../utils.cljs" :as utils]
             ["../../composedb/util.cljs" :as cu]
             ["../../utils.cljs" :as u]
-            ["flowbite" :as fb]
+            ["../project/proposal.cljs" :as pr]
             ["./query.cljs" :as cq]
             ["./menu.cljs" :as cm]
-            ["@solidjs/router" :refer [cache createAsync]]
+            ["@solidjs/router" :refer [cache createAsync useParams]]
             ["../../transact.cljs" :as t]
             ["../blueprint/button.cljs" :as b]
             ["../../composedb/client.cljs" :as cli]
             ["../../normad.cljs" :as normad]
+            ["flowbite" :refer [initModals]]
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
@@ -48,7 +49,7 @@
 (def update-mutation
   "mutation updateCategory($i: UpdateCategoryInput!){
      updateCategory(input: $i){
-       document { name color }
+       document { name color description }
      }
 }")
 
@@ -58,7 +59,8 @@
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
         vars (if-not (u/uuid? id)
-                 (assoc-in  vars [:i :id] id) vars)
+               (assoc-in vars [:i :id] id)
+               (assoc-in vars [:i :created] (.toLocaleDateString (js/Date.) "sv")))
         vars (utils/drop-false vars)
         mutation (if (u/uuid? id)
                    {:name "createCategory"
@@ -78,7 +80,7 @@
                                  ; and inside the :category/id table {:category/id {:#uuid-xyz {:category/id :#uuid-xyz ... -> :category/id stream-id
                                  #_(normad/swap-uuids! ctx id stream-id)
 
-                                 (when (u/uuid? id)
+                                 (when (and (u/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID (:category/id category)}}}
                                                             (fn [r] #_(println "re: " r)))))))))
@@ -102,49 +104,68 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(defc Category [this {:category/keys [id name color children {creator [:id :isViewer]}] :or {id (u/uuid) name "Category" children nil color :gray}
+(defc Category [this {:category/keys [id name color children
+                                      {creator [:id :isViewer]}
+                                      proposals] :or {id (u/uuid) name "Category" children nil color :gray proposals []}
                                         ;:props [parent]
-                      :local {editing? false open? false hovering? false selected nil indent? true}}]
-  (do
-    (onMount (fn [] (when (:open? props)
-                      (println "loading category" (id))
-                      (load-category ctx (id))
-                      (setLocal (assoc (local) :open? (:open? props))))))
-    #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
-          [:span {:class "flex flex-inline gap-2 mouse-pointer"
-                  :onMouseEnter #(setLocal (assoc (local) :hovering? true))
-                  :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
-           [:div {:class "flex gap-1 items-center"}
-            [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
-                      :onClick (fn [e]
-                                 (when-not (:open? (local))
-                                   (load-category ctx (id)))
-                                 (setLocal (assoc (local) :open? (not (:open? (local))))))}]
-            [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
-                                                                             :value name
-                                                                             :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
-                                                                             :on-change (fn [e]
-                                                                                          (setLocal (assoc (local) :editing? false))
-                                                                                          (comp/set! this (:ident props) :category/name e)
-                                        ; TODO: need to auto swap uuids for streamIDs
-                                                                                          (add-category-remote ctx (data) (:parent props)))}]}
-             [:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                      :green "bg-green-800"
-                                                                                                      :blue "bg-blue-800"
-                                                                                                      :red "bg-red-800"
-                                                                                                      :yellow "bg-yellow-800"
-                                                                                                      :gray "bg-zinc-800"
-                                                                                                      "bg-none"))
-                    :tabindex 0
-                    :onClick #(setLocal (assoc (local) :editing? true))}
-              [:h2 {:class "text-bold"} (name)]]]]
-           [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
-            [cm/ui-category-menu {:&  (conj props {:this this} (data))}]]]
-          [Show {:when (:open? (local))}
-           [:div {:class "flex flex-col gap-1"}
-            [For {:each (children)}
-             (fn [entity i]
-               (ui-category {:ident entity
-                             :parent (id)}))]]]]))
+                      :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
+  (do []
+      (onMount (fn [] (when (:open? props)
+                        (println "loading category: " (id))
+                        (load-category ctx (id))
+                        (setLocal (assoc (local) :open? (:open? props)))
+                        (initModals))))
+      #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
+            [:span {:class "flex flex-inline gap-2 mouse-pointer"
+                    :onMouseEnter #(setLocal (assoc (local) :hovering? true))
+                    :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
+             [:div {:class "flex gap-1 items-center"}
+              [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
+                        :onClick (fn [e]
+                                   (when-not (:open? (local))
+                                     (load-category ctx (id)))
+                                   (setLocal (assoc (local) :open? (not (:open? (local))))))}]
+              [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
+                                                                               :value name
+                                                                               :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
+                                                                               :on-change (fn [e]
+                                                                                            (setLocal (assoc (local) :editing? false))
+                                                                                            (comp/set! this (:ident props) :category/name e)
+                                                                                             ; TODO: need to auto swap uuids for streamIDs
+                                                                                            (add-category-remote ctx (data) (:parent props)))}]}
+               [:button {:data-modal-target "planner-modal"
+                         :data-modal-toggle "planner-modal"
+
+                         :onClick #((:setProjectLocal props) (assoc ((:projectLocal props)) :modal {:comp :category
+                                                                                                    :visible? true
+                                                                                                    :ident [:category/id (id)]}))}  (name)]
+               #_[:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
+                                                                                                                  :green "bg-green-800"
+                                                                                                                  :blue "bg-blue-800"
+                                                                                                                  :red "bg-red-800"
+                                                                                                                  :yellow "bg-yellow-800"
+                                                                                                                  :gray "bg-zinc-800"
+                                                                                                                  "bg-none"))
+                        :tabindex 0
+                        :onClick #(setLocal (assoc (local) :editing? true))}
+                  [:h2 {:class "text-bold"} (name)]]]]
+             [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
+              [cm/ui-category-menu {:&  {:ident (:ident props)
+                                         :parent (:parent props)}}]]]
+            [Show {:when (:open? (local))}
+             [:div {:class "flex flex-col gap-1"}
+              [Show {:when (:show-proposals? (local))}
+               [:div {:class "flex flex-col gap-1"}
+                [For {:each (proposals)}
+                 (fn [proposal i]
+                   #jsx [pr/ui-proposal {:& {:ident proposal
+                                             :projectLocal (:projectLocal props)
+                                             :setProjectLocal (:setProjectLocal props)}}])]]]
+              [For {:each (children)}
+               (fn [entity i]
+                 (ui-category {:ident entity
+                               :setProjectLocal (:setProjectLocal props)
+                               :projectLocal (:projectLocal props)
+                               :parent (id)}))]]]]))
 
 (def ui-category (comp/comp-factory Category AppContext))

@@ -38,7 +38,7 @@
                                                             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-12" "pl-3"))
                     :datepicker datepicker
                     :placeholder placeholder
-                    :type type
+                    :type (or type "text")
                     :onChange on-change
                     :onFocusOut on-focus-out
                     :onSubmit on-submit
@@ -64,7 +64,8 @@
 
 #_(def number-input (comp/comp-factory NumberInput AppContext))
 
-(defn boolean-input [{:keys [ident label placeholder on-submit on-change readonly required value] :or {required false extra-class "" readonly false value (fn [] "") on-change (fn [e])}}]
+(defn boolean-input [{:keys [ident label placeholder on-submit on-change readonly required value]
+                      :or {required false extra-class "" readonly false value (fn [] "") on-change (fn [e])}}]
   #jsx [:div {:class ""}
         (l/label label)
         [:input {:type "checkbox"

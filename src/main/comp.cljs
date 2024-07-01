@@ -2,6 +2,7 @@
   (:require ["solid-js" :as solid]
             ["./normad.cljs" :as n]
             ["./transact.cljs" :as t]
+            ;["./composedb/util.cljs" :as cu]
             ["./utils.cljs" :as u]
             [squint.core :refer [defclass]]
             #_["./comp_macro.mjs" :as m])
@@ -45,9 +46,13 @@
 (defn mutate! [this mutate-map]
   (let [local (:local mutate-map)
         add (or (:add local) (:add mutate-map))
+        remote (:remote mutate-map)
         remove (or (:remove local) (:remove mutate-map))
         opts {:append (:append (or local mutate-map))
               :replace (:replace (or local mutate-map))}]
+    #_(when remote
+      (if (:query remote)
+        (cu/execute-gql-query (:query remote) (:vals remote))))
     (when add
       (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))
     (when remove

@@ -1,16 +1,23 @@
 (ns pages.search
-  (:require ["solid-js" :refer [For createSignal]]
+  (:require ["solid-js" :refer [For createSignal onMount createMemo]]
             ["solid-js/web" :refer [Dynamic]]
+            ["flowbite" :refer [initModals]]
             ["../comp.cljs" :as comp]
             ["../composedb/util.cljs" :as cu]
-            ["./category/category.cljs" :as c]
+            ["./category/modal.cljs" :as cm]
+            ["./project/proposal_modal.cljs" :as pm]
+            ["./category/view.cljs" :as cv]
             ["../transact.cljs" :as t]
             ["./blueprint/split.cljs" :as s]
             ["./blueprint/tabs.cljs" :as tabs]
             ["../utils.cljs" :as u]
+            ["./blueprint/modal.cljs" :as modal]
+            ["./blueprint/input.cljs" :as in]
+            ["./blueprint/dropdown.cljs" :as dr]
             ["./project_item.cljs" :as pi]
             ["../Context.cljs" :refer [AppContext]]
-            [squint.string :as string])
+            [squint.string :as string]
+            )
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectReport [this {:project/keys [id name start description
@@ -21,32 +28,32 @@
                                                                                           :description "Desc"
                                                                                           :category {:category/id (u/uuid)
                                                                                                      :category/name "Category"}}}]
-  (let [[local setLocal] (createSignal {:split-items [{:selected 0
-                                                       :tabs [{:title "Category"
+  (let [comp-2-modal {:category (fn [props] #jsx [cm/ui-category-modal {:& props}])
+                      :proposal (fn [props] #jsx [pm/ui-proposal-modal {:& props}])}
+        [local setLocal] (createSignal {:modal {:comp nil
+                                                :visible? false
+                                                :ident nil}
+                                        :split-items [{:selected 0
+                                                       :tabs [{:title "Categories"
                                                                :type :category
                                                                :props {:indent? false
                                                                        :open? true}
-                                                               :comp (fn [props] #jsx [c/ui-category {:& props}])}]}]})]
+                                                               :comp (fn [props] #jsx [cv/ui-category-view {:& props}])}]}]})]
+    (createMemo (fn [] (when (:modal (local)) (initModals))))
     #jsx [:div {:class "flex flex-col w-full"}
           [s/Split {:& {:extra-class "mt-2"}}
            [For {:each (:split-items (local))}
             (fn [item i]
               #jsx [s/SplitItem {}
                     [tabs/Tabs {:& {:id "" :data-tabs-toggle "default-tab-content"
-                                      :items #(:tabs item)}}]
-                    [Dynamic {:component (:comp (nth (:tabs item) (:selected item)))
-                              :ident (fn [] [:category/id (:category/id (category))])}
-
-                     #_[tabs/TabContent {:& {:id "default-tab-content"
-                                             :item (first (:tabs (local)))}}]]])]
-           #_[s/SplitItem {}
-              [tabs/Tabs {:& {:id "" :data-tabs-toggle "default-tab-content"
-                              :items (fn [] (:tabs (local)))}}]
-              [tabs/TabContent {:& {:id "default-tab-content"}}]
-
-              [c/ui-category {:& {:ident (fn [] [:category/id (:category/id (category))])
-                                  :indent? false
-                                  :open? true}}]]]]))
+                                    :items #(:tabs item)}}]
+                    [Dynamic {:& {:component (:comp (nth (:tabs item) (:selected item)))
+                                  :projectLocal local
+                                  :setProjectLocal setLocal
+                                  :ident (fn [] [:category/id (:category/id (category))])}}]])]]
+          [modal/modal {:& {:id "planner-modal"
+                            :body #jsx [Dynamic {:& {:component (get comp-2-modal (-> (local) :modal :comp))
+                                                     :ident (fn [] (-> (local) :modal :ident))}}]}}]]))
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}

@@ -36,9 +36,12 @@ enum VoteType {
   DOWN
 }
 
-type Vote @createModel(description: "A vote on a proposal", accountRelation: SET, accountRelationFields: ["parentID"]) {
-  parentID: StreamID! @documentReference(model: "Proposal")
-  voter: DID! @documentAccount
-  type: VoteType!
-  proposal: Proposal! @relationDocument(property: "parentID")
+type Vote
+  @createModel(description: "A vote on a proposal", accountRelation: SET, accountRelationFields: ["parentID"])
+    @createIndex(fields: [{ path: ["parentID"] }])
+    @createIndex(fields: [{ path: ["type"] }]) {
+      parentID: StreamID! @documentReference(model: "Proposal")
+      voter: DID! @documentAccount
+      type: VoteType!
+      proposal: Proposal! @relationDocument(property: "parentID")
 }

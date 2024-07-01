@@ -42,7 +42,7 @@
               [:img {:class (str "h-9 dark:invert") :alt "Codo Logo" :src codo-logo}]]
              [:span {:class "flex items-center dark:text-white font-bold lt-md:hidden max-w-2/3 "}
               (let [p (second (string/split location.pathname "/"))]
-                p)]]
+                (str p))]]
             [:div {:class "flex items-center md:order-2 gap-4"}
              #_[:span {:class "lt-md:hidden"}
                 [si/SearchInput {:& {:on-submit (fn [signal]

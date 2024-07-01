@@ -60,4 +60,4 @@
     query))
 
 (defn execute-eql-query [ctx query & f]
-  (apply (partial execute-gql-mutation ctx (remap-query query) {}) f))
+  (apply (partial execute-gql-query ctx (remap-query query) {}) f))

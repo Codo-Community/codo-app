@@ -1,5 +1,5 @@
 (ns components.user
-  (:require ["solid-js" :refer [onMount createSignal createResource]]
+  (:require ["solid-js" :refer [onMount createSignal createResource createMemo]]
             ["blo" :refer [blo]]
             ["./blueprint/tooltip.cljs" :as tt]
             ["./blueprint/button.cljs" :as b]
@@ -65,7 +65,7 @@
                                    (if (> score 10)
                                      "bg-yellow-400"
                                      "bg-red-400")))]
-    (onMount (do (initDropdowns) (initTooltips)))
+    (createMemo (fn [] (when (id) (initDropdowns) (initTooltips))))
     #jsx [:div {}
           [:div {:class "flex items-center text-black flex items-center justify-center rounded-md relative"
                  :data-dropdown-toggle (:data-dropdown-toggle props)

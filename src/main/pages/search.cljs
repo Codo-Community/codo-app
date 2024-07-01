@@ -59,7 +59,6 @@
       }
     }
   }
-}
 " [:data :projectIndex :edges]])
 
 (def load-projects (cache (fn [query] (let [ctx (useContext AppContext)]
