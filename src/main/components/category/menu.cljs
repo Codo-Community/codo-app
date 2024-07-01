@@ -10,7 +10,7 @@
   #jsx [:div {:class "flex flex-col relative w-fit"}
         [to/tooltip {:id "tooltip-color" :content "Color"}]
         [to/tooltip {:id "tooltip-icon" :content "Icon"}]
-        [:span {:class "flex gap-2 p1 items-center"}
+        [:span {:class "flex gap-2 p1 pt-1.5 items-center"}
          [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                    :onClick #(comp/mutate! this {:add :new
                                                  :append [:category/id id :category/children]})}]
