@@ -58,7 +58,7 @@
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
         vars (if-not (u/uuid? id)
-                 (assoc-in  vars [:i :id] id) vars)
+               (assoc-in  vars [:i :id] id) vars)
         vars (utils/drop-false vars)
         mutation (if (u/uuid? id)
                    {:name "createCategory"
@@ -101,7 +101,7 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(defc Category [this {:category/keys [id name color children] :or {id (u/uuid) name "Category" children nil color :gray}
+(defc Category [this {:category/keys [id name color icon children] :or {id (u/uuid) name "Category" children nil color :gray}
                                         ;:props [parent]
                       :local {editing? false open? false hovering? false selected nil indent? true}}]
   (do
@@ -128,15 +128,23 @@
                                         ; TODO: need to auto swap uuids for streamIDs
                                                                                           (add-category-remote ctx (data) (:parent props)))}]}
              [:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                      :green "bg-green-800"
-                                                                                                      :blue "bg-blue-800"
-                                                                                                      :red "bg-red-800"
-                                                                                                      :yellow "bg-yellow-800"
-                                                                                                      :gray "bg-zinc-800 text-white"
-                                                                                                      "bg-none"))
+                                                                                                              :green "bg-green-800"
+                                                                                                              :blue "bg-blue-800"
+                                                                                                              :red "bg-red-800"
+                                                                                                              :yellow "bg-yellow-800"
+                                                                                                              :gray "bg-zinc-800 text-white"
+                                                                                                              "bg-none"))
                     :tabindex 0
                     :onClick #(setLocal (assoc (local) :editing? true))}
-              [:h2 {:class "text-bold"} (name)]]]]
+              [:h2 {:class "text-bold"} (name)]]
+             [:icon {:class (str "inline-block h-6 w-1 not-italic font-bold text-center text-sky-400 " (condp = (icon)
+                                                                                                         :snowflake "before:content-['❄']"
+                                                                                                         :pencil "before:content-['✐']"
+                                                                                                         :star "before:content-['✰']"
+                                                                                                         :smile "before:content-['ッ']"
+                                                                                                         "before:content-['*']"))
+                     :tabindex 0
+                     :onClick #(setLocal (assoc (local) :editing? true))}]]]
            [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
             [cm/ui-category-menu {:&  (conj props {:this this} (data))}]]]
           [Show {:when (:open? (local))}
