@@ -58,6 +58,17 @@
       id
       creator { id isViewer }
       color
+proposals(last: 10) {
+        edges {
+          node {
+            id
+            name
+            author {
+              id
+            }
+          }
+        }
+      }
       mainReviewer { id }
       children(first: 100) {
         edges {

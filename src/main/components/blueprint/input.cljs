@@ -22,7 +22,7 @@
 
     #jsx [:div {:id id
                 :class (str "w-full" extra-class)}
-          (l/label label)
+          [l/label {:title label}]
           [:span {:class "flex flex-row relative"}
            [Show {:when (if left-icon true)}
             [:div {:class (str  "w-7 h-7 absolute left-2 top-2 ")}

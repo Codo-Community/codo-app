@@ -37,3 +37,6 @@
 #_(defonce unwatch (watchConnectors config  {:onChange (fn [connectors] (println "connectors: " connectors))}))
 
 (reconnect config)
+
+#_(.then (reconnect config)
+       (fn [res] (get-session)))

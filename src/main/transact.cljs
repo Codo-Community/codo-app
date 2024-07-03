@@ -28,9 +28,11 @@
                                                                                        (second ident)))) a)]
                                                         v))))))
 
-(defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace] :or {append false replace false} :as params}]
+(defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace after] :or {append false replace false after false} :as params}]
   (let [res (n/add ctx value)]
     (if (or append replace)
-      (add-ident! ctx res params))))
+      (add-ident! ctx res params))
+    (if after
+      (after))))
 
 (defn remove-entity! [])
