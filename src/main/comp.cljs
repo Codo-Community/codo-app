@@ -12,9 +12,9 @@
 
 (defn set!
   ([this ident field event]
-   (t/set-field! this.-ctx (conj ident field) (u/e->v event)))
+   (t/set-field! this.-ctx (conj ident field) (or (u/e->v event) event)))
   ([this field event]
-   (t/set-field! this.-ctx (conj (this.ident) field) (u/e->v event))))
+   (t/set-field! this.-ctx (conj (this.ident) field) (or (u/e->v event) event))))
 
 (defclass Comp
   (field ctx)

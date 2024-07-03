@@ -2,12 +2,12 @@
 
 (defn alert [{:keys [title message type]}]
   #jsx [:div {:id "alert-1"
-              :class (str "flex items-center p-4 mb-4 text-blue-800 rounded-lg "
+              :class (str "flex items-center p-4 mb-4 rounded-lg border-1"
                           (condp = type
-                        :warning "dark:bg-yellow-800 dark:text-yellow-400"
-                        :error "dark:bg-re-800 dark:text-re-400"
-                        :info "dark:bg-blue-800 dark:text-blue-400"
-                        "bg-gray-800 dark:bg-black"))
+                            :warning "dark:bg-yellow-800 dark:text-yellow-400"
+                            :error "dark:bg-red-800 bg-opacity-40 dark:text-red-400 dark:border-red-600"
+                            :info "dark:bg-blue-800 dark:text-blue-400"
+                            "bg-gray-800 dark:bg-black"))
               :role "alert"}
         [:div {:class (condp = type
                         :warning "i-tabler-alert-circle text-yellow-800"

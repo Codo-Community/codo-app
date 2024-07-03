@@ -5,7 +5,9 @@
             ["graphql-tag" :as graphql-tag]
             ["@apollo/client" :refer [ApolloClient, ApolloLink, InMemoryCache, Observable]]
             ["../../__generated__/definition.js" :refer [definition]]
-            ["./auth.cljs" :as a]))
+            ["../utils.cljs" :as u]
+            ["./auth.cljs" :as a]
+            [squint.string :as string]))
 
 (defonce client (atom {:ceramic (CeramicClient. js/import.meta.env.VITE_CERAMIC_API)
                    :compose (ComposeClient. {:ceramic js/import.meta.env.VITE_CERAMIC_API
@@ -31,20 +33,50 @@
 (defn exec-mutation [mutation vars]
   (.mutate @apollo-client {:mutation (graphql-tag/gql mutation) :variables (or vars {})}))
 
-(defn ^:async await-session []
-  (let [account-id (js-await (:account-id @a/auth))
-        auth-method (js-await (:auth-method @a/auth))]
-    (.get DIDSession account-id auth-method  {:resources (aget (:compose @client) "resources")})))
+(defn ^:async get-stored-session-string [account-id]
+  (let [stored-sessions (u/get-item "codo:ceramic-sessions")]
+    (get stored-sessions account-id)))
 
-(defn ^:async init-clients [r]
-  (println "got acc-id etc." r)
+(defn ^:async get-session-from-string [session-string]
+  (.fromSession DIDSession session-string))
+
+(defn  ^:async check-session-expiry [session]
+  (let [expiration-date (js/Date. (.-expires session))
+        current-date (js/Date.)]
+    (if (>= (.getTime current-date) (.getTime expiration-date))
+      (do
+        (println "The DID session has expired.")
+        true)
+      (do
+        (println "The DID session is still valid.")
+        false))))
+
+(defn ^:async get-session []
   (let [account-id (js-await (:account-id @a/auth))
         auth-method (js-await (:auth-method @a/auth))
-        session (.then (.get DIDSession account-id auth-method {:resources (aget (:compose @client) "resources")})
-                       (fn [session]
-                         (.setDID (:compose @client) (aget session "did"))
-                         (aset (:ceramic @client)  "did" (aget session "did"))
-                         session))]
+        resources {:resources (aget (:compose @client) "resources")}
+        ;session-string (js-await (get-stored-session-string account-id))
+        ]
+    (.get DIDSession account-id auth-method resources)
+    #_(if (has-session-for account-id resources) #_(or (nil? session-string) (undefined? session-string))
+
+        (do (println "session string: " session-string) (get-session-from-string session-string)))))
+
+(defn ^:async init-clients [r]
+  (let [account-id (js-await (:account-id @a/auth))
+
+                                        ;session-token (u/get-item {:key "ceramic-session-dids"})
+                                        ;
+        session (js-await (.then (get-session) (fn [session]
+                                                 (println "got session:" session)
+                                                 (.setDID (:compose @client) (aget session "did"))
+                                                 (aset (:ceramic @client)  "did" (aget session "did"))
+                                                 session)))
+        #_session #_(.then (.get DIDSession account-id auth-method {:resources (aget (:compose @client) "resources")}))]
+
     (println (:compose @client))
     (println "composedb client init OK")
-    (js/Promise.resolve session)))
+    (println "session: " session)
+    (println "dids: " (keys (u/get-item "ceramic-session-dids")))
+    ;(u/set-item! "ceramic-session-dids" (assoc (if-let [dids (u/get-item "codo:ceramic-sessions")] dids {}) account-id (.serialize session)))
+    session))

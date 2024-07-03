@@ -1,5 +1,5 @@
 (ns  main.components.project.proposal
-  (:require ["solid-js" :refer [createSignal Show For createMemo]]
+  (:require ["solid-js" :refer [createSignal Show For createMemo useContext]]
             ["../blueprint/label.cljs" :as l]
             ["../blueprint/button.cljs" :as b]
             ["../blueprint/indicator.cljs" :as i]
@@ -9,6 +9,7 @@
             ["../../composedb/util.cljs" :as cu]
             ["../../comp.cljs" :as comp]
             ["../../utils.cljs" :as u]
+            ["../editor_context.cljs" :refer [EditorContext]]
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
@@ -24,15 +25,19 @@
                 })
               }"))
 
-(defc Proposal [this {:proposal/keys [id name {vote-count [:up :down]}] :or {id (u/uuid) name "Proposal" vote-count {:up 0 :down 0}}}]
-  (let [somet (createMemo (fn [] (when (id) (initModals))))]
+(defc Proposal [this {:proposal/keys [id name description {vote-count [:up :down]} status]
+                      :or {id (u/uuid) name "Proposal" vote-count {:up 0 :down 0} status :EVALUATION}}]
+  (let [somet (createMemo (fn [] (when (id) (initModals))))
+        {:keys [element menu comp]} (useContext EditorContext)]
     #jsx [:button {:class "h-10 dark:text-white relative border-indigo-700 dark:border-indigo-600 border-2 dark:text-white
-                        rounded-md flex gap-2 items-center hover:(ring-blue-500 ring-1) cursor-pointer p-1"
+                           rounded-md flex gap-2 items-center hover:(ring-blue-500 ring-1) cursor-pointer p-1"
                    :data-modal-toggle "planner-modal"
                    :data-modal-target "planner-modal"
-                   :onClick #((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
-                                                                                                   :visible? true
-                                                                                                   :ident [:proposal/id (id)]}))}
+                   :onClick #(do
+                               ((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
+                                                                                                     :props {:parent (:parent props)}
+                                                                                                     :ident [:proposal/id (id)]}))
+                               (.commands.setContent (comp) (description)))}
           [:h2 {:class "font-bold px-2"} (name)]
           #_[ba/badge {:title "Dev"}]
           [:span {:class "flex w-fit justify-items-end gap-1"}

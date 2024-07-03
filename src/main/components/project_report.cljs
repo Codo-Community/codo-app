@@ -1,5 +1,6 @@
 (ns pages.search
-  (:require ["solid-js" :refer [For createSignal onMount createMemo]]
+  (:require ["solid-js" :refer [For createSignal onMount createMemo useContext]]
+            ["./editor_context.cljs" :refer [EditorContext]]
             ["solid-js/web" :refer [Dynamic]]
             ["flowbite" :refer [initModals]]
             ["../comp.cljs" :as comp]
@@ -21,7 +22,8 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectReport [this {:project/keys [id name start description
-                                          {category [:category/id :category/name {:category/creator [:category/isViewer]}]}
+                                          {category [:category/id :category/name {:category/creator [:category/isViewer]}
+                                                     {:category/children [:category/id]}]}
                                           {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
                                                                                           :name "Proj"
                                                                                           :start "2021-01-01"
@@ -53,8 +55,8 @@
                                   :setProjectLocal setLocal
                                   :ident (fn [] [:category/id (:category/id (category))])}}]])]]
           [modal/modal {:& {:id "planner-modal"
-                            :body #jsx [Dynamic {:& {:component (get comp-2-modal (-> (local) :modal :comp))
-                                                     :ident (fn [] (-> (local) :modal :ident))}}]}}]]))
+                            :body #jsx [Dynamic {:& (merge {:component (get comp-2-modal (-> (local) :modal :comp))
+                                                            :ident (fn [] (-> (local) :modal :ident))} (-> (local) :modal :props))}]}}]]))
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}

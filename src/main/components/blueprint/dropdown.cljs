@@ -20,7 +20,7 @@
                                        true false)}
                   value])]]])
 
-(defn dropdown [{:keys [id title items on-change selected extra-class]}]
+(defn dropdown [{:keys [id title items selected extra-class]}]
   (onMount #(initDropdowns))
   #jsx [:div {:id id
               :class "z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-fit dark:(bg-black divide-gray-600 border-gray-600) border-1"}
@@ -29,12 +29,12 @@
           (title)]]
         [:ul {:class "py-2 text-sm text-gray-700 dark:text-gray-200"}
          #jsx [For {:each (items)}
-               (fn [{:keys [value icon img href id] :as item} i]
+               (fn [{:keys [value icon img href id on-change] :as item} i]
                  #jsx [:li {:class ""}
                        [A {:href (or href "")
-                           :onClick on-change}
+                           }
                         [:button {:class "w-full flex gap-2 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white items-center"
-                                  :on-click on-change}
+                                  :onClick on-change}
                          [Show {:when icon}
                           [:div {:class (str "w-5 h-5 " icon)}]]
                          [Show {:when img}

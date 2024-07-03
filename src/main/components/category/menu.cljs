@@ -10,8 +10,9 @@
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc CategoryMenu [this {:category/keys [id {creator [:id :isViewer]}] :or
-                          {id (u/uuid) name "Category" children nil color :gray proposals [] creator {:isViewer true}} :as data}]
+(defc CategoryMenu [this {:category/keys [id {creator [:id :isViewer]}]
+                          :or {id (u/uuid) name "Category" children nil color :gray
+                               proposals []} :as data}]
   (do
     (onMount #(do (initDropdowns) (initTooltips)))
     #jsx [:div {:class "flex flex-col relative w-fit"}
@@ -19,12 +20,18 @@
           [:span {:class "flex gap-2 items-center"}
            [Show {:when (:isViewer (creator))}
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
-                      :onClick #(comp/mutate! this {:add :new
-                                                    :append [:category/id (id) :category/children]})}]]
+                      :onClick #(do
+                                  #_(println "new-data: " {:id (u/uuid) :name "Category" :color :gray
+                                                           :parentID (id)})
+                                  (comp/mutate! this {:add :new #_#:category{:id (u/uuid) :name "Category" :color :gray
+                                                                             :parentID (id)} #_(this.new-data {:parentID (id)})
+                                                      :append [:category/id (id) :category/children]}))}]]
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                      :onClick #(do
                                  (t/add! ctx {:proposal/id (u/uuid)
                                               :proposal/name "New proposal"
+                                              :proposal/created (.toLocaleDateString (js/Date.) "sv")
+                                              :proposal/status :EVALUATION
                                               :proposal/parentID (id)} {:append [:category/id (id) :category/proposals]}))}]
            [:button {:class "i-tabler-palette"
                      :data-tooltip-target "tooltip-color"
@@ -36,7 +43,8 @@
                                  (comp/mutate! this {:remove [:category/id (id)]
                                                      :from [:category/id (:parent props) :category/children]
                                                      :cdb true})
-                                 (c/remove-category-remote ctx (id)))}]]
+                                 (when (not (u/uuid? (id)))
+                                   (c/remove-category-remote ctx (id))))}]]
           [:div {:class "z-10 w-fit"}
            [d/dropdown {:& {:id "color-dropdown"
                             :items (fn [] [{:value "red" :id "red"}

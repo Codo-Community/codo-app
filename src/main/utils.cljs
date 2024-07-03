@@ -64,12 +64,14 @@
 (defn set-item!
   "Set `key' in browser's localStorage to `val`."
   [key val]
-  (.setItem (.-localStorage js/window) key val))
+  (.setItem (.-localStorage js/window) key (js/JSON.stringify val)))
 
 (defn get-item
   "Returns value of `key' from browser's localStorage."
   [key]
-  (.getItem (.-localStorage js/window) key))
+  (try
+    (js/JSON.parse (.getItem (.-localStorage js/window) key))
+    (catch js/Error e (println (str "could net get item: " key " ") e) nil)))
 
 (defn remove-item!
   "Remove the browser's localStorage value for the given `key`"
