@@ -34,8 +34,8 @@
                                                                                                    :visible? true
                                                                                                    :ident [:proposal/id (id)]}))}
           [:h2 {:class "font-bold px-2"} (name)]
-          [ba/badge {:title "Dev"}]
-          [:span {:class "flex flex-row w-full justify-items-end gap-1"}
+          #_[ba/badge {:title "Dev"}]
+          [:span {:class "flex w-fit justify-items-end gap-1"}
            (str 0 #_(:up (vote-count)))
            [:div {:class "dark:hover:text-white dark:text-gray-400"
                   :onClick #(do

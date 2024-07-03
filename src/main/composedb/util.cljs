@@ -24,6 +24,8 @@
    (fn [error]
      (println "error query " query)
      (println "error" error)
+     (println "vars" vars)
+
      (t/add! ctx {:component/id :alert
                   :title "Error"
                   :type :error

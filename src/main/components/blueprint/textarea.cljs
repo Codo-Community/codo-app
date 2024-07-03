@@ -3,7 +3,7 @@
 
 (defn textarea [{:keys [title on-change value placeholder]}]
   #jsx  [:div {:class "rounded-md"}
-         (l/label title)
+         [l/label {:title title}]
          [:textarea {:rows 4
                      :placeholder placeholder
                      :onChange on-change

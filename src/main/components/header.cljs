@@ -55,8 +55,8 @@
                     :fallback #jsx [b/button {:title "login"
                                               :on-click #(user/init-auth ctx)}]}
               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                 :data-dropdown-toggle "header-user-dropdown"}}]]
-             [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                           :data-dropdown-id "header-user-dropdown"}}]]]]]))
+                                 :data-dropdown-toggle "header-user-dropdown"}}]]]]
+           [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                         :data-dropdown-id "header-user-dropdown"}}]]]))
 
 (def ui-header (comp/comp-factory Header AppContext))

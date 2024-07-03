@@ -13,7 +13,7 @@
   (let [timer (createMemo #(when (= (visible?) true)
                              (makeTimer (fn [] (comp/set! this (:ident props) :visible? false)) (interval) js/setTimeout)))]
     #jsx [Show {:when (visible?)}
-          [:div {:class "fixed bottom-10 left-10 shadow-lg"}
+          [:div {:class "fixed bottom-10 shadow-lg w-fit flex justify-center mx-4"}
            [alert/alert {:type (type) :message (message)}]]]))
 
 (def ui-alert (comp/comp-factory Alert AppContext))

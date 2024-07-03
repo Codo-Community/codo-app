@@ -8,17 +8,18 @@
             ["../category/category.cljs" :as c]
             ["../../comp.cljs" :as comp]
             ["../../utils.cljs" :as u]
+            ["../tiptap/editor.cljs" :as tt]
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(def create-mutation
-  "mutation createProposal($i: CreateCategoryInput!){
+(def update-mutation
+  "mutation createProposal($i: CreateProposalInput!){
      createProposal(input: $i){
-       document { id name color}
+       document { id name color description }
      }
 }")
 
-(def update-mutation
+(def create-mutation
   "mutation updateProposal($i: UpdateProposalInput!){
      updateProposal(input: $i){
        document { name color description }
@@ -26,7 +27,7 @@
 }")
 
 
-(defn add-proposal-remote [ctx {:propsal/keys [id name description] :as data} parent-id]
+(defn add-proposal-remote [ctx {:propsal/keys [id name description parentID] :as data}]
   (let [vars {:name name :description description} #_(utils/remove-ns data)
         vars (dissoc vars :id)
         vars {:i {:content (u/drop-false vars)}}
@@ -57,20 +58,28 @@
                                                             (fn [r] #_(println "re: " r)))))))))
 
 
-(defc ProposalModal [this {:proposal/keys [id author description name] :or {id (u/uuid) author "Bramaputra" name "Proposal"}}]
+;; TODO: need to add viewer id etc here
+
+(defc ProposalModal [this {:proposal/keys [id author description name parentID] :or {id (u/uuid) author "Bramaputra" name "Proposal" }}]
   (let [[open? setOpen] (createSignal true)]
-    #jsx [:form {:class "flex flex-col gap-3"
-                 :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data) nil))}
-          (str (id))
-          [:span {:class "flex  w-full gap-3"}
-           [in/input {:label "Name"
-                      :placeholder "Title"
-                      :value name
-                      :on-change #(comp/set! this :proposal/name %)}]]
-          [ta/textarea {:title "Description"
-                        :value description
-                        :on-change #(comp/set! this :proposal/description %)}]
-          [:span {:class "flex w-full gap-3"}
-           [b/button {:title "Submit"}]]]))
+    #jsx [:div {}
+          [tt/editor {:& {:on-html-change #(comp/set! this :proposal/description %)}}]
+          [:div {:class "flex justify-end gap-3"}
+           #_[b/button {:title "Cancel"
+                        :on-click #(setOpen false)}]
+           [b/button {:title "Submit"
+                      :on-click #(add-proposal-remote ctx (data))}]]
+          #_[:form {:class "flex flex-col gap-3"
+                    :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data) nil))}
+             [:span {:class "flex  w-full gap-3"}
+              [in/input {:label "Name"
+                         :placeholder "Title"
+                         :value name
+                         :on-change #(comp/set! this :proposal/name %)}]]
+             [ta/textarea {:title "Description"
+                           :value description
+                           :on-change #(comp/set! this :proposal/description %)}]
+             [:span {:class "flex w-full gap-3"}
+              [b/button {:title "Submit"}]]]]))
 
 (def ui-proposal-modal (comp/comp-factory ProposalModal AppContext))

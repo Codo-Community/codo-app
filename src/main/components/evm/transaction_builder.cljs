@@ -32,7 +32,7 @@
                                   :on-change (contract-select-on-change ctx)
                                   :selected #(second (contract))}}]
           [:div {:class "flex flex-col gap-1"}
-           (l/label "Chain")
+           [l/label {:title "Chain"}]
            (let [{:chain/keys [id name logo]} (:contract/chain (get (contracts) (.indexOf (mapv #(:contract/id %) (contracts)) (second (contract)))))]
              #jsx [:div {:class "flex items-center justify-center text-lg"}
                    [:img {:class "w-8 h-8 p-1"

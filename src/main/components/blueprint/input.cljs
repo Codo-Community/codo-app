@@ -50,7 +50,7 @@
 
 (defn number-input [{:keys [id label readonly placeholder on-submit on-change required value] :or {required false extra-class "" readonly false value (fn [] 0)}}]
   #jsx [:div {:class ""}
-        (l/label label)
+        [l/label {:title label}]
         [:input {:type "number"
                                         ;:aria-describedby "helper-text-explanation"
                  :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full h-10
@@ -64,12 +64,12 @@
 
 #_(def number-input (comp/comp-factory NumberInput AppContext))
 
-(defn boolean-input [{:keys [ident label placeholder on-submit on-change readonly required value]
-                      :or {required false extra-class "" readonly false value (fn [] "") on-change (fn [e])}}]
-  #jsx [:div {:class ""}
-        (l/label label)
+(defn boolean-input [{:keys [ident label placeholder on-submit on-change readonly required value extra-class inline]
+                      :or {required false extra-class "" readonly false value (fn [] "") on-change (fn [e]) inline false}}]
+  #jsx [:div {:class (str extra-class " " (if inline " flex flex-row gap-2 items-center" ""))}
+        [l/label {:title label}]
         [:input {:type "checkbox"
-                 :value (or (value) "")
+                 :checked (or (value) "")
                  :class "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600
                                   dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
                  :onChange on-change

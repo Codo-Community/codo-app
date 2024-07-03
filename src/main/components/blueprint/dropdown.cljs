@@ -9,7 +9,7 @@
   #jsx [:div {:id id
               :class (str "flex flex-col " extra-class)}
         [Show {:when (not (nil? title))}
-         (l/label title )]
+         [l/label {:title title}]]
         [:select {:onChange on-change
                   :class "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 p-3 pr-6
                           focus:border-blue-500 block h-10 w-full
@@ -17,8 +17,8 @@
          [For {:each (items)}
           (fn [{:keys [value icon href id] :as item} i]
             #jsx [:option {:selected (if (= id (selected))
-                                    true false)}
-               value])]]])
+                                       true false)}
+                  value])]]])
 
 (defn dropdown [{:keys [id title items on-change selected extra-class]}]
   (onMount #(initDropdowns))

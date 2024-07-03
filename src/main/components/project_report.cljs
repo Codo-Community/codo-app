@@ -21,7 +21,7 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectReport [this {:project/keys [id name start description
-                                          {category [:category/id :category/name]}
+                                          {category [:category/id :category/name {:category/creator [:category/isViewer]}]}
                                           {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
                                                                                           :name "Proj"
                                                                                           :start "2021-01-01"
@@ -38,9 +38,10 @@
                                                                :type :category
                                                                :props {:indent? false
                                                                        :open? true}
-                                                               :comp (fn [props] #jsx [cv/ui-category-view {:& props}])}]}]})]
+                                                               :comp (fn [props] #jsx [cv/ui-category-view {:& (merge props {:indent? false
+                                                                                                                             :open? true})}])}]}]})]
     (createMemo (fn [] (when (:modal (local)) (initModals))))
-    #jsx [:div {:class "flex flex-col w-full"}
+    #jsx [:div {:class "flex flex-col w-full items-center"}
           [s/Split {:& {:extra-class "mt-2"}}
            [For {:each (:split-items (local))}
             (fn [item i]

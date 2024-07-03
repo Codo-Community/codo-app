@@ -45,7 +45,8 @@
          (fn [r]
            (.then (cli/init-clients)
                   (fn [r]
-                    (load-viewer-user ctx))))))
+                    (load-viewer-user ctx)
+                    (-> @cli/apollo-client :cache (.reset)))))))
 
 (defc User [this {:user/keys [id name ethereum-address avatar passport-score]}]
   (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]

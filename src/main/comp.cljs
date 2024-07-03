@@ -54,6 +54,7 @@
       (if (:query remote)
         (cu/execute-gql-query (:query remote) (:vals remote))))
     (when add
+      (println "running add with data: " (this.new-data))
       (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))
     (when remove
       (t/remove-ident! this.-ctx (:from mutate-map) remove))))
