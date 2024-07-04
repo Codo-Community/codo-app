@@ -65,7 +65,7 @@
         vars {:i {:content (utils/drop-false vars)}}
         vars (if-not (u/uuid? id)
                (assoc-in vars [:i :id] id)
-               (assoc-in vars [:i :created] (.toLocaleDateString (js/Date.) "sv")))
+               (assoc-in vars [:i  :content :created] (.toLocaleDateString (js/Date.) "sv")))
         vars (utils/drop-false vars)
         mutation (if (u/uuid? id)
                    {:name "createCategory"
