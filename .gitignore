@@ -5,3 +5,4 @@ src/__generated__/
 .nrepl-port
 .lsp/
 .clj-kondo/
+pnpm-lock.yaml

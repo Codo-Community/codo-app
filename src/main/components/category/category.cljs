@@ -149,18 +149,7 @@
 
                        :onClick #((:setProjectLocal props) (assoc ((:projectLocal props)) :modal {:comp :category
                                                                                                   :props {:parent (:parent props)}
-                                                                                                  :ident [:category/id (id)]}))}  (name)]
-
-             #_[:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                                :green "bg-green-800"
-                                                                                                                :blue "bg-blue-800"
-                                                                                                                :red "bg-red-800"
-                                                                                                                :yellow "bg-yellow-800"
-                                                                                                                :gray "bg-zinc-800"
-                                                                                                                "bg-none"))
-                      :tabindex 0
-                      :onClick #(setLocal (assoc (local) :editing? true))}
-                [:h2 {:class "text-bold"} (name)]]]]
+                                                                                                  :ident [:category/id (id)]}))}  (name)]]]
            [Show {:when (and (:hovering? (local)) (not (:editing? (local))))}
             [cm/ui-category-menu {:&  {:ident (:ident props)
                                        :parent (:parent props)}}]]]

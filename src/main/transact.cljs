@@ -55,7 +55,7 @@
 
 (defn check-session [{:keys [store setStore] :as ctx}]
   (println "cn: " (n/pull store [:viewer/id 0] [{:ceramic-account/id [:ceramic-account/session]}]))
-  (if (n/pull store  [:viewer] [{:ceramic-account/id [:ceramic-account/session]}])
+  (if-not (n/pull store  [:viewer] [{:ceramic-account/id [:ceramic-account/session]}])
     (throw (js/Error. "Sign in to to make changes."))))
 
 (defn remove-entity! [])
