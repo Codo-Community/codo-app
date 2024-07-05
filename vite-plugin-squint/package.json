@@ -1,0 +1,38 @@
+{
+  "name": "vite-plugin-squint",
+  "version": "0.0.0",
+  "description": "A Vite plugin to compile squint-cljs",
+  "author": "",
+  "license": "",
+  "repository": "https://github.com/squint-cljs/vite-plugin-squint",
+  "type": "module",
+  "main": "index.mjs",
+   "files": [
+    "index.js",
+    "lib/"
+  ],
+  "scripts": {},
+  "peerDependencies": {
+    "vite": ">2.0.0-0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "vite": "latest",
+    "@ceramicnetwork/http-client": "^5.14.0",
+    "@composedb/devtools": "^0.7.1",
+    "@composedb/devtools-node": "^0.7.1",
+    "did-session": "^3.1.0",
+    "dotenv": "^16.4.5",
+    "key-did-provider-ed25519": "^4.0.2",
+    "key-did-resolver": "^4.0.0",
+    "squint-cljs": "^0.7.111"
+  },
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "cljs",
+    "clojurescript",
+    "squint-cljs"
+  ]
+}

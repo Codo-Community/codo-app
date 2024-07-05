@@ -79,7 +79,6 @@
                              (:fn mutation)
                              vars
                              (fn [r]
-                               (println "r: " r)
                                (let [category (utils/nsd (get-in r [(:name mutation) :document]) :category)
                                      a (println "category: " category)
                                      stream-id (:category/id category)]
@@ -91,20 +90,22 @@
                                  (when (and (u/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID (:category/id category)}}}
-                                                            (fn [r] (println "re: " r)))))))))
+                                                            #_(fn [r] (println "re: " r)))))))))
 
 (declare ui-category)
 (declare Category)
 
 (defn load-category [ctx id]
   (cu/execute-gql-query ctx (cq/simple id) {} (fn [r]
-                                                (println r)
-                                                (let [proposals (mapv #(utils/nsd (-> % :node) :proposal) (-> r :node :proposals :edges))
-                                                      new-children (mapv #(utils/nsd (-> % :node :child) :category) (-> r :node :children :edges))]
-                                                  (t/add! ctx
-                                                          (assoc (utils/nsd (-> r :node) :category)
-                                                                 :category/proposals proposals
-                                                                 :category/children new-children))))))
+                                                (let [ps (mapv #(:proposal/id %) (get r :category/proposals))]
+                                                  (println "ps: " r)
+                                                  (println "ps: " ps)
+                                                  (t/add! ctx r)
+                                                  (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :up) {}
+                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-up (:voteCount r)}))) ps)
+                                                  (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :down) {}
+                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-down (:voteCount r)}))) ps)
+                                                  ))))
 
 (def load-category-c (cache (fn [id]
                               (let [ctx (useContext AppContext)]
@@ -114,7 +115,7 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(defc Category [this {:category/keys [id name color children
+(defc Category [this {:category/keys [id name color {children [:category-link/id {:category-link/child [:category/id]}]}
                                       {creator [:id :isViewer]} proposals]
                       :or {id (u/uuid) name "Category" children nil color :gray proposals []}
                       :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
@@ -173,11 +174,12 @@
                                            :parent (id)
                                            :projectLocal (:projectLocal props)
                                            :setProjectLocal (:setProjectLocal props)}}])]]]
-            [For {:each (children)}
-             (fn [entity i]
-               (ui-category {:ident entity
-                             :setProjectLocal (:setProjectLocal props)
-                             :projectLocal (:projectLocal props)
-                             :parent (id)}))]]]]))
+            [Show {:when (vector? (children))}
+             [For {:each (mapv (fn [x] [:category/id (:category-link/child x)]) (children))}
+              (fn [entity i]
+                (ui-category {:ident entity
+                              :setProjectLocal (:setProjectLocal props)
+                              :projectLocal (:projectLocal props)
+                              :parent (id)}))]]]]]))
 
 (def ui-category (comp/comp-factory Category AppContext))

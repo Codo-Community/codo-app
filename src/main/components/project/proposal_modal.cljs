@@ -4,6 +4,8 @@
             ["../blueprint/label.cljs" :as l]
             ["../blueprint/button.cljs" :as b]
             ["../blueprint/input.cljs" :as in]
+            ["../blueprint/tooltip.cljs" :as to]
+            ["../post.cljs" :as post]
             ["../blueprint/textarea.cljs" :as ta]
             ["../category/category.cljs" :as c]
             ["lodash" :refer [escape unescape]]
@@ -32,11 +34,13 @@
 (defn add-proposal-remote [ctx {:proposal/keys [id name description parentID created] :as data}]
   (let [vars (dissoc  (u/remove-ns data) :author)
         vars (dissoc vars :id)
+        vars (assoc vars :description description)
         vars {:i {:content (u/drop-false vars)}}
         v (println "id:" id)
+
         vars (if-not (u/uuid? id)
                (assoc-in  vars [:i :id] id) vars)
-        vars (assoc vars :description (.replace description #"/" "\/"))
+
         vars (u/drop-false vars)
         mutation (if (u/uuid? id)
                    {:name "createProposal"
@@ -71,13 +75,20 @@
                                 :id id}} (fn [r])))
 
 
-(defc ProposalModal [this {:proposal/keys [id author description name created status] :as data
-                                        ;:keys [user/id user/account]
+(defc ProposalModal [this {:proposal/keys [id description name created status {author [:id :isViewer]} posts] :as data
                            :or {id (u/uuid) author "Bramaputra" name "Proposal" created (.toLocaleDateString (js/Date.) "sv")
                                 status :EVALUATION}}]
   (let [[open? setOpen] (createSignal true)
         {:keys [element menu comp]} (useContext EditorContext)]
     #jsx [:div {:class "dark:bg-black p-4 border-1 border-zinc-400 rounded-lg"}
+          [:div {:class "flex justify-between items-center"}
+           [:h1 {:class "text-lg font-bold"} "Proposal"]
+           [to/tooltip {:content "Close"
+                        :position "top"
+                        :extra-class "cursor-pointer"
+                        :on-click #(do (.preventDefault %)
+                                       (setOpen false))} [:i {:class "fas fa-times"}]]]
+          [:hr {:class "border-zinc-400"}]
           [:form {:class "flex flex-col gap-3"
                   :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data)))}
            [:span {:class "flex  w-full gap-3"}
@@ -90,11 +101,21 @@
                            :comp comp
                            :on-html-change (fn [html]
                                              (comp/set! this :proposal/description html))}}]
+           [:h1 {:class "text-lg font-bold"} "Posts"]
+           [:hr {:class "border-zinc-400"}]
            [:span {:class "flex w-full gap-3"}
+            [b/button {:title "Add Post"
+                       :on-click #(do (.preventDefault %)
+                                      (comp/mutate! this {:add (post/Post.new-data)
+                                                          :append [:proposal/id (id) :proposal/posts]}))}]]
+           [For {:each (posts)}
+            (fn [post _]
+              #jsx [post/ui-post {:& {:ident post}}])]
+           [:span {:class "flex w-full gap-3 mx-auto flex-stretch"}
             [b/button {:title "Submit"
                        :data-modal-hide "planner-modal"}]
             [b/button {:title "Delete"
-                       :extra-class "border-red-500"
+                       :extra-class "!dark:border-red-500 !dark:text-red-500 !dark:hover:bg-red-400 !active:ring-red-400"
                        :on-click #(do (.preventDefault %)
                                       (println "id: " (:parent-id props))
                                       (comp/mutate! this {:remove [:proposal/id (id)]
@@ -103,6 +124,7 @@
                                       (when (not (u/uuid? (id)))
                                         (remove-proposal-remote ctx (id))))
                        :data-modal-hide "planner-modal"}]
+
             [b/button {:title "Close"
                        :on-click #(.preventDefault %)
                        :data-modal-hide "planner-modal"}]]]]))

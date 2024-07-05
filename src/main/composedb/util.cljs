@@ -8,24 +8,27 @@
             ["did-session" :refer [DIDSession]]
             ["../transact.cljs" :as t]))
 
-(defn handle-fn [ctx response & f]
+(defn handle-fn [ctx f]
   (fn [response]
     (println "rp: r " response)
-    (let [res (-> response :data)]
+    (let [res (-> response :data)
+          res2 (utils/add-ns res)
+          ]
+      (println "res2: " res2)
       (if (first f)
-        ((first f) res)
-        (t/add! ctx (utils/nsd res ns))))))
+        ((first f) res2)
+        (t/add! ctx res2)))))
 
 (defn execute-gql-query [ctx query vars & f]
   (.catch
-   (.then (cli/exec-query query vars) (fn [response]
-                                        (println "resp: " response)
-                                        (let [res (-> response :data)]
-                                          (if (first f)
-                                            ((first f) res)
-                                            (t/add! ctx (utils/nsd res ns))))))
-   #_(alert/alert-error ctx)
-   (fn [error]
+   (.then (cli/exec-query query vars) (handle-fn ctx f) #_(fn [response]
+                                            (println "resp: " response)
+                                            (let [res (-> response :data)]
+                                              (if (first f)
+                                                ((first f) res)
+                                                (t/add! ctx (utils/nsd res ns))))))
+   (alert/alert-error ctx)
+   #_(fn [error]
        (println "error query " query)
        (println "error" error)
        (println "vars" vars)
@@ -41,7 +44,7 @@
   (let [session (-> (:compose @cli/client) :did :_id) #_(n/pull (:store ctx) [:viewer/id 0] [:viewer/session])]
     (if-not session
       ((alert/alert-error ctx) (js/Error. "Sign in to to make changes."))
-      (.catch (.then (cli/exec-mutation mutation vars) (fn [response]
+      (.catch (.then (cli/exec-mutation mutation vars) (handle-fn ctx f) #_(fn [response]
                                                          (let [res (-> response :data)]
                                                            (if (first f)
                                                              ((first f) res)
@@ -49,7 +52,7 @@
               (alert/alert-error ctx)))))
 
 (defn ^:async has-session-for [account-id resources]
-  (println "r:" resources)
+  (println "resources: " (js/typeof resources))
   (.hasSessionFor DIDSession account-id {:resources resources}))
 
 (defn remap-query [query]
@@ -66,4 +69,5 @@
     query))
 
 (defn execute-eql-query [ctx query & f]
+  (println "converted gql: " (remap-query query))
   (apply (partial execute-gql-query ctx (remap-query query) {}) f))

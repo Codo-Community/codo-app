@@ -1,5 +1,5 @@
 import  { compileString }  from "squint-cljs/node-api.js"
-import {ceramic, authenticate, write_composite} from "./dev.mjs";
+import {ceramic, authenticate, write_composite} from "./lib/dev.mjs";
 import path, { dirname } from "path";
 import fs from "fs";
 
@@ -30,11 +30,12 @@ export default function viteSquint(opts = {}) {
     },
     resolveId(id, importer, options) {
     //console.log(checkFileEnding(id));
+      console.log("id", id);
       if (/\.cljs.jsx$/.test(id)) {
         // Vite can prompt the plugin to resolve modules that it has already
         // resolved. As we have already resolved the module and added the
         // extension to the id we just need to return the absolute resolveId again.
-
+        console.log("first");
         return path.resolve(dirname(importer), id);
       }
       if (/\.cljs$/.test(id)) {
@@ -42,9 +43,9 @@ export default function viteSquint(opts = {}) {
         // absolutize the path, this makes it easier for load and other plugins
         // append .jsx so that other plugins can pick it up
         const absolutePath = path.resolve(dirname(importer), id);
-        //console.log("id", id);
+        console.log("id", id);
 
-        if (options.scan) {
+        if (false) {
           // Vite supports the concept of virtual modules, which are not direct
           // files on disk but dynamically generated contents that Vite and its
           // plugins can work with. We return a virtual module identifier
@@ -58,7 +59,7 @@ export default function viteSquint(opts = {}) {
         return absolutePath + ".jsx";
       }
     },
-    handleHotUpdate({file, server, modules }) {
+    handleHotUpdate({file, server, modules, timestamp }) {
       // console.log("test ", file);
       //console.log("modules", modules);
 
@@ -81,15 +82,24 @@ export default function viteSquint(opts = {}) {
 
         // }
             const resolveId = file + ".jsx";
-        // console.log("resolveId ", resolveId);
 
-            const module = server.moduleGraph.getModuleById(resolveId);
+
+        const module = server.moduleGraph.getModuleById(resolveId);
+        console.log("module", resolveId);
         if (module) {
           // invalidate dependants
           server.moduleGraph.onFileChange(resolveId);
           // hot reload
-          // console.log( "r ", [...modules, module ]);
-          return [...modules, module ]
+            const invalidatedModules = new Set()
+          console.log( "r ", [...modules, module ]);
+          // module.isSelfAccepting = true;
+          // server.moduleGraph.invalidateModule(
+          //       module,
+          //             invalidatedModules,
+          //                   timestamp,
+          //                         true
+          //                             )
+          return [ ...modules, module ]
         }
         return modules;
       }

@@ -58,11 +58,14 @@
       id
       creator { id isViewer }
       color
+      description
+      name
 proposals(last: 10) {
         edges {
           node {
             id
             name
+            status
             author {
               id
             }
@@ -70,12 +73,14 @@ proposals(last: 10) {
         }
       }
       mainReviewer { id }
-      children(first: 100) {
+      children(last: 10) {
         edges {
           node {
+            id
             child {
               name
               color
+              description
               id
               creator { id isViewer }
             }

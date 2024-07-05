@@ -5,6 +5,7 @@
             ["graphql-tag" :as graphql-tag]
             ["@apollo/client" :refer [ApolloClient, ApolloLink, InMemoryCache, Observable]]
             ["../../__generated__/definition.js" :refer [definition]]
+            ["graphql" :as graphql]
             ["../utils.cljs" :as u]
             ["./auth.cljs" :as a]
             [squint.string :as string]))
@@ -28,7 +29,10 @@
                                              :cache (InMemoryCache.)})))
 
 (defn exec-query [q vars]
-  (.query @apollo-client {:query (graphql-tag/gql q) :variables (or vars {})}))
+  (when-not (string? q)
+    (println "res3: " (graphql-tag/gql (graphql/print q)))
+    (println "res3:2:"  q))
+  (.query @apollo-client {:query (if (string? q) (graphql-tag/gql q) q) :variables (or vars {})}))
 
 (defn exec-mutation [mutation vars]
   (.mutate @apollo-client {:mutation (graphql-tag/gql mutation) :variables (or vars {})}))
