@@ -19,13 +19,9 @@
 
 (defonce queryClient (QueryClient.))
 
-(defn init-auth-silent []
-  )
-
 (defc Root [this {:keys []}]
   (let [ctx  (context/init-context)]
     (onMount #(do
-                (println "init")
                 #_(cdf/init-listeners ctx events/handle)
                 (.then  (ec/init-clients) (fn [res] (println "init-clients" res)))
                 (reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]
@@ -49,7 +45,8 @@
                                                                                                    (.then (cu/has-session-for acc-id (aget (:compose @cli/client) "resources"))
                                                                                                           (fn [session]
                                                                                                             (when session
-                                                                                                              (u/init-auth {:store (first ctx) :setStore (second ctx)})))))))))}))
+                                                                                                              (u/init-auth {:store (first ctx)
+                                                                                                                            :setStore (second ctx)})))))))))}))
                 (fb/initFlowbite)))
     #jsx [AppContext.Provider {:value ctx}
           [QueryClientProvider {:client queryClient}

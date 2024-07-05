@@ -43,7 +43,8 @@
     "uint8arrays": "^5.1.0",
     "unocss": "^0.60.4",
     "vite": "^5.3.2",
-    "vite-plugin-solid": "^2.10.2"
+    "vite-plugin-squint": "file://./vite-plugin-squint",
+     "vite-plugin-solid": "^2.10.2"
   },
   "dependencies": {
     "@apollo/client": "^3.10.8",

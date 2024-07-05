@@ -18,7 +18,8 @@
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc CategoryModal [this {:category/keys [id name description] :as data :or {id description}}]
+(defc CategoryModal [this {:category/keys [id name description] :as data
+                           :or {id "" description ""}}]
   #jsx [:div {:class "dark:bg-black p-4 border-1 border-zinc-400"}
         [:form {:class "flex flex-col gap-3"
                 :onSubmit (fn [e] (.preventDefault e) (c/add-category-remote ctx (data) (:parent props)))}

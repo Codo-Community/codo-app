@@ -27,12 +27,13 @@
                                                                              :parentID (id)} #_(this.new-data {:parentID (id)})
                                                       :append [:category/id (id) :category/children]}))}]]
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
-                     :onClick #(do
-                                 (t/add! ctx {:proposal/id (u/uuid)
-                                              :proposal/name "New proposal"
-                                              :proposal/created (.toLocaleDateString (js/Date.) "sv")
-                                              :proposal/status :EVALUATION
-                                              :proposal/parentID (id)} {:append [:category/id (id) :category/proposals]}))}]
+                     :onClick #(t/add! ctx {:proposal/id (u/uuid)
+                                            :proposal/name "New proposal"
+                                            :proposal/created (.toLocaleDateString (js/Date.) "sv")
+                                            :proposal/status :EVALUATION
+                                            :proposal/parentID (id)}
+                                       {:append [:category/id (id) :category/proposals]
+                                        :check-session? true})}]
            [:button {:class "i-tabler-palette"
                      :data-tooltip-target "tooltip-color"
                      :data-dropdown-toggle "color-dropdown"

@@ -30,33 +30,31 @@
 }
 ")
 
+(declare User)
+
 (defn load-viewer-user [ctx]
   (cu/execute-gql-query ctx query-from-acc {}
-                        (fn [response]
-                          (let [a (println "res" response)
+                        (fn [res]
+                          (println "r5:" res)
+                          (let [account-id (-> res :viewer :ceramic-account/id)
+                                address (nth (string/split account-id ":") 4)
 
-                                res (conj (utils/nsd (-> response :viewer :user) :user)
-                                          {:user/ethereum-address (nth (string/split (-> response :viewer :id) ":") 4)})
-
-                                res (if-not (:user/id res)
-                                      (conj res {:user/id (js/crypto.randomUUID)})
-                                      res)
-
-                                res (conj res {:user/session (-> (:compose @cli/client) :did :_id)})]
+                                user (-> (or (-> res :viewer :user) (User.new-data))
+                                         (conj {:user/ethereum-address address
+                                                :user/account [:ceramic-account/id account-id]
+                                                :user/session (-> (:compose @cli/client) :did :_id)}))]
+                            (t/add! ctx user
+                                    {:replace [:component/id :header :user]})
                             (t/add! ctx {:viewer/id 0
-                                         :viewer/user [:user/id (:user/id res)]
-                                         :viewer/did (-> response :viewer :id)
-                                         :viewer/session (-> (:compose @cli/client) :did :_id)})
-                            (t/add! ctx res {:replace [:component/id :header :user]})))))
+                                         :viewer/user [:user/id (:user/id user)]})))))
 
 (defn ^:async init-auth [ctx]
-  (.catch (.then (cda/init-auth)
-                 (fn [r]
-                   (.then (cli/init-clients)
-                          (fn [r]
-                            (load-viewer-user ctx)
-                            (-> @cli/apollo-client :cache (.reset))))))
-          (alert/alert-error ctx)))
+  (.then (cda/init-auth)
+         (fn [r]
+           (.then (cli/init-clients)
+                  (fn [r]
+                    (load-viewer-user ctx)
+                    (-> @cli/apollo-client :cache (.reset)))))))
 
 (defc User [this {:user/keys [id name ethereum-address {account [:id]} avatar passport-score]
                   :or {id (utils/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]

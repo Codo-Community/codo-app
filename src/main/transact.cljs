@@ -28,11 +28,34 @@
                                                                                        (second ident)))) a)]
                                                         v))))))
 
-(defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace after] :or {append false replace false after false} :as params}]
-  (let [res (n/add ctx value)]
-    (if (or append replace)
-      (add-ident! ctx res params))
-    (if after
-      (after))))
+(declare check-session)
+(declare alert-error)
+
+(defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace after check-session?] :or {append false replace false after
+                                                                                                     false check-session? false} :as params}]
+  (try
+    (if check-session?
+      (check-session ctx))
+    (let [res (n/add ctx value)]
+      (if (or append replace)
+        (add-ident! ctx res params))
+      (if after
+        (after)))
+    (catch js/Error e
+      (alert-error ctx e)
+      (println e))))
+
+(defn alert-error [ctx error]
+  (add! ctx {:component/id :alert
+             :title "Error"
+             :visible? true
+             :type :error
+             :interval 4000
+             :message (str error)} {}))
+
+(defn check-session [{:keys [store setStore] :as ctx}]
+  (println "cn: " (n/pull store [:viewer/id 0] [{:ceramic-account/id [:ceramic-account/session]}]))
+  (if (n/pull store  [:viewer] [{:ceramic-account/id [:ceramic-account/session]}])
+    (throw (js/Error. "Sign in to to make changes."))))
 
 (defn remove-entity! [])

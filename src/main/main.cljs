@@ -24,6 +24,6 @@
           [f/ui-footer]
           [alert/ui-alert {:& {:ident [:component/id :alert]}}]]))
 
-  (def ui-main (comp/comp-factory Main AppContext))
+(def ui-main (comp/comp-factory Main AppContext))
 
                                         ; dark bg? [#101014]
