@@ -3,7 +3,7 @@
 
 (defn Tabs [{:keys [id data-tabs-toggle items]}]
   #jsx [:div {:class "border-b border-gray-200 dark:border-gray-700"}
-        [:ul {:class "flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-300"
+        [:ul {:class "flex flex-wrap -mb-px text-sm font-medium text-center text-gray-700 dark:text-gray-300"
               :id "default-tab" :data-tabs-toggle (str "#" data-tabs-toggle) :role "tablist"}
          [:li {:class "me-2" :role "presentation"}
           [For {:each (items)}

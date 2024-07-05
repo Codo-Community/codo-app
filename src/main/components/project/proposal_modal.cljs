@@ -80,7 +80,7 @@
                                 status :EVALUATION}}]
   (let [[open? setOpen] (createSignal true)
         {:keys [element menu comp]} (useContext EditorContext)]
-    #jsx [:div {:class "dark:bg-black p-4 border-1 border-zinc-400 rounded-lg"}
+    #jsx [:div {:class "dark:bg-black bg-white p-4 border-1 border-zinc-400 rounded-lg"}
           [:div {:class "flex justify-between items-center"}
            [:h1 {:class "text-lg font-bold"} "Proposal"]
            [to/tooltip {:content "Close"
@@ -115,7 +115,7 @@
             [b/button {:title "Submit"
                        :data-modal-hide "planner-modal"}]
             [b/button {:title "Delete"
-                       :extra-class "!dark:border-red-500 !dark:text-red-500 !dark:hover:bg-red-400 !active:ring-red-400"
+                       :extra-class "!bg-red-700 !dark:border-red-500 !active:ring-red-400"
                        :on-click #(do (.preventDefault %)
                                       (println "id: " (:parent-id props))
                                       (comp/mutate! this {:remove [:proposal/id (id)]
