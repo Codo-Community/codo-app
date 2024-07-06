@@ -56,20 +56,38 @@
   node(id: \"" id "\") {
     ... on Category {
       id
-      creator { id isViewer }
+      creator { id }
       color
-      mainReviewer { id }
-      children(first: 100) {
+      description
+      name
+proposals(last: 10) {
         edges {
           node {
-            child {
-              name
-              color
+            id
+            name
+            status
+            author {
               id
-              creator { id isViewer }
             }
           }
         }
+        pageInfo { hasNextPage }
+      }
+      mainReviewer { id }
+      children(last: 10) {
+        edges {
+          node {
+            id
+            child {
+              name
+              color
+              description
+              id
+              creator { id }
+            }
+          }
+        }
+        pageInfo { hasNextPage }
       }
     }
   }

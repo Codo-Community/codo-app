@@ -24,7 +24,8 @@
                    }})
 
 (defn build-field [field]
-  #_(println "eq:f " field)
+  (println "field:" field)
+    (println "field:m:" (meta field))
   (let [[k v] (cond
                 (vector? field) (if (and (string? (first field)) (vector? (second field)))
                                   field
@@ -38,9 +39,13 @@
                                :selectionSet {:kind "SelectionSet"
                                               :selections [(assoc (inline-fragment (utils/pascal-case (first (str/split (first k) "/"))))
                                                                   :selectionSet {:kind "SelectionSet"
-                                                                                 :selections (mapv build-field v)})]})
+                                                                                 :selections (let [d (mapv build-field v)
+                                                                                                   a (println "df: " d)]
+                                                                                                 (if (= (count d) 1) (first d) d))})]})
             (if (vector? v) (assoc (eql-key->field k) :selectionSet {:kind "SelectionSet"
-                                                                     :selections (mapv build-field v)})
+                                                                     :selections (let [d (mapv build-field v)
+                                                                                       a (println "df: " d)]
+                                                                                   (if (= (count d) 1) (first d) d))})
                 (eql-key->field k))))
       (vec (flatten [k v])))))
 
@@ -50,8 +55,8 @@
                             :operation "query"
                             :selectionSet {:kind "SelectionSet"
                                            :selections (mapv build-field eql)}}]}]
-    #_(js/console.log ast)
-    (graphql/print ast)))
+    ast
+    #_(graphql/print ast)))
 
 ;; Example usage:
 #_(def eql-query {:viewer [:id {:user [:firstName :lastName]}]})

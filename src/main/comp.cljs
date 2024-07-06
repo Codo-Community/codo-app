@@ -12,9 +12,15 @@
 
 (defn set!
   ([this ident field event]
-   (t/set-field! this.-ctx (conj ident field) (u/e->v event)))
+   (t/set-field! this.-ctx (conj ident field) (or (u/e->v event) event)))
   ([this field event]
-   (t/set-field! this.-ctx (conj (this.ident) field) (u/e->v event))))
+   (t/set-field! this.-ctx (conj (this.ident) field) (or (u/e->v event) event))))
+
+(defn viewer-ident [this]
+  (t/viewer-ident this.-ctx))
+
+(defn viewer? [this acc-id]
+  (t/viewer? this.-ctx acc-id))
 
 (defclass Comp
   (field ctx)

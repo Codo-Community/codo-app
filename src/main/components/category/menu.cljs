@@ -10,22 +10,35 @@
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc CategoryMenu [this {:category/keys [id {creator [:id :isViewer]}] :or
-                          {id (u/uuid) name "Category" children nil color :gray proposals [] creator {:isViewer true}} :as data}]
+(defc CategoryMenu [this {:category/keys [id {creator [:ceramic-account/id]}]
+                          :or {id (u/uuid) name "Category" children nil color :gray
+                               proposals []} :as data}]
   (do
     (onMount #(do (initDropdowns) (initTooltips)))
     #jsx [:div {:class "flex flex-col relative w-fit"}
           [to/tooltip {:id "tooltip-color" :content "Color"}]
           [:span {:class "flex gap-2 items-center"}
-           [Show {:when (:isViewer (creator))}
+           [Show {:when (comp/viewer? this (creator))}
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
-                      :onClick #(comp/mutate! this {:add :new
-                                                    :append [:category/id (id) :category/children]})}]]
+                      :onClick #(let [link-id (u/uuid)
+                                      child-id (u/uuid)]
+                                  (comp/mutate! this {:add #:category{:id child-id :name "Category" :color :gray
+                                                                      :category/creator (comp/viewer-ident this)
+                                                                      :category/created (.toLocaleDateString (js/Date.) "sv")}})
+                                  (comp/mutate! this {:add #:category-link{:id link-id
+                                                                           :parentID (id)
+                                                                           :parent [:category/id (id)]
+                                                                           :child [:category/id child-id]
+                                                                           :childID child-id}
+                                                      :append [:category/id (id) :category/children]}))}]]
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
-                     :onClick #(do
-                                 (t/add! ctx {:proposal/id (u/uuid)
-                                              :proposal/name "New proposal"
-                                              :proposal/parentID (id)} {:append [:category/id (id) :category/proposals]}))}]
+                     :onClick #(t/add! ctx {:proposal/id (u/uuid)
+                                            :proposal/name "New proposal"
+                                            :proposal/author (comp/viewer-ident this)
+                                            :proposal/created (.toLocaleDateString (js/Date.) "sv")
+                                            :proposal/status :EVALUATION
+                                            :proposal/parentID (id)}
+                                       {:append [:category/id (id) :category/proposals]})}]
            [:button {:class "i-tabler-palette"
                      :data-tooltip-target "tooltip-color"
                      :data-dropdown-toggle "color-dropdown"
@@ -36,7 +49,8 @@
                                  (comp/mutate! this {:remove [:category/id (id)]
                                                      :from [:category/id (:parent props) :category/children]
                                                      :cdb true})
-                                 (c/remove-category-remote ctx (id)))}]]
+                                 (when (not (u/uuid? (id)))
+                                   (c/remove-category-remote ctx (id))))}]]
           [:div {:class "z-10 w-fit"}
            [d/dropdown {:& {:id "color-dropdown"
                             :items (fn [] [{:value "red" :id "red"}

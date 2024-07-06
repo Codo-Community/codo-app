@@ -12,7 +12,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005",
-    "postinstall": "patch --forward ./node_modules/squint-cljs/package.json ./vite-plugin/package.json.patch || echo "
+    "postinstall": "patch --forward ./node_modules/squint-cljs/package.json ./vite-plugin-squint/package.json.patch || echo "
   },
   "license": "MIT",
   "devDependencies": {
@@ -43,7 +43,8 @@
     "uint8arrays": "^5.1.0",
     "unocss": "^0.60.4",
     "vite": "^5.3.2",
-    "vite-plugin-solid": "^2.10.2"
+    "vite-plugin-squint": "file://./vite-plugin-squint",
+     "vite-plugin-solid": "^2.10.2"
   },
   "dependencies": {
     "@apollo/client": "^3.10.8",

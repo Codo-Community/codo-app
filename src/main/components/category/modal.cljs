@@ -18,18 +18,27 @@
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc CategoryModal [this {:category/keys [id name description] :as data :or {id description}}]
-  #jsx [:form {:class "flex flex-col gap-3"
-               :onSubmit (fn [e] (.preventDefault e) (c/add-category-remote ctx (data) nil))}
-        [:span {:class "flex  w-full gap-3"}
-         [in/input {:label "Name"
-                    :placeholder "Project Name"
-                    :value name
-                    :on-change #(comp/set! this :category/name %)}]]
-        [ta/textarea {:title "Description"
-                      :value description
-                      :on-change #(comp/set! this :category/description %)}]
-        [:span {:class "flex w-full gap-3"}
-         [b/button {:title "Submit"}]]])
+(defc CategoryModal [this {:category/keys [id name {creator [:ceramic-account/id]} description] :as data
+                           :or {id "" description ""}}]
+  #jsx [:div {:class "dark:bg-black p-4 border-1 border-zinc-400 rounded-lg"}
+        [:form {:class "flex flex-col gap-3"
+                :onSubmit (fn [e] (.preventDefault e) (c/add-category-remote ctx (data) (:parent props)))}
+         [:span {:class "flex  w-full gap-3"}
+          [in/input {:label "Name"
+                     :placeholder "Project Name"
+                     :readonly (not (comp/viewer? this (creator)))
+                     :value name
+                     :on-change #(comp/set! this :category/name %)}]]
+         [ta/textarea {:title "Description"
+                       :value description
+                       :readonly (not (comp/viewer? this (creator)))
+                       :on-change #(comp/set! this :category/description %)}]
+         [:span {:class "flex w-full gap-3"}
+          [Show {:when (comp/viewer? this (creator))}
+           [b/button {:title "Submit"
+                      :data-modal-hide "planner-modal"}]]
+          [b/button {:title "Close"
+                     :on-click #(.preventDefault %)
+                     :data-modal-hide "planner-modal"}]]]])
 
 (def ui-category-modal (comp/comp-factory CategoryModal AppContext))

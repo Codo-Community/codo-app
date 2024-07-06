@@ -14,6 +14,7 @@
                             :dark? dark?
                             :dark-toggle #(setDark (not (dark?)))}}]
           [:div {:class "flex h-screen w-sceen dark:(text-white bg-black) justify-center"}
+           [alert/ui-alert {:& {:ident [:component/id :alert]}}]
            
            props.children
 
@@ -22,8 +23,9 @@
               [:span {:class "flex gap-2 items-center justify-end flex"} [A {:href "/projects"} "Projects"] [:div {:class "i-tabler-stack"}]]]]
 
           [f/ui-footer]
-          [alert/ui-alert {:& {:ident [:component/id :alert]}}]]))
 
-  (def ui-main (comp/comp-factory Main AppContext))
+          ]))
+
+(def ui-main (comp/comp-factory Main AppContext))
 
                                         ; dark bg? [#101014]

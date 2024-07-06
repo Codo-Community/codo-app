@@ -50,30 +50,51 @@
 (defn drop-false [m]
   (into {} (filterv (fn [x] (and (not (false? (second x))) (not (nil? (second x))))) m)))
 
+(defn trunc-id [s]
+  (.substring s (- (aget s :length) 8)))
+
 (defn distribute [f m]
-  (cond (map? m) (zipmap (keys m) (mapv f (vals m)))
-        (vector? m) (mapv f m)
+  #_(println "this is a map...:" (map? m) " " m)
+  (cond (vector? m) (f (mapv #(distribute f %) m))
+        (map? m) (f (zipmap (keys m) (mapv #(distribute f %) (vals m))))
+
         :else m))
 
 (defn nsd [data ns]
   (zipmap (mapv (fn [x] (str ns "/" x)) (keys data)) (vals data))
   #_(into {} (mapv (fn [[k v]] [(str ns "/" k) v]) data)))
 
+(defn add-ns [data]
+  (distribute (fn [e]
+                #_(println "edges:1: " e (contains? e :edges))
+                (cond
+                  (contains? e :edges) (add-ns (vals (get e :edges)))
+                  (contains? e :node) (add-ns (get e :node))
+                  (contains? e :__typename) (let [n (kebab-case (:__typename e))]
+                                              (nsd (dissoc e :__typename) n))
+                  :else e)) data))
+
 ;; local storage
 
 (defn set-item!
   "Set `key' in browser's localStorage to `val`."
   [key val]
-  (.setItem (.-localStorage js/window) key val))
+  (.setItem (.-localStorage js/window) key (js/JSON.stringify val)))
 
 (defn get-item
   "Returns value of `key' from browser's localStorage."
   [key]
-  (.getItem (.-localStorage js/window) key))
+  (try
+    (js/JSON.parse (.getItem (.-localStorage js/window) key))
+    (catch js/Error e (println (str "could net get item: " key " ") e) nil)))
 
 (defn remove-item!
   "Remove the browser's localStorage value for the given `key`"
   [key]
   (.removeItem (.-localStorage js/window) key))
 
-(def ipfs-folder "https://harlequin-miniature-termite-179.mypinata.cloud/ipfs/QmduDf2YrctSn6oJeSpAjaBKZwKEgqxvAreeaCyD8gsnGc")
+;; const timeZone = 'America/New_York';
+;; const zonedDate = utcToZonedTime(now, timeZone);
+;;                                         ;
+;; (defn convert-time [zone]
+;;   )

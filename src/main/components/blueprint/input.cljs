@@ -9,7 +9,7 @@
 
 (defn input [{:keys [id ident label placeholder on-submit value copy on-change on-click readonly required extra-class left-icon value datepicker type ref on-focus-out]
               :as data
-              :or {required false extra-class "" copy true readonly false left-icon false label nil datepicker false type "" ref false
+              :or {required false extra-class "" copy true readonly false left-icon false label nil datepicker nil type "text" ref false
                    value (fn [] "")
                    on-click (fn [e] #_(util/copy-to-clipboard v.children))}}]
   (let [datepicker-el (atom nil)
@@ -22,7 +22,7 @@
 
     #jsx [:div {:id id
                 :class (str "w-full" extra-class)}
-          (l/label label)
+          [l/label {:title label}]
           [:span {:class "flex flex-row relative"}
            [Show {:when (if left-icon true)}
             [:div {:class (str  "w-7 h-7 absolute left-2 top-2 ")}
@@ -38,7 +38,7 @@
                                                             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-12" "pl-3"))
                     :datepicker datepicker
                     :placeholder placeholder
-                    :type (or type "text")
+                    :type (if (or (nil? type) (= type "")) "text" type)
                     :onChange on-change
                     :onFocusOut on-focus-out
                     :onSubmit on-submit

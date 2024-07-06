@@ -1,6 +1,9 @@
 (ns co-who.evm.util
   (:require ["viem" :refer [parseEther]]
-            ["viem/accounts" :as ac :refer [generatePrivateKey privateKeyToAccount]]))
+            ["viem/ens" :refer [normalize]]
+            ["viem/accounts" :as ac :refer [generatePrivateKey privateKeyToAccount]]
+            ["./client.cljs" :as ec :refer [mainnet-client]]
+            ["../query_client.cljs" :refer [queryClient]]))
 
 #_(set! *warn-on-infer* false)
 
@@ -36,3 +39,13 @@
 (defn ^:async get-chain [& f]
   (.then (.request js/window.ethereum {:method "eth_chainId"})
          (or f (fn [r] (js/parseInt r 16)))))
+
+(defn ^:async fetch-ens-name [address]
+  (.fetchQuery queryClient
+               {:queryKey [:ens-address address]
+                :queryFn #(.getEnsName @mainnet-client {:address address})}))
+
+(defn ^:async fetch-ens-avatar [name]
+  (.fetchQuery queryClient
+               {:queryKey [:ens-name name]
+                :queryFn #(.getEnsAvatar @mainnet-client {:name (normalize name)})}))
