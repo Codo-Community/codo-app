@@ -62,7 +62,7 @@
                                 :id id}} (fn [r])))
 
 (defn add-category-remote [ctx {:category/keys [id name color description] :as data} parent-id]
-  (let [vars (utils/remove-ns data)
+  (let [vars (dissoc (utils/remove-ns data) :creator)
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
         vars (if-not (u/uuid? id)
@@ -86,7 +86,7 @@
                                         ; so the data will be like {:category/id #uuid, :category/name "xyz" ...}
                                         ; we need to do a function which deep recursively updates the normalized state whenever [:category/id #uuid] shows up as a reference
                                         ; and inside the :category/id table {:category/id {:#uuid-xyz {:category/id :#uuid-xyz ... -> :category/id stream-id
-                                 (normad/swap-uuids! ctx id stream-id)
+                                 #_(normad/swap-uuids! ctx id stream-id)
                                  (when (and (u/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID (:category/id category)}}}
@@ -172,7 +172,8 @@
                  #jsx [pr/ui-proposal {:& {:ident proposal
                                            :parent (id)
                                            :projectLocal (:projectLocal props)
-                                           :setProjectLocal (:setProjectLocal props)}}])]]]
+                                           :setProjectLocal (:setProjectLocal props)}}])]
+              #_[b/button {:icon []}]]]
             [Show {:when (vector? (children))}
              [For {:each (mapv (fn [x] [:category/id (:category-link/child x)]) (children))}
               (fn [entity i]

@@ -93,4 +93,8 @@
   [key]
   (.removeItem (.-localStorage js/window) key))
 
-(def ipfs-folder "https://harlequin-miniature-termite-179.mypinata.cloud/ipfs/QmduDf2YrctSn6oJeSpAjaBKZwKEgqxvAreeaCyD8gsnGc")
+;; const timeZone = 'America/New_York';
+;; const zonedDate = utcToZonedTime(now, timeZone);
+;;                                         ;
+;; (defn convert-time [zone]
+;;   )

@@ -5,6 +5,7 @@
             ["../../../evm/client.cljs" :as ec]
             ["../../../evm/lib.cljs" :as el]
             ["../../../evm/util.cljs" :as eu]
+            ["../../blueprint/button.cljs" :as b]
             ["../../../transact.cljs" :as t]
             ["../../../composedb/client.cljs" :as cli]
             ["../../../utils.cljs" :as u]
@@ -47,7 +48,7 @@
 
 (defc ContractStep [this {:project/keys [id contract] :as data}]
   (let [params (useParams)]
-    (onMount (fn [] (when (or (nil? (contract))
+    #_(onMount (fn [] (when (or (nil? (contract))
                               (= undefined (second (contract)))
                               (u/uuid? (second (contract))))
                       (.then (cli/await-session) #(fetch-abi (:id params) ctx)))))
@@ -56,10 +57,10 @@
                             (not (= undefined (second (contract))))
                             (not (u/uuid? (second (contract)))))
                  :fallback #jsx [:span {:class "flex gap-4 items-center"}
-                                 "Deploying contract "
-                                 #_[:button {:onClick (fn [e] (println "a") (.then (fetch-abi (:id params) ctx)
-                                                                      #(println %)))} "de"]
-                                 [spinner/TailSpin]]}
+                                 [b/button {:title "Deploy contract"
+                                            :on-click (fn [e] (.then (fetch-abi (:id params) ctx)
+                                                                    #(println %)))}]
+                                 #_[spinner/TailSpin]]}
            "Project Contract Deployed!"]]))
 
 (def ui-contract-step (comp/comp-factory ContractStep AppContext))

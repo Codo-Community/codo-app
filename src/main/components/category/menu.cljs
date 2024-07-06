@@ -22,7 +22,9 @@
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                       :onClick #(let [link-id (u/uuid)
                                       child-id (u/uuid)]
-                                  (comp/mutate! this {:add #:category{:id child-id :name "Category" :color :gray}})
+                                  (comp/mutate! this {:add #:category{:id child-id :name "Category" :color :gray
+                                                                      :category/creator (comp/viewer-ident this)
+                                                                      :category/created (.toLocaleDateString (js/Date.) "sv")}})
                                   (comp/mutate! this {:add #:category-link{:id link-id
                                                                            :parentID (id)
                                                                            :parent [:category/id (id)]

@@ -20,9 +20,7 @@
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
-(def codo-logo (str  u/ipfs-folder "/images/codo_new_black.svg"))
-#_(def codo-logo (js/URL. "/images/codo_new_black.svg" import.meta.url))
-
+(def codo-logo (str js/import.meta.env.VITE_PINATA_URL "/images/codo_new_black.svg"))
 
 (defc Header [this {:keys [component/id {user [:user/id :user/session]} chain {active-project [:project/id :project/name]}]}]
   (let [navigate (useNavigate)

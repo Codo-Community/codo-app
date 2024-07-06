@@ -49,7 +49,8 @@
                               ((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
                                                                                                     :props {:parent (:parent props)}
                                                                                                     :ident [:proposal/id (id)]}))
-                              (.commands.setContent (comp) (description)))} [:text {:class "font-bold"} (str "#"  (utils/trunc-id (id)))] [:text {:class "truncate"}] (str ": " (name))]
+                              (.commands.setContent (comp) (description)))}
+           [:text {:class "font-bold dark:text-purple-600 text-purple-800"} "#" (utils/trunc-id (id))] [:text {:class "truncate"}] (str ": " (name))]
           #_[ba/badge {:title "Dev"}]
           [Show {:when (not (utils/uuid? (id)))}
            [:span {:class "flex w-fit gap-1 items-center"}

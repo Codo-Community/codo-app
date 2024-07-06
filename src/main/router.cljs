@@ -40,7 +40,9 @@
   #_(get-project [:project/id (:id params)]))
 
 (defn create-project [{:keys [params location]}]
-  (create-p (:id params)))
+  (let [ctx (useContext AppContext)]
+    (t/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project] :check-session? false}))
+  #_(create-p (:id params)))
 
 #_(defn load-transactions)
 
@@ -75,7 +77,7 @@
                                           #jsx [cstep/ui-contract-step {:& {:ident ident}}]))
                  :load create-project}]]
         [Route {:path "/" :component (fn [props] (let [navigate (useNavigate)]
-                                                   (navigate (str "/project/" "kjzl6kcym7w8yamassvsdh4r541mtqde1p0es1tkfxeqnteo50tfm08nl570e5y"))
+                                                   (navigate (str "/project/" "kjzl6kcym7w8y9qvonv5n3irhpkvnkg4f0vxax6vnkzij2vrj7rj5lxhk30lb5s"))
                                                    #jsx [:div {}] #_home/HomePage))}]])
 
 (def ui-router (comp/comp-factory Router AppContext))
