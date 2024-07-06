@@ -117,17 +117,3 @@
 (defn swap-uuids! [{:keys [store setStore] :as ctx} old-uuid new-id]
   (setStore (fn [state]
               (update-uuid-in-map state old-uuid new-id))))
-
-(comment (let [[store setStore] (normalize-store (createStore {:counters [{:counter/id 0
-                                                                           :counter/value 1}
-                                                                          {:counter/id 1
-                                                                           :counter/value 2}]
-                                                               :header {:something "title"
-                                                                        :user {:user/id 0
-                                                                               :user/name "da"
-                                                                               :user/ethereum-address "0x0"
-                                                                               :user/leg {:leg/id "left"}}}}))
-               query [{:counters [:counter/id :counter/value]} {:header [{:user [:user/id :user/name]}]}]]
-           (pull store store [:counters]))
-
-         (ident? [:asd/id 0]))

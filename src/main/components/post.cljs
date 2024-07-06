@@ -46,9 +46,10 @@
                              (:fn mutation)
                              vars)))
 
-(defc Post [this {:post/keys [id body comments parentID created {author [:ceramic-account/id {:ceramic-account/user [:user/id]}]}]
+(defc Post [this {:post/keys [id body comments parentID created {author [:ceramic-account/id {:ceramic-account/user [:user/id]}]}
+                              {pageInfo [:pageInfo/hasNextPage]}]
                   :or {id (utils/uuid) body "Default content" comments []}}]
-  #jsx [:div {:class "flex flex-col overflow-y-auto overflow-x-hidden scroll-x-none max-h-[30vh] w-full max-w-full p-2 mr-2"}
+  #jsx [:div {:class "flex flex-col overflow-y-auto overflow-x-hidden scroll-x-none max-h-[30vh] w-full max-w-full pt-1 pl-1 pr-2"}
         [Show {:when (not (u/uuid? (id)))
                :fallback #jsx [:form {:class "flex flex-col gap-3"
                                       :onSubmit (fn [e] (.preventDefault e)

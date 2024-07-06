@@ -27,7 +27,7 @@
 (def update-mutation
   "mutation updateProposal($i: UpdateProposalInput!){
      updateProposal(input: $i){
-       document { }
+       document { id }
      }
 }")
 
@@ -50,7 +50,12 @@
     (println "v: " vars)
     (cu/execute-gql-mutation ctx
                              (:fn mutation)
-                             vars)))
+                             vars
+                             (fn [res]
+                               (println "res: " res)
+                               (let [stream-id (:proposal/id res)]
+                                 #_(t/swap-uuids! ctx id stream-id)
+                                 (t/add! ctx res))))))
 
 (defn remove-proposal-remote [ctx id]
   (cu/execute-gql-mutation ctx update-mutation
@@ -88,6 +93,7 @@
             }
           }
         }
+        pageInfo { hasNextPage }
       }
       created
       description
@@ -95,31 +101,53 @@
   }
 }"))
 
-(defc ProposalModal [this {:proposal/keys [id description name created status parentID count-up count-down {author [:ceramic-account/id]} posts] :as data
+(defn vote-mutation [id type]
+  (str "mutation {
+              setVote(input: {content: {parentID: \"" id "\", type: " (get {:up "UP" :down "DOWN"} type) " }}) {
+                            document {
+                                       id
+                                     }
+                }
+              }"))
+
+(defc ProposalModal [this {:proposal/keys [id description name created status parentID count-up count-down
+                                           {author [:ceramic-account/id]}
+                                           posts] :as data
                            :or {id (u/uuid) author "Bramaputra" name "Proposal" created (.toLocaleDateString (js/Date.) "sv")
                                 status :EVALUATION posts []}
                            :local {new-post nil}}]
   (let [[open? setOpen] (createSignal true)
         {:keys [element menu comp]} (useContext EditorContext)]
-    #jsx [:div {:class "dark:bg-black pt-4 pl-4 pb-4 border-1 border-zinc-400 rounded-lg lt-md:w-[90vw] md:min-w-[50vw] md:max-w-[80vw] xl:max-w-[60vw] max-h-[90vh]"}
-          [:div {:class "text-lg font-bold"} (str "Proposal #"  (u/trunc-id (id)) ": ")
-           [:text {:class "truncate"} (str (name))]]
-          [:div {:class "flex flex-col gap-2"}
-           [:h1 {:class "text-lg font-bold"} "Votes"]
+    #jsx [:div {:class "dark:bg-black pt-4 pl-4 pb-4 border-1 border-zinc-400 rounded-lg lt-md:w-[90vw]
+                        md:min-w-[50vw] md:max-w-[90vw] max-h-[90vh] overflow-hidden"}
+          [:div {:class "pr-4"}
+           [:div {:class "text-lg font-bold flex flex-col gap-2"}
+            [:span {:class "flex flex-row gap-2 items-center w-full"}
+             (str "Proposal ")
+             [:text {:class "dark:text-purple-600 text-purple-800"}  "#" (u/trunc-id (id))]
+             [:span {:class "flex flew-row justify-end w-full"}
+              [b/button {:icon "i-tabler-x"
+                         :on-click #(.preventDefault %)
+                         :data-modal-hide "planner-modal"}]]]
+            [:text {:class "truncate mb-2"} (str (name))]]
            [Show {:when (not (u/uuid? (id)))}
-            [:span {:class "flex w-fit gap-1 items-center"}
-             (str (count-up) #_(:up (vote-count)))
-             [:button {:class "dark:text-green-400 dark:hover:text-green-200"
-                       :onClick #(do
-                                   #_(comp/mutate! this {:add {:parentID (id) :type :up}})
-                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {} (fn [r] (println "vote answer: " r))))}
-              [:div {:class "i-tabler-arrow-up h-8"} " Up vote"]]
-             (str (count-down) #_(:down (vote-count)))
-             [:button {:class "dark:text-red-400 dark:hover:text-red-200"
-                       :onClick #(do
-                                   #_(comp/set-field! this {:add {:parentID (id) :type :down}})
-                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}))}
-              [:div {:class "i-tabler-arrow-down h-8 "} " Down vote"]]]]]
+            [:div {:class "grid grid-cols-2 w-full gap-2 items-center justify-items-stretch pb-2"}
+             [:h1 {:class "text-lg font-bold"} "Votes"]
+             [:div {}
+              [:span {:class "flex w-fit gap-2 items-center"}
+               [:text {} (count-up)]
+               [:button {:class "dark:text-green-400 dark:hover:text-green-200"
+                         :onClick #(do
+                                     #_(comp/mutate! this {:add {:parentID (id) :type :up}})
+                                     (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {} (fn [r] (println "vote answer: " r))))}
+                " Up vote"]]
+              [:span {:class "flex w-fit gap-2 items-center"}
+               (str (count-down) #_(:down (vote-count)))
+               [:button {:class "dark:text-red-400 dark:hover:text-red-200"
+                         :onClick #(do
+                                     #_(comp/set-field! this {:add {:parentID (id) :type :down}})
+                                     (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}))}
+                " Down vote"]]]]]]
           [:div {:class "max-h-[80vh] min-h-[40vh] overflow-auto pr-4"}
            [:hr {:class "border-zinc-400 mb-1"}]
            [:form {:class "flex flex-col gap-2"
@@ -149,12 +177,7 @@
                                                             :cdb true})
                                         (when (not (u/uuid? (id)))
                                           (remove-proposal-remote ctx (id))))
-                         :data-modal-hide "planner-modal"}]]
-
-             [b/button {:title "Close"
-                        :on-click #(.preventDefault %)
-                        :data-modal-hide "planner-modal"}]]]
-
+                         :data-modal-hide "planner-modal"}]]]]
            [Show {:when (not (u/uuid? (id)))}
             [:div {:class "flex flex-col gap-2"}
              [:h1 {:class "text-lg font-bold"} "Discussion"]

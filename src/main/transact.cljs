@@ -72,3 +72,6 @@
                      (after)))))
 
 (defn remove-entity! [])
+
+(defn swap-uuids! [ctx id stream-id]
+  (n/swap-uuids! ctx id stream-id))

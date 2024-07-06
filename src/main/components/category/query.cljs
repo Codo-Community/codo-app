@@ -71,6 +71,7 @@ proposals(last: 10) {
             }
           }
         }
+        pageInfo { hasNextPage }
       }
       mainReviewer { id }
       children(last: 10) {
@@ -86,6 +87,7 @@ proposals(last: 10) {
             }
           }
         }
+        pageInfo { hasNextPage }
       }
     }
   }
