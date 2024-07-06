@@ -43,10 +43,12 @@
                                          (conj {:user/ethereum-address address
                                                 :user/account [:ceramic-account/id account-id]
                                                 :user/session (-> (:compose @cli/client) :did :_id)}))]
+                            (t/add! ctx (assoc (:viewer res) :ceramic-account/user user) {:check-session? false})
                             (t/add! ctx user
-                                    {:replace [:component/id :header :user]})
+                                    {:replace [:component/id :header :user]
+                                     :check-session? false})
                             (t/add! ctx {:viewer/id 0
-                                         :viewer/user [:user/id (:user/id user)]})))))
+                                         :viewer/user [:user/id (:user/id user)]} {:check-session? false})))))
 
 (defn ^:async init-auth [ctx]
   (.then (cda/init-auth)

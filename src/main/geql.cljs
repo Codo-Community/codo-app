@@ -39,10 +39,12 @@
                                :selectionSet {:kind "SelectionSet"
                                               :selections [(assoc (inline-fragment (utils/pascal-case (first (str/split (first k) "/"))))
                                                                   :selectionSet {:kind "SelectionSet"
-                                                                                 :selections (let [d (mapv build-field v)]
-                                                                                               (if (= (count d) 1) (first d) d))})]})
+                                                                                 :selections (let [d (mapv build-field v)
+                                                                                                   a (println "df: " d)]
+                                                                                                 (if (= (count d) 1) (first d) d))})]})
             (if (vector? v) (assoc (eql-key->field k) :selectionSet {:kind "SelectionSet"
-                                                                     :selections (let [d (mapv build-field v)]
+                                                                     :selections (let [d (mapv build-field v)
+                                                                                       a (println "df: " d)]
                                                                                    (if (= (count d) 1) (first d) d))})
                 (eql-key->field k))))
       (vec (flatten [k v])))))

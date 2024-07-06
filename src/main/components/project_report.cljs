@@ -22,7 +22,7 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc ProjectReport [this {:project/keys [id name start description
-                                          {category [:category/id :category/name {:category/creator [:category/isViewer]}
+                                          {category [:category/id :category/name {:category/creator [:ceramic-account/id]}
                                                      {:category/children [:category/id]}]}
                                           {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
                                                                                           :name "Proj"

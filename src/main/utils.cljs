@@ -50,10 +50,13 @@
 (defn drop-false [m]
   (into {} (filterv (fn [x] (and (not (false? (second x))) (not (nil? (second x))))) m)))
 
+(defn trunc-id [s]
+  (.substring s (- (aget s :length) 8)))
+
 (defn distribute [f m]
   #_(println "this is a map...:" (map? m) " " m)
   (cond (vector? m) (f (mapv #(distribute f %) m))
-          (map? m) (f (zipmap (keys m) (mapv #(distribute f %) (vals m))))
+        (map? m) (f (zipmap (keys m) (mapv #(distribute f %) (vals m))))
 
         :else m))
 

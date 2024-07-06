@@ -56,7 +56,7 @@
   node(id: \"" id "\") {
     ... on Category {
       id
-      creator { id isViewer }
+      creator { id }
       color
       description
       name
@@ -82,7 +82,7 @@ proposals(last: 10) {
               color
               description
               id
-              creator { id isViewer }
+              creator { id }
             }
           }
         }
