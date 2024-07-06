@@ -6,7 +6,8 @@
 (def AppContext (createContext))
 
 (defn init-context []
-  (let [[store setStore] (createStore {:component/id {:header {:component/id :header
+  (let [[store setStore] (createStore {:viewer/id {0 {:viewer/id 0}}
+                                       :component/id {:header {:component/id :header
                                                                :chain {:chain/id 31337
                                                                        :chain/name "Hardhat"}
                                                                :user {:user/id 0
@@ -18,7 +19,8 @@
                                                   :transaction-builder {:contracts []
                                                                         :contract nil
                                                                         :transactions []}}})
-        {:keys [store setStore] :as ctx} (norm/add {:store store :setStore setStore})]
+        ctx {:store store :setStore setStore}]
+    (norm/add ctx)
     (set! (.-store js/window) store)
     ctx))
 

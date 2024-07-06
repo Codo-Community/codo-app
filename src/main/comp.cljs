@@ -2,6 +2,7 @@
   (:require ["solid-js" :as solid]
             ["./normad.cljs" :as n]
             ["./transact.cljs" :as t]
+            ;["./composedb/util.cljs" :as cu]
             ["./utils.cljs" :as u]
             [squint.core :refer [defclass]]
             #_["./comp_macro.mjs" :as m])
@@ -11,9 +12,15 @@
 
 (defn set!
   ([this ident field event]
-   (t/set-field! this.-ctx (conj ident field) (u/e->v event)))
+   (t/set-field! this.-ctx (conj ident field) (or (u/e->v event) event)))
   ([this field event]
-   (t/set-field! this.-ctx (conj (this.ident) field) (u/e->v event))))
+   (t/set-field! this.-ctx (conj (this.ident) field) (or (u/e->v event) event))))
+
+(defn viewer-ident [this]
+  (t/viewer-ident this.-ctx))
+
+(defn viewer? [this acc-id]
+  (t/viewer? this.-ctx acc-id))
 
 (defclass Comp
   (field ctx)
@@ -45,10 +52,15 @@
 (defn mutate! [this mutate-map]
   (let [local (:local mutate-map)
         add (or (:add local) (:add mutate-map))
+        remote (:remote mutate-map)
         remove (or (:remove local) (:remove mutate-map))
         opts {:append (:append (or local mutate-map))
               :replace (:replace (or local mutate-map))}]
+    #_(when remote
+      (if (:query remote)
+        (cu/execute-gql-query (:query remote) (:vals remote))))
     (when add
+      (println "running add with data: " (this.new-data))
       (t/add! this.-ctx (if (= add :new) (this.new-data) add) opts))
     (when remove
       (t/remove-ident! this.-ctx (:from mutate-map) remove))))

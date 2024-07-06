@@ -2,5 +2,5 @@ type Contract @createModel(description: "A model of a Smart Contract.") {
   name: String! @string(minLength: 3, maxLength: 50)
   address: String! @string(minLength: 42, maxLength: 42) @immutable
   chain: String @string(minLength: 3, maxLength: 100) @immutable
-  abi: String @string(minLength: 3, maxLength: 50000) @immutable
+  abi: String @string(minLength: 3, maxLength: 5000)
 }

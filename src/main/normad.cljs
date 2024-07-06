@@ -18,31 +18,39 @@
 (defn traverse-and-transform [item setStore]
   (cond
     (vector? item) (mapv #(traverse-and-transform % setStore) item)
-    (map? item)  (let [ident (get-ident item)]
+    (map? item)  (let [ident (get-ident item)
+                       new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
                    (if (ident? ident)
-                     (let [new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
+                     (do
                        #_(println "try add: " ident " " new-val)
                        (swap! setStore #(update-in % ident (fn [v] (merge v new-val))))
-                       ident
-                       )
-                     (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))))
+                       ident)
+                     new-val))
+
     :else item))
 
 (def acc (atom {}))
 
 (defn add [{:keys [store setStore] :as ctx} & data]
   (let [res (traverse-and-transform (or (first data) store) acc)]
-    #_(println "res " res)
-    #_(println "acc " @acc)
+    (println "rr: " res)
+    (println "rr:acc " @acc)
 
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) @acc)
     ;; (mapv (fn [v] (println " v " v) (setStore (first v) (reconcile (second v) {:merge true}))) res)
 
     (if-not (first data)
       (setStore (reconcile (merge-with merge res @acc)))
-      (mapv #(if (nil? (get store %))
-               (setStore % (fn [x] (get @acc %)))
-               (setStore % (fn [x] (merge-with merge x (get @acc %))))) (keys @acc))
+      (reduce-kv (fn [m k v] (println "set: " k " " v ) (setStore k #(merge-with merge % v #_{:key k :merge true})))
+                 {}
+                 (if-not (vector? res)
+                   (merge  @acc res)
+                   @acc))
+      #_(do
+          (mapv (reconcile (merge-with merge res)))
+          (mapv #(if (nil? (get store %))
+                   (setStore % (fn [x] (get @acc %)))
+                   (setStore % (fn [x] (merge-with merge x (get @acc %))))) (keys @acc)))
       #_(if (ident? res)
           (if (nil? (get-in store res))
             (setStore (first res) (fn [x] (merge x (get @acc (first res)))))
@@ -56,7 +64,7 @@
     (reset! acc {})
     #_(js/chrome.runtime.sendMessage {:action "updateData" :data store})
     #_(println "store" store)
-    ctx))
+    res))
 
 (defn pull [store entity query]
   (cond
@@ -70,8 +78,8 @@
     (and (> (count query) 1)
          (vector? query)) (let [simple-keys (filterv string? query)
                                 not-simple  (filterv #(not (string? %)) query)]
-         (into (zipmap simple-keys (mapv #(pull store entity %) simple-keys))
-               (mapv #(pull store entity %) not-simple)))
+                            (into (zipmap simple-keys (mapv #(pull store entity %) simple-keys))
+                                  (mapv #(pull store entity %) not-simple)))
 
     (and (= (count query) 1)
          (vector? query)) (pull store entity (first query))
@@ -109,17 +117,3 @@
 (defn swap-uuids! [{:keys [store setStore] :as ctx} old-uuid new-id]
   (setStore (fn [state]
               (update-uuid-in-map state old-uuid new-id))))
-
-(comment (let [[store setStore] (normalize-store (createStore {:counters [{:counter/id 0
-                                                                           :counter/value 1}
-                                                                          {:counter/id 1
-                                                                           :counter/value 2}]
-                                                               :header {:something "title"
-                                                                        :user {:user/id 0
-                                                                               :user/name "da"
-                                                                               :user/ethereum-address "0x0"
-                                                                               :user/leg {:leg/id "left"}}}}))
-               query [{:counters [:counter/id :counter/value]} {:header [{:user [:user/id :user/name]}]}]]
-           (pull store store [:counters]))
-
-         (ident? [:asd/id 0]))

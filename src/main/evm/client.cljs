@@ -1,19 +1,27 @@
 (ns co-who.evm.client
-  (:require ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
-            ["viem/chains" :refer [sepolia hardhat]]))
+  (:require ["solid-js" :refer [useContext]]
+            ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
+            ["viem/chains" :refer [mainnet]]
+            ["@wagmi/core" :refer [getWalletClient getPublicClient watchClient watchPublicClient watchConnections]]
+            ["../Context.cljs" :refer [AppContext]]
+            ["../components/user.cljs" :as u]
+            ["./walletconnect.cljs" :refer [config]]))
 
-(defonce chains [sepolia hardhat])
+(defonce wallet-client (atom nil))
+(defonce public-client (atom nil))
+(defonce mainnet-client (atom (createPublicClient
+                               {:chain mainnet
+                                :transport (http (:href (js/URL. (str "/v2/" js/import.meta.env.VITE_ALCHEMY_API_KEY) js/import.meta.env.VITE_ALCHEMY_MAINNET)))})))
+(defonce unwatch-wallet (atom nil))
+(defonce unwatch-public (atom nil))
+(defonce unwatch-connections (atom nil))
 
-(defonce wallet-client (atom (createWalletClient {:chain (first chains)
-                                                  :transport (custom js/window.ethereum)})))
-
-(defonce public-client (atom (createPublicClient {:chain (first chains)
-                                                  :transport (http)})))
-
-(defn init-clients [wallet-client public-client chain]
-  (reset! wallet-client (createWalletClient {:chain chain
-                                             :transport (custom js/window.ethereum)}))
-  (reset! public-client (createPublicClient {:chain chain
-                                             :transport (http (get-in chain [:rpcUrls :default :http 0]))})))
+(defn ^:async init-clients []
+  (let [wc (js-await (getWalletClient config))
+        pc (js-await (getPublicClient config))]
+    (println "init c:" wc pc)
+    (reset! wallet-client wc)
+    (reset! public-client pc)
+    wc))
 
 (def default wallet-client)

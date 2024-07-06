@@ -21,27 +21,32 @@
         (.then #(aset ceramic "did" did)))))
 
 (defn ^:async write-composite [ceramic]
-  (let [categoryComposite (js-await (createComposite ceramic "./src/main/composedb/model/category.graphql"))
+  (let [userComposite (js-await (createComposite ceramic "./src/main/composedb/model/user.graphql"))
+        user-id (aget (.-modelIDs userComposite) 0)
 
-        category-id (aget (.-modelIDs categoryComposite) 0)
+        post-schema (.replace (readFileSync "./src/main/composedb/model/post.graphql"  {:encoding "utf-8"}) "$USER_ID" user-id)
+        postComposite (js-await (Composite.create  {:ceramic ceramic
+                                                    :schema post-schema}))
+        post-id (aget (.-modelIDs postComposite) 1)
+
+        proposal-schema (.replace (.replace (readFileSync "./src/main/composedb/model/proposal.graphql"  {:encoding "utf-8"}) "$USER_ID" user-id) "$POST_ID" post-id)
+        proposalComposite (js-await (Composite.create  {:ceramic ceramic
+                                                        :schema proposal-schema}))
+        proposal-id (aget (.-modelIDs proposalComposite) 2)
+
+        category-schema (.replace (readFileSync "./src/main/composedb/model/category.graphql"  {:encoding "utf-8"}) "$PROPOSAL_ID" proposal-id)
+        categoryComposite (js-await (Composite.create  {:ceramic ceramic
+                                                        :schema category-schema}))
+        category-id (aget (.-modelIDs categoryComposite) 1)
 
         contractComposite (js-await (createComposite ceramic "./src/main/composedb/model/contract.graphql"))
-
         contract-id (aget (.-modelIDs contractComposite) 0)
 
-                                        ;project-schema (.replace (readFileSync "./src/main/composedb/model/project.graphql"  {:encoding "utf-8"}) "$CATEGORY_ID" category-id)
         project-schema (.replace (.replace (readFileSync "./src/main/composedb/model/project.graphql"  {:encoding "utf-8"}) "$CATEGORY_ID" category-id) "$CONTRACT_ID" contract-id)
-
         projectComposite (js-await (Composite.create  {:ceramic ceramic
                                                        :schema project-schema}))
 
-        userComposite (js-await (createComposite ceramic "./src/main/composedb/model/user.graphql"))
-
-        ;; asd (js-await (writeEncodedComposite categoryComposite "./dist/__generated__/composite_category.json"))
-        ;; asd (js-await (writeEncodedComposite projectComposite "./dist/__generated__/composite_project.json"))
-        ;; asd (js-await (writeEncodedComposite userComposite "./dist/__generated__/composite_user.json"))
-
-        composite (js-await (Composite.from #js [categoryComposite contractComposite projectComposite userComposite]))
+        composite (js-await (Composite.from #js [userComposite postComposite proposalComposite categoryComposite contractComposite projectComposite]))
 
         asd (js-await (writeEncodedComposite composite "./src/__generated__/definition.json"))
 

@@ -38,7 +38,7 @@
           [:span {:class "w-full border-b border-gray-600 flex gap-3"}
            [:button {:class (str "dark:text-gray-400 w-5 h-5 p-2 " (if (open?) "i-tabler-chevron-down" "i-tabler-chevron-right"))
                      :onClick #(setOpen (not (open?)))}]
-           (l/label (id))]
+           [l/label {:title (id)}]]
           [Show {:when (open?)}
            [:div {}
             [f/ui-function {:& {:ident function}}]

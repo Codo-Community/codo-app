@@ -1,11 +1,8 @@
 import { defineConfig } from 'vite';
-import squint from "./vite-plugin/vite_plugin.js";
-import solidPlugin from 'vite-plugin-solid';
+import squint from "./vite-plugin-squint/index.mjs";
+//import squint from "vite-plugin-squint";
+import solid from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
-//import WindiCSS from 'vite-plugin-windicss';
-//import formsPlugin from 'windicss/plugin/forms';
-//import flowbite from 'flowbite/plugin-windicss';
-import flowbite from "flowbite";
 import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
@@ -27,8 +24,8 @@ port: 3000,
     devtools({
                 autoname: true, // e.g. enable autoname
               }),
-              squint({options: {scan: "true"}}),
-              solidPlugin(),
+              squint({scan: true}),
+              solid(),
           ],
   esbuild: {
       drop: ['console', 'debugger'],

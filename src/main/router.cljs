@@ -1,7 +1,7 @@
 (ns main.router
   (:require ["./comp.cljs" :as comp]
             ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
-            ["@solidjs/router" :refer [HashRouter Route useParams cache]]
+            ["@solidjs/router" :refer [HashRouter Route useParams cache useNavigate]]
             ["./main.cljs" :as main]
             ["./Context.cljs" :refer [AppContext]]
             ["./transact.cljs" :as t]
@@ -40,7 +40,9 @@
   #_(get-project [:project/id (:id params)]))
 
 (defn create-project [{:keys [params location]}]
-  (create-p (:id params)))
+  (let [ctx (useContext AppContext)]
+    (t/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project] :check-session? false}))
+  #_(create-p (:id params)))
 
 #_(defn load-transactions)
 
@@ -48,16 +50,18 @@
   #jsx [HashRouter {:root main/ui-main}
         [Route {:path "/projects" :component sp/ui-search-page
                 :load (fn [{:keys [params location]}] (sp/load-projects sp/list-query))}]
-        [Route {:path "/project/:id" :component (fn [props] (let [params (useParams)
-                                                                  ident [:project/id (:id params)]]
-                                                              #jsx [pr/ui-project-report {:& {:ident ident}}]))
-                :load load-project}]
+        [Route {:path "/project/:id"}
+         [Route {:path "/" :component (fn [props] (let [params (useParams)
+                                                        ident [:project/id (:id params)]]
+                                                    #jsx [pr/ui-project-report {:& {:ident ident}}]))
+                 :load load-project}]
+         #_[Route {:path "/transaction-builder" :component pr/Planner}]]
         [Route {:path "/transaction-builder" :component tbp/TransactionBuilderPage}]
         [Route {:path "/user/:id"}
          [Route {:path "/" :component (fn [props] (let [params (useParams)
-                                                               ident (fn [] [:user/id (:id params)])]
-                                                           #jsx [up/ui-user-profile {:& {:ident ident}}]))
-                :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
+                                                        ident (fn [] [:user/id (:id params)])]
+                                                    #jsx [up/ui-user-profile {:& {:ident ident}}]))
+                 :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
          [Route {:path "/projects" :component sp/ui-search-page
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
         [Route {:path "/wizards/new-project/:id"
@@ -72,6 +76,8 @@
                                               ident (fn [] [:project/id (:id params)])]
                                           #jsx [cstep/ui-contract-step {:& {:ident ident}}]))
                  :load create-project}]]
-        [Route {:path "/" :component home/HomePage}]])
+        [Route {:path "/" :component (fn [props] (let [navigate (useNavigate)]
+                                                   (navigate (str "/project/" "kjzl6kcym7w8y9qvonv5n3irhpkvnkg4f0vxax6vnkzij2vrj7rj5lxhk30lb5s"))
+                                                   #jsx [:div {}] #_home/HomePage))}]])
 
 (def ui-router (comp/comp-factory Router AppContext))

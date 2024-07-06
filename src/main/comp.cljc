@@ -51,7 +51,12 @@
                                               (list `createMemo (list 'fn []
                                                                       (list 'println "memo: " ntmp " ident: " (list 'ident) " query: " query)
                                                                       (list 'println "data: " (list `pull 'store (list 'ident) query))
-                                                                      (list `pull 'store (list 'ident) query))))
+                                                                      (list 'let ['data (list `pull 'store (list 'ident) query)
+                                                                                  #_(list 'if n
+                                                                                          (list `pull 'store (list 'ident) query)
+                                                                                          (list `pull 'store 'store query) ; multiple query entries pull from root
+                                                                                          )]
+                                                                            (list 'merge or-map (list 'or 'data {}))))))
                                         (list 'fn [] 'props))
                             val-vec (mapv #(list 'fn [] (list % (list 'data))) (mapv keywordify val-vec))
 
