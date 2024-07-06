@@ -5,16 +5,14 @@ type User @loadModel(id: "$USER_ID") {
 type Post
     @createModel(accountRelation: LIST, description: "A simple Post")
     @createIndex(fields: [{ path: "created" }])
-    @createIndex(fields: [{ path: "edited" }])
-    @createIndex(fields: [{ path: "tag" }]) {
+    @createIndex(fields: [{ path: "edited" }]) {
     author: DID! @documentAccount
     body: String! @string(minLength: 1, maxLength: 100)
-    tag: String! @string(minLength: 1, maxLength: 100)
+    tags: [String] @string(minLength: 1, maxLength: 100) @list(maxLength: 20)
     edited: DateTime
-    created: DateTime!
-    parentId: StreamID @documentReference(model: "Node")
-    userId: StreamID @documentReference(model: "User")
-    user: User @relationDocument(property: "userId")
+    created: DateTime! @immutable
+    parentID: StreamID! @documentReference(model: "Node")
+    comments: [Comment] @list(maxLength: 10000) @relationFrom(model: "Comment",property: "postID")
 }
 
 type Comment @createModel(accountRelation: LIST, description: "A comment on a Post") {
@@ -23,6 +21,4 @@ type Comment @createModel(accountRelation: LIST, description: "A comment on a Po
   text: String! @string(maxLength: 500)
   author: DID! @documentAccount
   created: DateTime!
-  userId: StreamID @documentReference(model: "User")
-  user: User @relationDocument(property: "userId")
 }

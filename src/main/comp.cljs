@@ -16,6 +16,12 @@
   ([this field event]
    (t/set-field! this.-ctx (conj (this.ident) field) (or (u/e->v event) event))))
 
+(defn viewer-ident [this]
+  (t/viewer-ident this.-ctx))
+
+(defn viewer? [this acc-id]
+  (t/viewer? this.-ctx acc-id))
+
 (defclass Comp
   (field ctx)
   (^:static field query)

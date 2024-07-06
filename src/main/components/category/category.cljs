@@ -100,12 +100,11 @@
                                                 (let [ps (mapv #(:proposal/id %) (get r :category/proposals))]
                                                   (println "ps: " r)
                                                   (println "ps: " ps)
-                                                  (t/add! ctx r)
+                                                  (t/add! ctx r {:check-session? false})
                                                   (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :up) {}
-                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-up (:voteCount r)}))) ps)
+                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-up (:voteCount r)} {:check-session? false}))) ps)
                                                   (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :down) {}
-                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-down (:voteCount r)}))) ps)
-                                                  ))))
+                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-down (:voteCount r)} {:check-session? false}))) ps)))))
 
 (def load-category-c (cache (fn [id]
                               (let [ctx (useContext AppContext)]
@@ -116,7 +115,7 @@
   (load-category-c id))
 
 (defc Category [this {:category/keys [id name color {children [:category-link/id {:category-link/child [:category/id]}]}
-                                      {creator [:id :isViewer]} proposals]
+                                      {creator [:ceramic-account/id]} proposals]
                       :or {id (u/uuid) name "Category" children nil color :gray proposals []}
                       :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)]
@@ -125,7 +124,7 @@
                       #_(load-category ctx (id))
                       (setLocal (assoc (local) :open? (:open? props)))
                       (initModals))))
-    #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
+    #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "lg:ml-1" ""))}
           [:span {:class "flex flex-inline gap-2 mouse-pointer"
                   :onMouseEnter #(setLocal (assoc (local) :hovering? true))
                   :onMouseLeave #(setLocal (assoc (local) :hovering? false))}

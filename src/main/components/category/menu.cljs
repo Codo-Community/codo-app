@@ -10,7 +10,7 @@
             ["../../Context.cljs" :refer [AppContext]])
   (:require-macros [comp :refer [defc]]))
 
-(defc CategoryMenu [this {:category/keys [id {creator [:id :isViewer]}]
+(defc CategoryMenu [this {:category/keys [id {creator [:ceramic-account/id]}]
                           :or {id (u/uuid) name "Category" children nil color :gray
                                proposals []} :as data}]
   (do
@@ -18,7 +18,7 @@
     #jsx [:div {:class "flex flex-col relative w-fit"}
           [to/tooltip {:id "tooltip-color" :content "Color"}]
           [:span {:class "flex gap-2 items-center"}
-           [Show {:when (:isViewer (creator))}
+           [Show {:when (comp/viewer? this (creator))}
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                       :onClick #(do
                                   #_(println "new-data: " {:id (u/uuid) :name "Category" :color :gray
@@ -29,11 +29,11 @@
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                      :onClick #(t/add! ctx {:proposal/id (u/uuid)
                                             :proposal/name "New proposal"
+                                            :proposal/author (comp/viewer-ident this)
                                             :proposal/created (.toLocaleDateString (js/Date.) "sv")
                                             :proposal/status :EVALUATION
                                             :proposal/parentID (id)}
-                                       {:append [:category/id (id) :category/proposals]
-                                        :check-session? true})}]
+                                       {:append [:category/id (id) :category/proposals]})}]
            [:button {:class "i-tabler-palette"
                      :data-tooltip-target "tooltip-color"
                      :data-dropdown-toggle "color-dropdown"
