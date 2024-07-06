@@ -6,6 +6,7 @@
             ["../comp.cljs" :as comp]
             ["../transact.cljs" :as t]
             ["../evm/client.cljs" :as ec :refer [wallet-client]]
+            ["../evm/util.cljs" :as eu]
             ["../evm/gc_passport.cljs" :as gcp]
             ["../composedb/auth.cljs" :as cda]
             ["../utils.cljs" :as utils]
@@ -14,7 +15,7 @@
             ["../Context.cljs" :refer [AppContext]]
             ["./alert.cljs" :as alert]
             ["flowbite" :refer [initDropdowns initTooltips]]
-            ["viem/ens" :refer [normalize]]
+            ["@tanstack/solid-query" :refer [createQuery]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
 
@@ -66,9 +67,9 @@
                                                                                    (t/add! ctx {:user/id (id)
                                                                                                 :user/passport-score score} {:after (fn []
                                                                                                                                       (initDropdowns) (initTooltips))})))
-                                                                          (.then (.getEnsName @ec/mainnet-client {:address source})
+                                                                          (.then (eu/fetch-ens-name source)
                                                                                  (fn [name]
-                                                                                   (.then (.getEnsAvatar @ec/mainnet-client {:name (normalize name)})
+                                                                                   (.then (eu/fetch-ens-avatar name)
                                                                                           (fn [avatar]
                                                                                             ((fn [score]
                                                                                                (let [data {:user/id (id) :user/name name :user/avatar avatar}]
@@ -81,7 +82,7 @@
                                      "bg-red-400")))]
     (createMemo (fn [] (when (id) (initDropdowns) (initTooltips))))
     #jsx [:div {}
-          [:div {:class "flex items-center text-black flex items-center justify-center rounded-md relative"
+          [:div {:class "flex items-center text-black flex items-center justify-center rounded-md relative w-fit h-fit"
                  :data-dropdown-toggle (:data-dropdown-toggle props)
                  :data-tooltip-target (str "user-tooltip-" (ethereum-address))}
            [:span {:class (str "absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white dark:text-white

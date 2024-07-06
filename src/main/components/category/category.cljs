@@ -86,7 +86,7 @@
                                         ; so the data will be like {:category/id #uuid, :category/name "xyz" ...}
                                         ; we need to do a function which deep recursively updates the normalized state whenever [:category/id #uuid] shows up as a reference
                                         ; and inside the :category/id table {:category/id {:#uuid-xyz {:category/id :#uuid-xyz ... -> :category/id stream-id
-                                 #_(normad/swap-uuids! ctx id stream-id)
+                                 (normad/swap-uuids! ctx id stream-id)
                                  (when (and (u/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID (:category/id category)}}}

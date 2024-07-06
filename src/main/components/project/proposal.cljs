@@ -43,12 +43,13 @@
                   :data-modal-toggle "planner-modal"
                   :data-modal-target "planner-modal"
                   :onClick #(do
-                              (cu/execute-gql-query ctx (modal/q (id)))
+                              (if-not (utils/uuid? (id))
+                                (cu/execute-gql-query ctx (modal/q (id))))
                               #_(cu/execute-eql-query ctx {[:proposal/id (id)] modal/ProposalModal.query})
                               ((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
                                                                                                     :props {:parent (:parent props)}
                                                                                                     :ident [:proposal/id (id)]}))
-                              (.commands.setContent (comp) (description)))} [:text {:class "font-bold"} (str "#"  (utils/trunc-id (id)))] (str ": " (name))]
+                              (.commands.setContent (comp) (description)))} [:text {:class "font-bold"} (str "#"  (utils/trunc-id (id)))] [:text {:class "truncate"}] (str ": " (name))]
           #_[ba/badge {:title "Dev"}]
           [Show {:when (not (utils/uuid? (id)))}
            [:span {:class "flex w-fit gap-1 items-center"}

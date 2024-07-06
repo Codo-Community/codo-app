@@ -23,8 +23,8 @@
   (-> (get-viewer-user ctx) :viewer/user :user/account))
 
 (defn viewer? [ctx acc]
-  (println "viewer?: " (second (viewer-ident ctx)) acc)
-  (= (second (viewer-ident ctx)) acc))
+  (let [viewer-id (second (viewer-ident ctx))]
+    (and (= viewer-id acc) (not (nil? viewer-id)) (not (nil? acc)))))
 
 (defn check-session [{:keys [store setStore] :as ctx}]
   (if-not (get-in (get-viewer-user ctx) [:viewer/user :user/session])

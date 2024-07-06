@@ -13,9 +13,9 @@
     (onMount (fn [] (initDropdowns)))
     #jsx [dr/dropdown {:& {:id (:data-dropdown-id props)
                            :title (fn [] #jsx [:p {:class "flex flex-col gap-1"} [:text {} (name)] [:text {} (str "passport: " (passport-score))]])
-                           :items (fn [] [{:value "My Projects" :href (str "/user/" (id) "/projects") :icon "i-tabler-stack"}
+                           :items (fn [] [#_{:value "My Projects" :href (str "/user/" (id) "/projects") :icon "i-tabler-stack"}
                                           #_{:value "Profile" :href (str "/user/" (id)) :icon "i-tabler-user-circle"}
-                                          {:value "Submit Passport" :icon "i-tabler-user-scan"
+                                          #_{:value "Submit Passport" :icon "i-tabler-user-scan"
                                            :on-change (fn [ ]
                                                         (.then (gcp/submit-passport-no-verify (ethereum-address))
                                                                (fn [data]

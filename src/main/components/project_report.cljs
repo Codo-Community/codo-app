@@ -43,7 +43,7 @@
                                                                :comp (fn [props] #jsx [cv/ui-category-view {:& (merge props {:indent? false
                                                                                                                              :open? true})}])}]}]})]
     (createMemo (fn [] (when (:modal (local)) (initModals))))
-    #jsx [:div {:class "flex flex-col w-full items-center aasdsd"}
+    #jsx [:div {:class "flex flex-col w-full items-center"}
           [s/Split {:& {:extra-class "mt-2"}}
            [For {:each (:split-items (local))}
             (fn [item i]
@@ -60,11 +60,13 @@
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}
+                        (fn [project] (println "project: " project) (t/add! ctx project {:replace [:component/id :header :active-project]
+                                                                                         :check-session? false}))
                         #_(fn [r] (let [c (u/nsd (get-in r [:node :category]) :category)
-                                      co (u/nsd (get-in r [:node :contract]) :contract)
-                                      project (u/nsd (get-in r [:node]) :project)
-                                      project (assoc (assoc project :project/category c) :project/contract co)]
-                                  (t/add! ctx project)))))
+                                        co (u/nsd (get-in r [:node :contract]) :contract)
+                                        project (u/nsd (get-in r [:node]) :project)
+                                        project (assoc (assoc project :project/category c) :project/contract co)]
+                                    (t/add! ctx project)))))
 
 (def ui-project-report (comp/comp-factory ProjectReport AppContext))
 

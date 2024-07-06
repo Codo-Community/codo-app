@@ -4,9 +4,9 @@ type User @loadModel(id: "$USER_ID") {
 
 type Post
     @createModel(accountRelation: LIST, description: "A simple Post")
-    @createIndex(fields: [{ path: "created" }])
-    @createIndex(fields: [{ path: "edited" }]) {
-    author: DID! @documentAccount
+    @createIndex(fields: [{ path: ["created"] }])
+    @createIndex(fields: [{ path: ["edited"] }]) {
+    author: DID! @documentAccount @immutable
     body: String! @string(minLength: 1, maxLength: 100)
     tags: [String] @string(minLength: 1, maxLength: 100) @list(maxLength: 20)
     edited: DateTime

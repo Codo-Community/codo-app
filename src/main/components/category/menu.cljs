@@ -20,11 +20,14 @@
           [:span {:class "flex gap-2 items-center"}
            [Show {:when (comp/viewer? this (creator))}
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
-                      :onClick #(do
-                                  #_(println "new-data: " {:id (u/uuid) :name "Category" :color :gray
-                                                           :parentID (id)})
-                                  (comp/mutate! this {:add :new #_#:category{:id (u/uuid) :name "Category" :color :gray
-                                                                             :parentID (id)} #_(this.new-data {:parentID (id)})
+                      :onClick #(let [link-id (u/uuid)
+                                      child-id (u/uuid)]
+                                  (comp/mutate! this {:add #:category{:id child-id :name "Category" :color :gray}})
+                                  (comp/mutate! this {:add #:category-link{:id link-id
+                                                                           :parentID (id)
+                                                                           :parent [:category/id (id)]
+                                                                           :child [:category/id child-id]
+                                                                           :childID child-id}
                                                       :append [:category/id (id) :category/children]}))}]]
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                      :onClick #(t/add! ctx {:proposal/id (u/uuid)

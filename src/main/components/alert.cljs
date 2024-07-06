@@ -19,9 +19,10 @@
 
 (defc Alert [this {:keys [component/id type message visible? interval] :as data :or {id :alert type :info message "" interval 3000}}]
   (let [timer (createMemo #(when (= (visible?) true)
-                             (makeTimer (fn [] (comp/set! this (:ident props) :visible? false)) (interval) js/setTimeout)))]
+                             (makeTimer (fn [] (t/set-field! ctx (conj (:ident props) :visible?)  false {:check-session? false}))
+                                        (interval) js/setTimeout)))]
     #jsx [Show {:when (visible?)}
-          [:div {:class "fixed bottom-10 shadow-lg w-fit flex justify-center mx-4"}
+          [:div {:class "fixed bottom-10 shadow-lg w-fit flex justify-center mx-4 z-50"}
            [alert/alert {:type (type) :message (message)}]]]))
 
 (def ui-alert (comp/comp-factory Alert AppContext))
