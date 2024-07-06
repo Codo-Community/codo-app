@@ -27,7 +27,7 @@
 (def update-mutation
   "mutation updateProposal($i: UpdateProposalInput!){
      updateProposal(input: $i){
-       document { id }
+       document { }
      }
 }")
 
@@ -72,6 +72,7 @@
             author {
               id
             }
+            created
             body
             comments(last: 10) {
               edges {
@@ -94,18 +95,34 @@
   }
 }"))
 
-(defc ProposalModal [this {:proposal/keys [id description name created status parentID {author [:ceramic-account/id]} posts] :as data
+(defc ProposalModal [this {:proposal/keys [id description name created status parentID count-up count-down {author [:ceramic-account/id]} posts] :as data
                            :or {id (u/uuid) author "Bramaputra" name "Proposal" created (.toLocaleDateString (js/Date.) "sv")
                                 status :EVALUATION posts []}
                            :local {new-post nil}}]
   (let [[open? setOpen] (createSignal true)
         {:keys [element menu comp]} (useContext EditorContext)]
-    #jsx [:div {:class "dark:bg-black pt-4 pl-4 pb-4 border-1 border-zinc-400 rounded-lg lt-md:w-[90vw] md:min-w-[50vw] md:max-w-[50vw] max-h-[90vh] overflow-hidden"}
+    #jsx [:div {:class "dark:bg-black pt-4 pl-4 pb-4 border-1 border-zinc-400 rounded-lg lt-md:w-[90vw] md:min-w-[50vw] md:max-w-[80vw] xl:max-w-[60vw] max-h-[90vh]"}
           [:div {:class "text-lg font-bold"} (str "Proposal #"  (u/trunc-id (id)) ": ")
            [:text {:class "truncate"} (str (name))]]
-          [:hr {:class "border-zinc-400"}]
-          [:div {:class "max-h-[80vh] min-h-[50vh] overflow-auto pr-4"}
-           [:form {:class "flex flex-col gap-3"
+          [:div {:class "flex flex-col gap-2"}
+           [:h1 {:class "text-lg font-bold"} "Votes"]
+           [Show {:when (not (u/uuid? (id)))}
+            [:span {:class "flex w-fit gap-1 items-center"}
+             (str (count-up) #_(:up (vote-count)))
+             [:button {:class "dark:text-green-400 dark:hover:text-green-200"
+                       :onClick #(do
+                                   #_(comp/mutate! this {:add {:parentID (id) :type :up}})
+                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {} (fn [r] (println "vote answer: " r))))}
+              [:div {:class "i-tabler-arrow-up h-8"} " Up vote"]]
+             (str (count-down) #_(:down (vote-count)))
+             [:button {:class "dark:text-red-400 dark:hover:text-red-200"
+                       :onClick #(do
+                                   #_(comp/set-field! this {:add {:parentID (id) :type :down}})
+                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}))}
+              [:div {:class "i-tabler-arrow-down h-8 "} " Down vote"]]]]]
+          [:div {:class "max-h-[80vh] min-h-[40vh] overflow-auto pr-4"}
+           [:hr {:class "border-zinc-400 mb-1"}]
+           [:form {:class "flex flex-col gap-2"
                    :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data)))}
             [Show {:when (comp/viewer? this (author))}
              [in/input {:label "Name"
@@ -119,7 +136,7 @@
                             :editable? #(comp/viewer? this (author))
                             :on-html-change (fn [html]
                                               (comp/set! this :proposal/description html))}}]
-            [:span {:class "flex w-full gap-3 mx-auto flex-stretch mb-3"}
+            [:span {:class "flex w-full gap-2 mx-auto flex-stretch mb-3"}
              [Show {:when (comp/viewer? this (author))}
               [b/button {:title "Submit"
                          :data-modal-hide "planner-modal"}]
@@ -138,28 +155,23 @@
                         :on-click #(.preventDefault %)
                         :data-modal-hide "planner-modal"}]]]
 
-           [Show {:when  (not (u/uuid? (id)))}
-            [:div {}
-             [:h1 {:class "text-lg font-bold"} "Posts"]
+           [Show {:when (not (u/uuid? (id)))}
+            [:div {:class "flex flex-col gap-2"}
+             [:h1 {:class "text-lg font-bold"} "Discussion"]
              [:hr {:class "border-zinc-400"}]
-             [:form {:class "" :onSubmit (fn [e] (.preventDefault e)
-                                           (let [new-post (merge (post/Post.new-data) {:post/parentID (id)
-                                                                                       :post/created (.toISOString (js/Date.))
-                                                                                       :post/body (:new-post (local))
-                                                                                       :post/author (comp/viewer-ident this)})]
-                                             (println "str:" (.toISOString (js/Date.)))
-                                             (setLocal (assoc (local) :new-post nil))
-                                             (comp/mutate! this {:add new-post
-                                                                 :append [:proposal/id (id) :proposal/posts]})
-                                             (post/add-post-remote ctx new-post)))}
-              [:span {:class "flex w-full gap-3 items-center mb-3"}
-               [in/input {:placeholder "Comment on this proposal ..."
-                          :copy false
-                          :left-icon (fn [] #jsx [:div {:class "i-tabler-chevron-right"}])
-                          :value #(:new-post (local))
-                          :on-change #(setLocal (assoc (local) :new-post (u/e->v %)))}]]]]]
-           [:div {:class "max-h-[80vh] overflow-auto pr-4"}
-            [For {:each (posts)}
+             [b/button {:title "Add Post"
+                        :extra-class "mb-2"
+                        :on-click (fn [e] (.preventDefault e)
+                                    (let [new-post (merge (post/Post.new-data) {:post/parentID (id)
+                                                                                :post/created (.toISOString (js/Date.))
+                                                                                :post/body (:new-post (local))
+                                                                                :post/author (comp/viewer-ident this)})]
+                                      #_(setLocal (assoc (local) :new-post nil))
+                                      (comp/mutate! this {:add new-post
+                                                          :append [:proposal/id (id) :proposal/posts]})
+                                      (post/add-post-remote ctx new-post)))}]]]
+           [:div {:class "max-h-[30vh] overflow-y-auto overflow-x-hidden"}
+            [For {:each (reverse (posts))}
              (fn [p _]
                #jsx [post/ui-post {:& {:ident p}}])]]]]))
 

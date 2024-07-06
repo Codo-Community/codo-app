@@ -21,11 +21,11 @@ type Proposal
       color: String @string(minLength: 3, maxLength: 50)
       description: String @string(minLength: 3, maxLength: 100000)
       author: DID! @documentAccount
-      created: Date!
+      created: Date! @immutable
       parentID: StreamID! @documentReference(model: "Node")
       parent: Node! @relationDocument(property: "parentID")
       status: ProposalStatus!
-      posts: [Post] @list(maxLength: 1000000) @relationFrom(model: "Post", property: "parentID")
+      posts: [Post] @list(maxLength: 1000) @relationFrom(model: "Post", property: "parentID")
       votes: [Vote] @list(maxLength: 1000000) @relationFrom(model: "Vote", property: "parentID")
 }
 

@@ -3,6 +3,7 @@
             ["@wagmi/core" :refer [watchClient watchPublicClient watchConnections]]
             ["@didtools/pkh-ethereum" :refer [getAccountId]]
             ["./router.cljs" :as r]
+            ["./query_client.cljs" :refer [queryClient]]
             ["./evm/client.cljs" :as ec]
             ["./composedb/data_feed.cljs" :as cdf]
             ["./composedb/events.cljs" :as events]
@@ -14,10 +15,8 @@
             ["./transact.cljs" :as t]
             ["./Context.cljs" :as context :refer [AppContext]]
             ["flowbite" :as fb]
-            ["@tanstack/solid-query" :refer [QueryClientProvider QueryClient]])
+            ["@tanstack/solid-query" :refer [QueryClientProvider]])
   (:require-macros [comp :refer [defc]]))
-
-(defonce queryClient (QueryClient.))
 
 (defc Root [this {:keys []}]
   (let [ctx  (context/init-context)]

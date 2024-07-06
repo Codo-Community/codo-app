@@ -46,23 +46,29 @@
                              (:fn mutation)
                              vars)))
 
-(defc Post [this {:post/keys [id body comments parentID created {author [:ceramic-account/id]}]
+(defc Post [this {:post/keys [id body comments parentID created {author [:ceramic-account/id {:ceramic-account/user [:user/id]}]}]
                   :or {id (utils/uuid) body "Default content" comments []}}]
-  #jsx [:div {:class "border border-indigo-700 rounded-md p-2 mb-4 flex flex-col p-3 overflow-y-auth overflow-x-hidden"}
+  #jsx [:div {:class "flex flex-col overflow-y-auto overflow-x-hidden scroll-x-none max-h-[30vh] w-full max-w-full p-2 mr-2"}
         [Show {:when (not (u/uuid? (id)))
                :fallback #jsx [:form {:class "flex flex-col gap-3"
-                                      :onSubmit (fn [e] (.preventDefault e) (add-post-remote ctx (data)))}
+                                      :onSubmit (fn [e] (.preventDefault e)
+                                                  (add-post-remote ctx (data)))}
                                [ta/textarea {:label "Name"
                                              :placeholder "Title"
                                              :value body
                                              :on-change #(comp/set! this :post/body %)}]
                                [b/button {:title "Submit"}]]}
-         [:div {:class "flex flex-col gap-3"}
-          [:p {:class ""} (created)]
-          #_(str (:ceramic-account/user (author)))
-          [user/ui-user {:& {:user/id (u/uuid)
-                             :user/ethereum-address (nth (string/split (author) ":") 4)}}]
-          [:p {:class ""} (body)]]]
+         [:div {:class "flex flex-row gap-3"}
+          [user/ui-user {:& {:user/id (or (:ceramic-account/user (author)) (u/uuid))
+                             :user/ethereum-address (nth (string/split (:ceramic-account/id (author)) ":") 4)}}]
+          [:div {:class "flex flex-col max-w-full w-full overflow-x-hidden"}
+           [:p {:class "dark:text-gray-700 text-sm font-bold"} (created)]
+           [:p {:class "w-full break-words"} (body)]]]]
+        #_[in/input {:placeholder "Add comment ..."
+                     :copy false
+                     :left-icon (fn [] #jsx [:div {:class "i-tabler-chevron-right"}])
+                     :value #(:new-comment (local))
+                     :on-change #(setLocal (assoc (local) :new-comment (u/e->v %)))}]
         [Show {:when (> (count (comments)) 0)}
          [:h3 {:class "font-bold text-md mb-2"} "Comments"]
          #_[For {:each (comments)}
