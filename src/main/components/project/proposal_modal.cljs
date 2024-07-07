@@ -103,7 +103,7 @@
                                              (comp/set! this :proposal/description html))}}]
            [:h1 {:class "text-lg font-bold"} "Posts"]
            [:hr {:class "border-zinc-400"}]
-           [:span {:class "flex w-full gap-3"}
+           [:span {:class "flex w-full gap-3 justify-center"}
             [b/button {:title "Add Post"
                        :on-click #(do (.preventDefault %)
                                       (comp/mutate! this {:add (post/Post.new-data)
@@ -111,7 +111,7 @@
            [For {:each (posts)}
             (fn [post _]
               #jsx [post/ui-post {:& {:ident post}}])]
-           [:span {:class "flex w-full gap-3 mx-auto flex-stretch"}
+           [:span {:class "flex w-full gap-3 mx-auto flex-stretch justify-between"}
             [b/button {:title "Submit"
                        :data-modal-hide "planner-modal"}]
             [b/button {:title "Delete"

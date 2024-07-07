@@ -48,7 +48,7 @@
              #_[:span {:class "lt-md:hidden"}
                 [si/SearchInput {:& {:on-submit (fn [signal]
                                                   (navigate (str "/search/&search=" (:search (signal)))))}}]]
-             [:button {:class (str "lt-md:hidden text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
+             [:button {:class (str "text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
              [w3m/ui-web3-modal]
              #_[cm/ui-chain-menu #_{:& {:ident chain}}]

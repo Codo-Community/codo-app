@@ -25,7 +25,7 @@
                                   (comp/mutate! this {:add :new #_#:category{:id (u/uuid) :name "Category" :color :gray
                                                                              :parentID (id)} #_(this.new-data {:parentID (id)})
                                                       :append [:category/id (id) :category/children]}))} "add category"]]
-           [:button {:class "bg-zinc-700 text-white font-bold py-0.5 px-1.5 rounded-md"
+           [:button {:class "bg-[#121313] dark:bg-zinc-700 text-white font-bold py-0.5 px-1.5 rounded-md"
                      :onClick #(t/add! ctx {:proposal/id (u/uuid)
                                             :proposal/name "New Proposal"
                                             :proposal/created (.toLocaleDateString (js/Date.) "sv")

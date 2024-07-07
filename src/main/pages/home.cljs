@@ -18,12 +18,12 @@
           [:div {:class "grid h-fit xl:grid-cols-3 xl:grid-rows-4 md:(grid-cols-2 grid-rows-3 h-full) grid-flow-row w-full dark:(text-white) p-3 gap-3 w-screen"}
            [c/card {:& {:title "Activity"
                         :icon "i-tabler-activity"}}
-            [:p {:class "text-zinc-400 ml-1"} "No recent activity."]]
+            [:p {:class "text-zinc-700 dark:text-zinc-400 ml-1"} "No recent activity."]]
 
            [c/card {:& {:title "Projects"
                         :icon "i-tabler-stack"}}
             [:div {:class "flex gap-2"}
-             [:p {:class "text-zinc-400 ml-1"} "No projects joined, join or create one today!"]]]
+             [:p {:class "text-zinc-700 dark:text-zinc-400 ml-1"} "No projects joined, join or create one today!"]]]
 
            [c/card {:& {:title "Wizards"
                         :extra-class "md:row-start-2 row-span-2"
