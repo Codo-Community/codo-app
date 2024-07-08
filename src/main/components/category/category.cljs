@@ -1,5 +1,5 @@
 (ns components.category
-  (:require ["solid-js" :refer [Show createSignal useContext onMount createMemo Suspense createEffect]]
+  (:require ["solid-js" :refer [Show createSignal useContext onMount createMemo Suspense createEffect createResource]]
             ["@solid-primitives/active-element" :refer [createFocusSignal]]
             ["../../comp.cljs" :as comp]
             ["../blueprint/input.cljs" :as in]
@@ -115,16 +115,16 @@
 
 (declare ui-category)
 
-(defc Category [this {:category/keys [id name color children
+(defc Category [this {:category/keys [id name color {children [:category-link/id]}
                                       {creator [:ceramic-account/id]} proposals]
                       :or {id (u/uuid) name "Category" children [] color :gray proposals []}
-                      :local {editing? false open? true hovering? false selected nil indent? true show-proposals? true}}]
+                      :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)
-        asd (createEffect (fn [] (id) (creator)))]
+        asd (createResource (fn [] (load-category ctx (id))))]
     (onMount (fn [] (when (:open? props)
                       #_(println "loading category: " (id))
-                      (load-category ctx (id))
-                      #_(setLocal (assoc (local) :open? (:open? props)))
+                      #_(load-category ctx (id))
+                      (setLocal (assoc (local) :open? (:open? props)))
                       (initModals))))
     #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
           [:span {:class "flex flex-inline gap-2 mouse-pointer"
@@ -177,6 +177,7 @@
                                         :parent (:parent props)}}]
            [Show {:when (and (comp/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
             [cm/ui-category-menu {:&  {:ident (:ident props)
+                                       :blah (asd)
                                        :parent (:parent props)}}]]]
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
@@ -189,9 +190,10 @@
                                            :projectLocal (:projectLocal props)
                                            :setProjectLocal (:setProjectLocal props)}}])]
               #_[b/button {:icon []}]]]
-            [Index {:each (reverse (children))}
+            [For {:each (reverse (children))}
              (fn [entity i]
-               #jsx [cl/ui-category-link {:& {:ident (entity)
+               (str entity)
+               #_#jsx [cl/ui-category-link {:& {:ident (entity)
                                               :setProjectLocal (:setProjectLocal props)
                                               :projectLocal (:projectLocal props)
                                               :parent (id)}}])]]]]))

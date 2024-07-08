@@ -23,7 +23,7 @@
 
 (defc ProjectReport [this {:project/keys [id name start description
                                           {category [:category/id :category/name {:category/creator [:ceramic-account/id]}
-                                                     {:category/children [:category/id]}]}
+                                                     {:category/children [:category-link/id]}]}
                                           {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
                                                                                           :name "Proj"
                                                                                           :start "2021-01-01"
