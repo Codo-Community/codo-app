@@ -154,9 +154,7 @@
                          :onClick #(do
                                      #_(comp/mutate! this {:add {:parentID (id) :type :up}})
                                      (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {}
-                                                              (fn [r] (let [res (-> r :setVote :document)]
-                                                                        (println "rrr: " res " r: " r)
-                                                                        (t/add! ctx (u/add-ns res))))))}
+                                                              (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Up vote"]]
               [:span {:class "flex w-fit gap-2 items-center justify-end"}
                (str (count-down) #_(:down (vote-count)))
@@ -164,10 +162,9 @@
                          :onClick #(do
                                      #_(comp/set-field! this {:add {:parentID (id) :type :down}})
                                      (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}
-                                                              (fn [r] (let [res (-> r :setVote :document)]
-                                                                        (t/add! ctx (u/add-ns) res)))))}
+                                                              (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Down vote"]]]]]
-           [:div {:class "max-h-[80vh] min-h-[40vh] overflow-auto"}
+           [:div {:class "max-h-[80vh] min-h-[40vh] pr-4"}
             [:hr {:class "border-zinc-400 mb-1"}]
             [:form {:class "flex flex-col gap-2"
                     :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data)))}

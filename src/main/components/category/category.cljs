@@ -1,5 +1,5 @@
 (ns components.category
-  (:require ["solid-js" :refer [Show createSignal useContext onMount createMemo]]
+  (:require ["solid-js" :refer [Show createSignal useContext onMount createMemo Suspense createEffect]]
             ["@solid-primitives/active-element" :refer [createFocusSignal]]
             ["../../comp.cljs" :as comp]
             ["../blueprint/input.cljs" :as in]
@@ -9,9 +9,11 @@
             ["../project/proposal.cljs" :as pr]
             ["./query.cljs" :as cq]
             ["./menu.cljs" :as cm]
+            ["solid-spinner" :as spinner]
             ["./context.cljs" :refer [FilterContext]]
             ["@solidjs/router" :refer [cache createAsync useParams]]
             ["../../transact.cljs" :as t]
+            ["./category_link.cljs" :as  cl]
             ["../blueprint/button.cljs" :as b]
             ["../../composedb/client.cljs" :as cli]
             ["../../normad.cljs" :as normad]
@@ -113,20 +115,16 @@
 
 (declare ui-category)
 
-(defc CategoryLink [this {:category-link/keys [id child]}]
-  #jsx (ui-category (merge {:ident (child)} (dissoc props :ident))))
-
-(def ui-category-link (comp/comp-factory CategoryLink AppContext))
-
 (defc Category [this {:category/keys [id name color children
                                       {creator [:ceramic-account/id]} proposals]
                       :or {id (u/uuid) name "Category" children [] color :gray proposals []}
-                      :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
-  (let [filters (useContext FilterContext)]
+                      :local {editing? false open? true hovering? false selected nil indent? true show-proposals? true}}]
+  (let [filters (useContext FilterContext)
+        asd (createEffect (fn [] (id) (creator)))]
     (onMount (fn [] (when (:open? props)
                       #_(println "loading category: " (id))
-                      #_(load-category ctx (id))
-                      (setLocal (assoc (local) :open? (:open? props)))
+                      (load-category ctx (id))
+                      #_(setLocal (assoc (local) :open? (:open? props)))
                       (initModals))))
     #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
           [:span {:class "flex flex-inline gap-2 mouse-pointer"
@@ -176,10 +174,10 @@
                 [:h2 {:class "text-bold"} (name)]]]]
 
            #_[cm/ui-category-menu {:&  {:ident (:ident props)
-                                      :parent (:parent props)}}]
+                                        :parent (:parent props)}}]
            [Show {:when (and (comp/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
-              [cm/ui-category-menu {:&  {:ident (:ident props)
-                                         :parent (:parent props)}}]]]
+            [cm/ui-category-menu {:&  {:ident (:ident props)
+                                       :parent (:parent props)}}]]]
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
             [Show {:when (:show-proposals? (filters))}
@@ -191,12 +189,11 @@
                                            :projectLocal (:projectLocal props)
                                            :setProjectLocal (:setProjectLocal props)}}])]
               #_[b/button {:icon []}]]]
-            [Show {:when (not (empty? (children)))}
-             [For {:each (reverse (children))}
-              (fn [entity i]
-                (ui-category-link {:ident entity
-                                   :setProjectLocal (:setProjectLocal props)
-                                   :projectLocal (:projectLocal props)
-                                   :parent (id)}))]]]]]))
+            [Index {:each (reverse (children))}
+             (fn [entity i]
+               #jsx [cl/ui-category-link {:& {:ident (entity)
+                                              :setProjectLocal (:setProjectLocal props)
+                                              :projectLocal (:projectLocal props)
+                                              :parent (id)}}])]]]]))
 
 (def ui-category (comp/comp-factory Category AppContext))
