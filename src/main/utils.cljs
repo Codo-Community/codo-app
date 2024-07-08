@@ -1,6 +1,21 @@
 (ns utils
   (:require [squint.string :as string]
-            ["lodash" :as l :refer [camelCase startCase kebabCase]]))
+            ["lodash" :as l :refer [camelCase startCase kebabCase]]
+            [squint.string :as str]))
+
+(defn object? [o]
+  (= (js/typeof o) "object"))
+
+(defn get-ident [data]
+  (if-let [ident-key (first (filter #(re-find #"/id$" %) (keys data)))]
+    [ident-key (get data ident-key)]))
+
+(defn get-ns [k]
+  (first (str/split (first k) "/")))
+
+(defn remove-ident [ident v]
+  (filterv (fn [y] (not (= (second y)
+                           (second ident)))) v))
 
 (defn ident?
   "Check if x is a EQL ident."
@@ -56,7 +71,7 @@
 (defn distribute [f m]
   #_(println "this is a map...:" (map? m) " " m)
   (cond (vector? m) (f (mapv #(distribute f %) m))
-        (map? m) (f (zipmap (keys m) (mapv #(distribute f %) (vals m))))
+        (or (map? m) (object? m)) (f (zipmap (keys m) (mapv #(distribute f %) (vals m))))
 
         :else m))
 

@@ -60,7 +60,7 @@
       color
       description
       name
-proposals(last: 10) {
+proposals(last: 50) {
         edges {
           node {
             id
@@ -74,7 +74,7 @@ proposals(last: 10) {
         pageInfo { hasNextPage }
       }
       mainReviewer { id }
-      children(last: 10) {
+      children(last: 50) {
         edges {
           node {
             id

@@ -62,11 +62,11 @@
 (defc User [this {:user/keys [id name ethereum-address {account [:id]} avatar passport-score]
                   :or {id (utils/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]
   (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]
-                                                                          (.then (gcp/get-passport-score (ethereum-address))
+                                                                          (.then (gcp/submit-passport-no-verify (ethereum-address))
                                                                                  (fn [score]
                                                                                    (t/add! ctx {:user/id (id)
-                                                                                                :user/passport-score score} {:after (fn []
-                                                                                                                                      (initDropdowns) (initTooltips))})))
+                                                                                                :user/passport-score (:score score)} {:after (fn []
+                                                                                                                                              (initDropdowns) (initTooltips))})))
                                                                           (.then (eu/fetch-ens-name source)
                                                                                  (fn [name]
                                                                                    (.then (eu/fetch-ens-avatar name)

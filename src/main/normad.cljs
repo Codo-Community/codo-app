@@ -1,9 +1,6 @@
 (ns normad
-  (:require ["solid-js/store" :refer [reconcile]]))
-
-(defn get-ident [data]
-  (if-let [ident-key (first (filter #(re-find #"/id$" %) (keys data)))]
-    [ident-key (get data ident-key)]))
+  (:require ["./utils.cljs" :as u]
+            ["solid-js/store" :refer [reconcile]]))
 
 (defn ident? [data]
   (if (vector? data)
@@ -18,7 +15,7 @@
 (defn traverse-and-transform [item setStore]
   (cond
     (vector? item) (mapv #(traverse-and-transform % setStore) item)
-    (map? item)  (let [ident (get-ident item)
+    (map? item)  (let [ident (u/get-ident item)
                        new-val (zipmap (keys item) (mapv #(traverse-and-transform % setStore) (vals item)))]
                    (if (ident? ident)
                      (do

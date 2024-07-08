@@ -1,5 +1,6 @@
 (ns transact
-  (:require ["./normad.cljs" :as n]))
+  (:require ["./normad.cljs" :as n]
+            ["./utils.cljs" :as u]))
 
 #_(defn rec-add [path value]
   (loop [p (first path)
@@ -53,14 +54,18 @@
                           action (if append
                                    #(update-in % (vec (rest path)) conj ident)
                                    #(assoc-in % (vec (rest path)) ident))]
-                      (setStore (first path) (fn [x] (action x))))))))
+                      (setStore (first path) (fn [x] (action x)))
+                      (when (u/uuid? (second ident))
+                        (println "uuid:" ident)
+                        (setStore (first ident) (second ident)
+                                  (fn [x]
+                                    (let [p (or (:uuid/paths x) [])]
+                                      (assoc x :uuid/paths (conj p path)))))))))))
 
 (defn remove-ident! [{:keys [store setStore] :as ctx} path ident {:keys [check-session?] :or {check-session? true}}]
   (wrap-session ctx check-session?
-                #(setStore (first path) (fn [x] (update-in x (rest path) (fn [a]
-                                                                           (let [v (filterv (fn [y] (not (= (second y)
-                                                                                                            (second ident)))) a)]
-                                                                             v)))))))
+                (fn []
+                  (setStore (first path) (fn [x] (update-in x (rest path) #(u/remove-ident %)))))))
 
 (defn add! [{:keys [store setStore] :as ctx} value {:keys [append replace after check-session?] :or {append false replace false after
                                                                                                      false check-session? true} :as params}]
@@ -73,5 +78,17 @@
 
 (defn remove-entity! [])
 
-(defn swap-uuids! [ctx id stream-id]
-  (n/swap-uuids! ctx id stream-id))
+(defn swap-uuids! [{:keys [store setStore] :as ctx} ident stream-id]
+  (let [n1 (first ident)
+        new-ident [n1 stream-id]
+        obj (get-in store ident)
+        new-obj (assoc obj n1 stream-id)
+        paths (get obj :uuid/paths)]
+    (setStore (first ident) (fn [x]
+                              (assoc x stream-id new-obj)))
+    (println "path: " paths)
+    (mapv #(apply setStore (conj % (fn [x]
+                                     (if (u/ident? x)
+                                       new-ident
+                                       (if (vector? x)
+                                         (conj (u/remove-ident ident x) new-ident)))))) paths)))

@@ -22,6 +22,7 @@
               setVote(input: {content: {parentID: \"" id "\", type: " (get {:up "UP" :down "DOWN"} type) " }}) {
                             document {
                                        id
+                                       __typename
                                      }
                 }
               }"))
@@ -44,7 +45,8 @@
                   :data-modal-target "planner-modal"
                   :onClick #(do
                               (if-not (utils/uuid? (id))
-                                (cu/execute-gql-query ctx (modal/q (id))))
+                                (cu/execute-gql-query ctx (modal/query (id)
+                                                                       (second (comp/viewer-ident this)))))
                               #_(cu/execute-eql-query ctx {[:proposal/id (id)] modal/ProposalModal.query})
                               ((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
                                                                                                     :props {:parent (:parent props)}
@@ -64,7 +66,7 @@
             [:button {:class "dark:text-red-400 dark:hover:text-red-200"
                       :onClick #(do
                                   #_(comp/set-field! this {:add {:parentID (id) :type :down}})
-                                  (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}))}
+                                  (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {} (fn [r] (println "vote answer: " r))))}
              [:div {:class "i-tabler-arrow-down h-8"}]]]]]))
 
 (def ui-proposal (comp/comp-factory Proposal AppContext))

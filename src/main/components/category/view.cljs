@@ -27,11 +27,11 @@
             "Filters"]
            [:ul {:class "text-sm text-gray-700 dark:text-gray-200"}
             [:li {}
-             [in/boolean-input {:label "Show"
+             [in/boolean-input {:label "Show proposals:"
                                 :inline true
                                 :value #(:show-proposals? (local))
                                 :on-change #(setLocal (assoc (local) :show-proposals? (not (:show-proposals? (local)))))}]]
-            [:li {}
+            #_[:li {}
              [in/input {:label "From"
                         :value #(:from (local))
                         :datepicker ""

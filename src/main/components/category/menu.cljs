@@ -15,16 +15,18 @@
                                proposals []} :as data}]
   (do
     (onMount #(do (initDropdowns) (initTooltips)))
-    #jsx [:div {:class "flex flex-col relative w-fit"}
+    #jsx [:div {:class "flex flex-col relative w-fit h-full items-center"}
           [to/tooltip {:id "tooltip-color" :content "Color"}]
           [:span {:class "flex gap-2 items-center"}
-           [Show {:when (comp/viewer? this (creator))}
+           [Show {:when true #_(comp/viewer? this (creator))}
             [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                       :onClick #(let [link-id (u/uuid)
                                       child-id (u/uuid)]
-                                  (comp/mutate! this {:add #:category{:id child-id :name "Category" :color :gray
-                                                                      :category/creator (comp/viewer-ident this)
-                                                                      :category/created (.toLocaleDateString (js/Date.) "sv")}})
+                                  (comp/mutate! this {:add #:category{:id child-id :name "Category"
+                                                                      :color :gray
+                                                                      :children []
+                                                                      :creator (comp/viewer-ident this)
+                                                                      :created (.toLocaleDateString (js/Date.) "sv")}})
                                   (comp/mutate! this {:add #:category-link{:id link-id
                                                                            :parentID (id)
                                                                            :parent [:category/id (id)]
@@ -39,18 +41,19 @@
                                             :proposal/status :EVALUATION
                                             :proposal/parentID (id)}
                                        {:append [:category/id (id) :category/proposals]})}]
-           [:button {:class "i-tabler-palette"
-                     :data-tooltip-target "tooltip-color"
-                     :data-dropdown-toggle "color-dropdown"
-                     :data-tooltip-placement "top"
-                     :data-dropdown-trigger "hover"}]
-           [:button {:class "i-tabler-trash text-red-500"
-                     :onClick #(do
-                                 (comp/mutate! this {:remove [:category/id (id)]
-                                                     :from [:category/id (:parent props) :category/children]
-                                                     :cdb true})
-                                 (when (not (u/uuid? (id)))
-                                   (c/remove-category-remote ctx (id))))}]]
+           #_[:button {:class "i-tabler-palette"
+                       :data-tooltip-target "tooltip-color"
+                       :data-dropdown-toggle "color-dropdown"
+                       :data-tooltip-placement "top"
+                       :data-dropdown-trigger "hover"}]
+           [Show {:when (comp/viewer? this (creator))}
+            [:button {:class "i-tabler-trash text-red-500"
+                      :onClick #(do
+                                  (comp/mutate! this {:remove [:category/id (id)]
+                                                      :from [:category/id (:parent props) :category/children]
+                                                      :cdb true})
+                                  (when (not (u/uuid? (id)))
+                                    (c/remove-category-remote ctx (id))))}]]]
           [:div {:class "z-10 w-fit"}
            [d/dropdown {:& {:id "color-dropdown"
                             :items (fn [] [{:value "red" :id "red"}

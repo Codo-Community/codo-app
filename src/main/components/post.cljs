@@ -27,24 +27,10 @@
 }")
 
 (defn add-post-remote [ctx {:post/keys [id name description parentID created] :as data}]
-  (let [vars (dissoc  (u/remove-ns data) :author)
-        vars (dissoc (dissoc vars :id) :comments)
-        vars {:i {:content (u/drop-false vars)}}
-        v (println "id:" id)
-
-        vars (if-not (u/uuid? id)
-               (assoc-in  vars [:i :id] id) vars)
-
-        vars (u/drop-false vars)
-        mutation (if (u/uuid? id)
-                   {:name "createPost"
-                    :fn create-mutation}
-                   {:name "updatePost"
-                    :fn update-mutation})]
-    (println "v: " vars)
-    (cu/execute-gql-mutation ctx
-                             (:fn mutation)
-                             vars)))
+  (let [vars (-> data
+                 (dissoc :post/author)
+                 (dissoc :post/comments))]
+    (cu/execute-gql-mutation-simple ctx "Post" vars {:check-session? true})))
 
 (defc Post [this {:post/keys [id body comments parentID created {author [:ceramic-account/id {:ceramic-account/user [:user/id]}]}
                               {pageInfo [:pageInfo/hasNextPage]}]
