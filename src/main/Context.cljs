@@ -5,6 +5,8 @@
 
 (def AppContext (createContext))
 
+(def ConnectionContext (createContext))
+
 (defn init-context []
   (let [[store setStore] (createStore {:viewer/id {0 {:viewer/id 0}}
                                        :component/id {:header {:component/id :header

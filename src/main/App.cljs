@@ -1,6 +1,6 @@
 (ns App
   (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy Suspense]]
-            ["@wagmi/core" :refer [watchClient watchPublicClient watchConnections]]
+            ["@wagmi/core" :refer [watchClient watchPublicClient watchConnections getConnections]]
             ["@didtools/pkh-ethereum" :refer [getAccountId]]
             ["./router.cljs" :as r]
             ["./query_client.cljs" :refer [queryClient]]
@@ -13,13 +13,16 @@
             ["./components/user.cljs" :as u]
             ["./comp.cljs" :as comp :refer [Comp]]
             ["./transact.cljs" :as t]
-            ["./Context.cljs" :as context :refer [AppContext]]
+            ["./Context.cljs" :as context :refer [AppContext ConnectionContext]]
             ["flowbite" :as fb]
             ["@tanstack/solid-query" :refer [QueryClientProvider]])
   (:require-macros [comp :refer [defc]]))
 
 (defc Root [this {:keys []}]
-  (let [ctx  (context/init-context)]
+  (let [ctx  (context/init-context)
+        connection-ctx (let [[connections setConnections] (createSignal (getConnections config))]
+                         {:connections connections
+                          :setConnections setConnections})]
     (onMount #(do
                 #_(cdf/init-listeners ctx events/handle)
                 (.then  (ec/init-clients) (fn [res] (println "init-clients" res)))
@@ -31,6 +34,7 @@
                                                                                   (reset! ec/public-client client))}))
                 (reset! ec/unwatch-connections (watchConnections config  {:onChange (fn [connections]
                                                                                       (println "change connections: " connections)
+                                                                                      ((:setConnections connection-ctx) connections)
                                                                                       (let [{:keys [accounts chainId]} (first connections)]
                                                                                         (println "accounts: " accounts)
                                                                                         (if (empty? accounts)
@@ -48,7 +52,8 @@
                                                                                                                             :setStore (second ctx)})))))))))}))
                 (fb/initFlowbite)))
     #jsx [AppContext.Provider {:value ctx}
-          [QueryClientProvider {:client queryClient}
-           [r/ui-router]]]))
+          [ConnectionContext.Provider {:value connection-ctx}
+           [QueryClientProvider {:client queryClient}
+            [r/ui-router]]]]))
 
 (def ui-root (comp/comp-factory Root AppContext))

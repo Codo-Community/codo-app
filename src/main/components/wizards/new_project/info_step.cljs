@@ -36,16 +36,14 @@
                              {:i {:content {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}}}
                              (fn [response]
                                (println "response: cat:" response)
-                               (let [res (-> response :createCategory :document)]
-                                 ;; add project
-                                 (cu/execute-gql-mutation ctx (basic-project-mutation)
-                                                          (mutation-vars (merge (data) {:project/categoryID (:id res) :project/created (.toLocaleDateString (js/Date.) "sv")}))
-                                                          (fn [response]
-                                                            (println "response: " response)
-                                                            (let [res (-> response :createProject :document)]
-                                                              (t/add! ctx (u/nsd res :project)
-                                                                      {:replace [:component/id :project-wizard :project]})
-                                                              (navigate (str "/wizards/new-project/" (:id res)))))))))))
+                               ;; add project
+                               (cu/execute-gql-mutation ctx (basic-project-mutation)
+                                                        (mutation-vars (merge (data) {:project/categoryID (:category/id response) :project/created (.toLocaleDateString (js/Date.) "sv")}))
+                                                        (fn [response]
+                                                          (println "response: " response)
+                                                          (t/add! ctx response
+                                                                  {:replace [:component/id :project-wizard :project]})
+                                                          (navigate (str "/wizards/new-project/" (:project/id response)))))))))
 
 (defc BasicInfoStep [this {:project/keys [id name description start created] :or {name ""} :as data}]
   (let [navigate (useNavigate)

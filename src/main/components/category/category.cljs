@@ -57,14 +57,13 @@
 }")
 
 
-(defn remove-category-remote [ctx id]
-  (println "id: " id)
-  (cu/execute-gql-mutation ctx update-mutation
+(defn remove-category-remote [ctx link]
+  (cu/execute-gql-mutation ctx update-link-mut
                            {:i {:content {}
                                 :options {:shouldIndex false}
-                                :id id}} (fn [r])))
+                                :id link}} (fn [r])))
 
-(defn add-category-remote [ctx {:category/keys [id name color description] :as data} parent-id]
+(defn add-category-remote [ctx {:category/keys [id name color description] :as data} parent-id link]
   (let [vars (dissoc (utils/remove-ns data) :creator)
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
@@ -88,7 +87,10 @@
                                  (when (and (u/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID stream-id}}}
-                                                            (fn [r]))))))))
+                                                            (fn [r]
+                                                              (let [stream-id (:category-link/id r)]
+                                                                (if (u/uuid? link)
+                                                                  (t/swap-uuids! ctx link stream-id)))))))))))
 
 (declare ui-category)
 (declare Category)
@@ -120,7 +122,9 @@
                       :or {id (u/uuid) name "Category" children [] color :gray proposals []}
                       :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)
-        asd (createResource (fn [] (load-category ctx (id))))]
+        ;components ()
+        ;asd (createResource (fn [] (load-category ctx (id))))
+        ]
     (onMount (fn [] (when (:open? props)
                       #_(println "loading category: " (id))
                       #_(load-category ctx (id))
@@ -143,7 +147,7 @@
                                                                                           (setLocal (assoc (local) :editing? false))
                                                                                           (comp/set! this (:ident props) :category/name e)
                                         ; TODO: need to auto swap uuids for streamIDs
-                                                                                          (add-category-remote ctx (data) (:parent props)))}]}
+                                                                                          (add-category-remote ctx (data) (:parent props) (:link props)))}]}
              [:span {:class "flex w-full gap-2"}
               [:button {:data-modal-target "planner-modal"
                         :data-modal-toggle "planner-modal"
@@ -176,9 +180,7 @@
            #_[cm/ui-category-menu {:&  {:ident (:ident props)
                                         :parent (:parent props)}}]
            [Show {:when (and (comp/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
-            [cm/ui-category-menu {:&  {:ident (:ident props)
-                                       :blah (asd)
-                                       :parent (:parent props)}}]]]
+            [cm/ui-category-menu {:& props}]]]
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
             [Show {:when (:show-proposals? (filters))}
@@ -188,14 +190,12 @@
                  #jsx [pr/ui-proposal {:& {:ident proposal
                                            :parent (id)
                                            :projectLocal (:projectLocal props)
-                                           :setProjectLocal (:setProjectLocal props)}}])]
-              #_[b/button {:icon []}]]]
+                                           :setProjectLocal (:setProjectLocal props)}}])]]]
             [For {:each (reverse (children))}
              (fn [entity i]
-               (str entity)
-               #_#jsx [cl/ui-category-link {:& {:ident (entity)
-                                              :setProjectLocal (:setProjectLocal props)
-                                              :projectLocal (:projectLocal props)
-                                              :parent (id)}}])]]]]))
+               #jsx [cl/ui-category-link {:ident (fn [] [:category-link/id entity])
+                                          :setProjectLocal (:setProjectLocal props)
+                                          :projectLocal (:projectLocal props)
+                                          :parent (id)}])]]]]))
 
 (def ui-category (comp/comp-factory Category AppContext))

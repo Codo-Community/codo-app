@@ -53,11 +53,12 @@
     (cu/execute-gql-mutation ctx
                              (:fn mutation)
                              vars
-                             #_(fn [res]
+                             (fn [res]
                                (println "res: " res)
                                (let [stream-id (:proposal/id res)]
-                                 #_(t/swap-uuids! ctx id stream-id)
-                                 (t/add! ctx res))))))
+                                 (t/add! ctx res)
+                                 (t/swap-uuids! ctx [:proposal/id id] stream-id)
+                                 )))))
 
 (defn remove-proposal-remote [ctx id]
   (cu/execute-gql-mutation ctx update-mutation
@@ -132,7 +133,7 @@
   (let [[open? setOpen] (createSignal true)
         {:keys [element menu comp]} (useContext EditorContext)]
     #jsx [:div {:class "dark:bg-black pt-4 pl-4 pb-4 border-1 border-zinc-400 rounded-lg lt-md:w-[90vw]
-                        md:min-w-[50vw] md:max-w-[90vw] max-h-[90vh] overflow-hidden"}
+                        lt-md:w-[90vw] md:max-w-[80vw] 2xl:max-w-[60vw] max-h-[90vh] overflow-hidden"}
           [:div {:class "pr-4"}
            [:div {:class "text-lg font-bold flex flex-col gap-2"}
             [:span {:class "flex flex-row gap-2 items-center w-full"}
@@ -146,7 +147,7 @@
            [Show {:when (not (u/uuid? (id)))}
             [:div {:class "grid grid-cols-2 w-full gap-2 items-center justify-items-stretch pb-2"}
              [:h1 {:class "text-lg font-bold"} "Votes"]
-             [:div {:class ""} "Your vote: " (or (first (votes)) "Vote below")]
+             [:div {:class ""} "Your vote: " (or (votes) "Vote below")]
              [:div {}
               [:span {:class "flex w-fit gap-2 items-center justify-end"}
                [:text {} (count-up)]
@@ -156,7 +157,7 @@
                                      (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {}
                                                               (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Up vote"]]
-              [:span {:class "flex w-fit gap-2 items-center justify-end"}
+              [:span {:class "flex w-fit col-start-1 gap-2 items-center justify-end"}
                (str (count-down) #_(:down (vote-count)))
                [:button {:class "dark:text-red-400 dark:hover:text-red-200"
                          :onClick #(do

@@ -17,7 +17,8 @@ export default defineConfig({
         /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
         // include js/ts files
         //'./**/*.{js,ts}',
-        //'./node_modules/flowbite/**/*{.js,.ts}'
+        './node_modules/flowbite/**/*{.js,.ts}',
+        './node_modules/flowbite-datepicker/dist/**/*{.js,.ts}'
       ],
       // exclude files
       // exclude: []

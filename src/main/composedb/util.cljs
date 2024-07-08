@@ -33,7 +33,8 @@
       (println "f: " (first f))
       (if (first f)
         ((first f) res2))
-      (if tempid
+      (when tempid
+        (println "swap: " tempid)
         (t/swap-uuids! ctx [(str (l/lowerCase (:__typename res)) "/id") tempid] (:id res)))
       #_(t/add! ctx res2 {:check-session? check-session?}))))
 
@@ -46,7 +47,12 @@
          "document { id __typename } } }")))
 
 (defn execute-gql-query [ctx query vars & f]
-  (.then (cli/exec-query query vars) (handle-fn ctx f {:check-session? false})))
+  (-> (.then (cli/exec-query query vars) (handle-fn ctx f {:check-session? false}))
+      (.catch (fn [err]
+                (println "error: " err)
+                (println "query: " query)
+                (println "vars: " query)
+                (t/alert-error ctx err)))))
 
 (defn execute-gql-mutation-simple [ctx mutation-name vars {:keys [f check-session] :as opts}]
   (let [vars (utils/remove-ns vars)
@@ -60,12 +66,20 @@
                    (generic-mutation mutation-name (if (utils/uuid? id) "create" "update"))
                    mutation-name)]
     (println "mutation: " mutation)
-    (.then (cli/exec-mutation mutation vars)
-           (handle-fn-mutation ctx f (if (utils/uuid? id)
-                                       (assoc opts :tempid id) opts)))))
+    (-> (.then (cli/exec-mutation mutation vars)
+               (handle-fn-mutation ctx f (if (utils/uuid? id)
+                                           (assoc opts :tempid id) opts)))
+        (.catch (fn [err]
+                (println "error: " err)
+                (t/alert-error ctx err))))))
 
 (defn execute-gql-mutation [ctx mutation vars & f]
-  (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true})))
+  (-> (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true}))
+      (.catch (fn [err]
+                (println "error: " err)
+                (println "mutation: " mutation)
+                (println "vars: " mutation)
+                (t/alert-error ctx err)))))
 
 (defn ^:async has-session-for [account-id resources]
   (println "resources: " (js/typeof resources))

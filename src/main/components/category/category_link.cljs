@@ -5,6 +5,8 @@
   (:require-macros [comp :refer [defc]]))
 
 (defc CategoryLink [this {:category-link/keys [id child]}]
-  #jsx [c/ui-category {:& (merge {:ident (child)} (dissoc props :ident))}])
+  #jsx [:div {}
+        [c/ui-category {:& (merge {:ident (child)
+                                   :link (id)} (dissoc props :ident))}]])
 
 (def ui-category-link (comp/comp-factory CategoryLink AppContext))

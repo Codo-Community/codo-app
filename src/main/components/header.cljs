@@ -1,5 +1,5 @@
 (ns main.components.header
-  (:require ["solid-js" :refer [onMount createSignal Show]]
+  (:require ["solid-js" :refer [onMount createSignal Show useContext]]
             ["../comp.cljs" :as comp]
             ["./user.cljs" :as user]
             ["../evm/util.cljs" :as eu]
@@ -14,8 +14,10 @@
             ["./chain_menu.cljs" :as cm]
             ["./web3_modal.cljs" :as w3m]
             ["../evm/client.cljs" :refer [wallet-client]]
+            ["../evm/walletconnect.cljs" :refer [config]]
+            ["@wagmi/core" :refer [getConnections]]
             ["./blueprint/button.cljs" :as b]
-            ["../Context.cljs" :refer [AppContext]]
+            ["../Context.cljs" :refer [AppContext ConnectionContext]]
             ["flowbite" :refer [initDropdowns]]
             [squint.string :as string])
   (:require-macros [comp :refer [defc]]))
@@ -25,6 +27,7 @@
 (defc Header [this {:keys [component/id {user [:user/id :user/session]} chain {active-project [:project/id :project/name]}]}]
   (let [navigate (useNavigate)
         location (useLocation)
+        connection-context (useContext ConnectionContext)
         p (second (string/split location.pathname "/"))]
     (onMount (fn []
                (initDropdowns)
@@ -52,9 +55,11 @@
                        :onClick (:dark-toggle props)}]
              [w3m/ui-web3-modal]
              #_[cm/ui-chain-menu #_{:& {:ident chain}}]
+             #_(str "t:" (keys ((-> connection-context :connections))))
              [Show {:when (:user/session (user))
-                    :fallback #jsx [b/button {:title "login"
-                                              :on-click #(user/init-auth ctx)}]}
+                    :fallback #jsx [Show {:when (not (empty? (keys ((-> connection-context :connections)))))}
+                                    [b/button {:title "login"
+                                               :on-click #(do (println @wallet-client) (user/init-auth ctx))}]]}
               [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
                                  :data-dropdown-toggle "header-user-dropdown"}}]]]]
            [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])

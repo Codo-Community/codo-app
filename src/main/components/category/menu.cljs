@@ -25,6 +25,7 @@
                                   (comp/mutate! this {:add #:category{:id child-id :name "Category"
                                                                       :color :gray
                                                                       :children []
+                                                                      :link link-id
                                                                       :creator (comp/viewer-ident this)
                                                                       :created (.toLocaleDateString (js/Date.) "sv")}})
                                   (comp/mutate! this {:add #:category-link{:id link-id
@@ -49,11 +50,11 @@
            [Show {:when (comp/viewer? this (creator))}
             [:button {:class "i-tabler-trash text-red-500"
                       :onClick #(do
-                                  (comp/mutate! this {:remove [:category/id (id)]
+                                  (comp/mutate! this {:remove [:category-link/id (:link props)]
                                                       :from [:category/id (:parent props) :category/children]
                                                       :cdb true})
                                   (when (not (u/uuid? (id)))
-                                    (c/remove-category-remote ctx (id))))}]]]
+                                    (c/remove-category-remote ctx (:link props))))}]]]
           [:div {:class "z-10 w-fit"}
            [d/dropdown {:& {:id "color-dropdown"
                             :items (fn [] [{:value "red" :id "red"}
