@@ -1,5 +1,6 @@
 (ns co-who.blueprint.input
   (:require ["solid-js" :refer [Show createSignal onMount]]
+            #_["flowbite-datepicker" :as dp]
             ["./label.cljs" :as l]))
 
 (defn on-change-fn [ident value setStore]
@@ -14,11 +15,11 @@
                    on-click (fn [e] #_(util/copy-to-clipboard v.children))}}]
   (let [datepicker-el (atom nil)
         in-el (js/crypto.randomUUID)]
-    (if datepicker
-      #_(onMount (fn [] (reset! datepicker-el (dp/Datepicker. ref {:todayBtn true :clearBtn true :language "en"
-                                                                   :theme {}
-                                                                   :container "dp"
-                                                                   :autohide true})))))
+    #_(if (= datepicker "")
+      (onMount (fn [] (reset! datepicker-el (dp/Datepicker. ref {:todayBtn true :clearBtn true :language "en"
+                                                                 :theme {}
+                                                                 :container "dp"
+                                                                 :autohide true})))))
 
     #jsx [:div {:id id
                 :class (str "w-full" extra-class)}
@@ -36,7 +37,7 @@
                                                             dark:text-white dark:focus:ring-blue-500
                                                             dark:focus:border-blue-500
                                                             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 " (if left-icon "pl-12" "pl-3"))
-                    :datepicker datepicker
+                    ;:datepicker datepicker
                     :placeholder placeholder
                     :type (if (or (nil? type) (= type "")) "text" type)
                     :onChange on-change
@@ -46,7 +47,7 @@
                     :value (or (value) "")
                     :readonly readonly
                     :required required}]]
-          [:div {:id "dp" :class "absolute z-10"}]]))
+          #_[:div {:id "dp" :class "absolute z-10"}]]))
 
 (defn number-input [{:keys [id label readonly placeholder on-submit on-change required value] :or {required false extra-class "" readonly false value (fn [] 0)}}]
   #jsx [:div {:class ""}
