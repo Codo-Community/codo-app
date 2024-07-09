@@ -77,7 +77,7 @@
                                           #jsx [cstep/ui-contract-step {:& {:ident ident}}]))
                  :load create-project}]]
         [Route {:path "/" :component (fn [props] (let [navigate (useNavigate)]
-                                                   (navigate (str "/project/" "kjzl6kcym7w8y9qvonv5n3irhpkvnkg4f0vxax6vnkzij2vrj7rj5lxhk30lb5s"))
+                                                   (navigate (str "/project/" "kjzl6kcym7w8y7xexray2dfec9f7jary378k7ynrvxm3m2vgqp0pew3zj4gk4pe"))
                                                    #jsx [:div {}] #_home/HomePage))}]])
 
 (def ui-router (comp/comp-factory Router AppContext))
