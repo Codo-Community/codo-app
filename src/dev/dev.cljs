@@ -69,4 +69,6 @@
     (js-await (merged.startIndexingOn ceramic))))
 
 (.then (authenticate ceramic)
-       (.then (write-composite ceramic) (fn [r] (println "wrote composite"))))
+       (.then (write-composite ceramic) (fn [r]
+                                          (println "wrote composite -----------------")
+                                          (println (readFileSync "./src/__generated__/definition.json" {:encoding "utf-8"})))))
