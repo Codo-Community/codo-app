@@ -1,14 +1,8 @@
 (ns main.components.activity
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["@solidjs/router" :refer [A]]
-            ["./user.cljs" :as u :refer [ui-user]]
-            ["../comp.cljs" :as comp]
-            ["./blueprint/card.cljs" :as c]
-            ["../transact.cljs" :as t]
-            ["../utils.cljs" :as utils]
-            ["./blueprint/button.cljs" :as b]
-            ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+  (:require ["@solidjs/router" :refer [A]]
+            ["@w3t-ab/sqeave" :as sqeave]
+            ["./blueprint/card.cljs" :as c])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc Activity [this {:keys []}]
   #jsx [:div {:class "grid xl:grid-cols-3 md:grid-cols-2 xl:grid-rows-4 grid-flow-row w-full h-full dark:text-white p-3 gap-3 w-screen"}
@@ -24,7 +18,4 @@
                          ml-auto inline-flex items-center dark:hover:text-white "}
          [A {:class "flex items-center"
              :href (str "/wizards/new-project/" (js/crypto.randomUUID))}
-          [:div {:class "i-tabler-plus"}]]]]]
-        )
-
-(def ui-activity (comp/comp-factory Activity AppContext))
+          [:div {:class "i-tabler-plus"}]]]]])

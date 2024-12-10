@@ -1,25 +1,21 @@
 (ns components.category
   (:require ["solid-js" :refer [Show createSignal useContext onMount createMemo Suspense createEffect createResource]]
-            ["@solid-primitives/active-element" :refer [createFocusSignal]]
-            ["../../comp.cljs" :as comp]
+            #_["@solid-primitives/active-element" :refer [createFocusSignal]]
             ["../blueprint/input.cljs" :as in]
-            ["../../utils.cljs" :as utils]
             ["../../composedb/util.cljs" :as cu]
-            ["../../utils.cljs" :as u]
             ["../project/proposal.cljs" :as pr]
             ["./query.cljs" :as cq]
             ["./menu.cljs" :as cm]
             ["solid-spinner" :as spinner]
             ["./context.cljs" :refer [FilterContext]]
             ["@solidjs/router" :refer [cache createAsync useParams]]
-            ["../../transact.cljs" :as t]
             ["./category_link.cljs" :as  cl]
             ["../blueprint/button.cljs" :as b]
             ["../../composedb/client.cljs" :as cli]
-            ["../../normad.cljs" :as normad]
+            ["~/main/Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initModals]]
-            ["../../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 
 (def create-link-mut
   "mutation createCategoryLink($i: CreateCategoryLinkInput!) {
@@ -64,14 +60,14 @@
                                 :id link}} (fn [r])))
 
 (defn add-category-remote [ctx {:category/keys [id name color description] :as data} parent-id link]
-  (let [vars (dissoc (utils/remove-ns data) :creator)
+  (let [vars (dissoc (sqeave/remove-ns data) :creator)
         vars (dissoc vars :id)
         vars {:i {:content (utils/drop-false vars)}}
-        vars (if-not (u/uuid? id)
+        vars (if-not (sqeave/uuid? id)
                (assoc-in vars [:i :id] id)
                (assoc-in vars [:i :content :created] (.toLocaleDateString (js/Date.) "sv")))
-        vars (utils/drop-false vars)
-        mutation (if (u/uuid? id)
+        vars (sqeave/drop-false vars)
+        mutation (if (sqeave/uuid? id)
                    {:name "createCategory"
                     :fn create-mutation}
                    {:name "updateCategory"
@@ -82,17 +78,16 @@
                              vars
                              (fn [category]
                                (let [stream-id (:category/id category)]
-                                 (if (u/uuid? id)
-                                   (t/swap-uuids! ctx [:category/id id] stream-id))
-                                 (when (and (u/uuid? id) parent-id)
+                                 (if (sqeave/uuid? id)
+                                   (sqeave/swap-uuids! ctx [:category/id id] stream-id))
+                                 (when (and (sqeave/uuid? id) parent-id)
                                    (cu/execute-gql-mutation ctx create-link-mut
                                                             {:i {:content {:parentID parent-id :childID stream-id}}}
                                                             (fn [r]
                                                               (let [stream-id (:category-link/id r)]
-                                                                (if (u/uuid? link)
-                                                                  (t/swap-uuids! ctx link stream-id)))))))))))
+                                                                (if (sqeave/uuid? link)
+                                                                  (sqeave/swap-uuids! ctx link stream-id)))))))))))
 
-(declare ui-category)
 (declare Category)
 
 (defn load-category [ctx id]
@@ -101,11 +96,11 @@
                                                       a (println "asd: " r (vector? (get r :category/children)))
                                                       #_r #_(if-not (vector? (get r :category/children))
                                                           (assoc r :category/children []))]
-                                                  (t/add! ctx r {:check-session? false})
+                                                  (sqeave/add! ctx r {:check-session? false})
                                                   (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :up) {}
-                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-up (:voteCount r)} {:check-session? false}))) ps)
+                                                                               (fn [r] (sqeave/add! ctx {:proposal/id % :proposal/count-up (:voteCount r)} {:check-session? false}))) ps)
                                                   (mapv #(cu/execute-gql-query ctx (pr/vote-count-query % :down) {}
-                                                                               (fn [r] (t/add! ctx {:proposal/id % :proposal/count-down (:voteCount r)} {:check-session? false}))) ps)))))
+                                                                               (fn [r] (sqeave/add! ctx {:proposal/id % :proposal/count-down (:voteCount r)} {:check-session? false}))) ps)))))
 
 (def load-category-c (cache (fn [id]
                               (let [ctx (useContext AppContext)]
@@ -115,11 +110,9 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(declare ui-category)
-
 (defc Category [this {:category/keys [id name color {children [:category-link/id]}
                                       {creator [:ceramic-account/id]} proposals]
-                      :or {id (u/uuid) name "Category" children [] color :gray proposals []}
+                      :or {id (sqeave/uuid) name "Category" children [] color :gray proposals []}
                       :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)
         ;components ()
@@ -137,7 +130,7 @@
            [:div {:class "flex gap-1 items-center"}
             [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
                       :onClick (fn [e]
-                                 (when (and (not (:open? (local))) (not (u/uuid? (id))))
+                                 (when (and (not (:open? (local))) (not (sqeave/uuid? (id))))
                                    (load-category ctx (id)))
                                  (setLocal (assoc (local) :open? (not (:open? (local))))))}]
             [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
@@ -145,7 +138,7 @@
                                                                              :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
                                                                              :on-change (fn [e]
                                                                                           (setLocal (assoc (local) :editing? false))
-                                                                                          (comp/set! this (:ident props) :category/name e)
+                                                                                          (sqeave/set! this (:ident props) :category/name e)
                                         ; TODO: need to auto swap uuids for streamIDs
                                                                                           (add-category-remote ctx (data) (:parent props) (:link props)))}]}
              [:span {:class "flex w-full gap-2"}
@@ -158,9 +151,9 @@
               [:span {:class "flex gap-24 w-full items-end justify-end gap-2"}
                [:button {:class "h-7 w-fit text-sm relative border-gray-700 border-2 dark:text-gray-800
                               rounded-md flex gap-2 mr-10 items-center hover:(ring-blue-500 ring-1) p-1"
-                         :onClick #(t/add! ctx {:proposal/id (u/uuid)
+                         :onClick #(sqeave/add! ctx {:proposal/id (sqeave/uuid)
                                                 :proposal/name "New proposal"
-                                                :proposal/author (comp/viewer-ident this)
+                                                :proposal/author (sqeave/viewer-ident this)
                                                 :proposal/created (.toLocaleDateString (js/Date.) "sv")
                                                 :proposal/status :EVALUATION
                                                 :proposal/parentID (id)}
@@ -177,25 +170,23 @@
                       :onClick #(setLocal (assoc (local) :editing? true))}
                 [:h2 {:class "text-bold"} (name)]]]]
 
-           #_[cm/ui-category-menu {:&  {:ident (:ident props)
+           #_[cm/CategoryMenu {:&  {:ident (:ident props)
                                         :parent (:parent props)}}]
-           [Show {:when (and (comp/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
-            [cm/ui-category-menu {:& props}]]]
+           [Show {:when (and (sqeave/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
+            [cm/CategoryMenu {:& props}]]]
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
             [Show {:when (:show-proposals? (filters))}
              [:div {:class "flex flex-col gap-1"}
               [For {:each (proposals)}
                (fn [proposal i]
-                 #jsx [pr/ui-proposal {:& {:ident proposal
+                 #jsx [pr/Proposal {:& {:ident proposal
                                            :parent (id)
                                            :projectLocal (:projectLocal props)
                                            :setProjectLocal (:setProjectLocal props)}}])]]]
             [For {:each (reverse (children))}
              (fn [entity i]
-               #jsx [cl/ui-category-link {:ident (fn [] [:category-link/id entity])
+               #jsx [cl/CategoryLink {:ident (fn [] [:category-link/id entity])
                                           :setProjectLocal (:setProjectLocal props)
                                           :projectLocal (:projectLocal props)
                                           :parent (id)}])]]]]))
-
-(def ui-category (comp/comp-factory Category AppContext))

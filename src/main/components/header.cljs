@@ -1,30 +1,31 @@
 (ns main.components.header
   (:require ["solid-js" :refer [onMount createSignal Show useContext]]
-            ["../comp.cljs" :as comp]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["./user.cljs" :as user]
             ["../evm/util.cljs" :as eu]
-            ["../utils.cljs" :as u]
             ["../evm/client.cljs" :as ec]
-            ["../composedb/client.cljs" :as cli]
-            ["../transact.cljs" :as t]
-            ["./blueprint/searchinput.cljs" :as si]
             ["./user/user_dropdown.cljs" :as userdd]
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
             ["../composedb/client.cljs" :as cdb]
             ["./chain_menu.cljs" :as cm]
             ["./web3_modal.cljs" :as w3m]
             ["../evm/client.cljs" :refer [wallet-client]]
-            ["../evm/walletconnect.cljs" :refer [config]]
-            ["@wagmi/core" :refer [getConnections]]
+            #_["../evm/walletconnect.cljs" :refer [config]]
+            #_["@wagmi/core" :refer [getConnections]]
             ["./blueprint/button.cljs" :as b]
-            ["../Context.cljs" :refer [AppContext ConnectionContext]]
+            ["../Context.cljs" :refer [ConnectionContext]]
             ["flowbite" :refer [initDropdowns]]
             [squint.string :as string])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (def codo-logo (str js/import.meta.env.VITE_PINATA_URL "/images/codo_new_black.svg"))
 
-(defc Header [this {:keys [component/id {user [:user/id :user/session]} chain {active-project [:project/id :project/name]}]}]
+(defc Header [this {:keys [component/id {user [:user/id :user/session]} chain {active-project [:project/id :project/name]}]
+                    :or {component/id :header
+                         :chain {:chain/id 31337
+                                 :chain/name "Hardhat"}
+                         :user {:user/id 0
+                                :user/ethereum-address "0x0"}}}]
   (let [navigate (useNavigate)
         location (useLocation)
         connection-context (useContext ConnectionContext)
@@ -53,16 +54,14 @@
                                                   (navigate (str "/search/&search=" (:search (signal)))))}}]]
              [:button {:class (str "lt-md:hidden text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
-             [w3m/ui-web3-modal]
-             #_[cm/ui-chain-menu #_{:& {:ident chain}}]
+             [w3m/Web3Modal]
+             #_[cm/ChainMenu #_{:& {:ident chain}}]
              #_(str "t:" (keys ((-> connection-context :connections))))
              [Show {:when (:user/session (user))
                     :fallback #jsx [Show {:when (not (empty? (keys ((-> connection-context :connections)))))}
                                     [b/button {:title "login"
                                                :on-click #(do (println @wallet-client) (user/init-auth ctx))}]]}
-              [user/ui-user {:& {:ident (fn [] [:user/id (:user/id (user))])
+              [user/User {:& {:ident (fn [] [:user/id (:user/id (user))])
                                  :data-dropdown-toggle "header-user-dropdown"}}]]]]
-           [userdd/ui-user-dropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                         :data-dropdown-id "header-user-dropdown"}}]]]))
-
-(def ui-header (comp/comp-factory Header AppContext))
+           [userdd/UserDropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
+                                     :data-dropdown-id "header-user-dropdown"}}]]]))

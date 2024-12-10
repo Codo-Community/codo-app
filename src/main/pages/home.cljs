@@ -1,19 +1,12 @@
 (ns pages.home
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../normad.cljs" :as n]
-            ["@solidjs/router" :refer [A]]
-            ["@solidjs/router" :refer [useNavigate useParams]]
-            ["../components/activity.cljs" :as a]
+  (:require ["@w3t-ab/sqeave" :as sqeave]
+            ["@solidjs/router" :refer [useNavigate]]
             ["../components/blueprint/card.cljs" :as c]
-            ["../components/blueprint/button.cljs" :as b]
-            ["../utils.cljs" :as u]
-            ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["../components/blueprint/button.cljs" :as b])
+  (:require-macros [sqeave :refer [defc]]))
 
-(defn HomePage [props]
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)
-        navigate (useNavigate)
-        data (createMemo #(n/pull store [:pages/id :home] [:activity]))]
+(defc HomePage [this {:keys [pages/id activity]}]
+  (let [navigate (useNavigate)]
     #jsx [:div {:class ""}
           [:div {:class "grid h-fit xl:grid-cols-3 xl:grid-rows-4 md:(grid-cols-2 grid-rows-3 h-full) grid-flow-row w-full dark:(text-white) p-3 gap-3 w-screen"}
            [c/card {:& {:title "Activity"

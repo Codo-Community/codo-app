@@ -1,37 +1,28 @@
 (ns pages.search
   (:require ["solid-js" :refer [For createSignal onMount createMemo useContext]]
-            ["./editor_context.cljs" :refer [EditorContext]]
             ["solid-js/web" :refer [Dynamic]]
             ["flowbite" :refer [initModals]]
-            ["../comp.cljs" :as comp]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["../composedb/util.cljs" :as cu]
             ["./category/modal.cljs" :as cm]
             ["./project/proposal_modal.cljs" :as pm]
             ["./category/view.cljs" :as cv]
-            ["../transact.cljs" :as t]
             ["./blueprint/split.cljs" :as s]
             ["./blueprint/tabs.cljs" :as tabs]
-            ["../utils.cljs" :as u]
-            ["./blueprint/modal.cljs" :as modal]
-            ["./blueprint/input.cljs" :as in]
-            ["./blueprint/dropdown.cljs" :as dr]
-            ["./project_item.cljs" :as pi]
-            ["../Context.cljs" :refer [AppContext]]
-            [squint.string :as string]
-            )
-  (:require-macros [comp :refer [defc]]))
+            ["./blueprint/modal.cljs" :as modal])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc ProjectReport [this {:project/keys [id name start description
                                           {category [:category/id :category/name {:category/creator [:ceramic-account/id]}
                                                      {:category/children [:category-link/id]}]}
-                                          {contract [:contract/id :contract/chain]}] :or {:id (u/uuid)
+                                          {contract [:contract/id :contract/chain]}] :or {:id (sqeave/uuid)
                                                                                           :name "Proj"
                                                                                           :start "2021-01-01"
                                                                                           :description "Desc"
-                                                                                          :category {:category/id (u/uuid)
+                                                                                          :category {:category/id (sqeave/uuid)
                                                                                                      :category/name "Category"}}}]
-  (let [comp-2-modal {:category (fn [props] #jsx [cm/ui-category-modal {:& props}])
-                      :proposal (fn [props] #jsx [pm/ui-proposal-modal {:& props}])}
+  (let [comp-2-modal {:category (fn [props] #jsx [cm/CategoryModal {:& props}])
+                      :proposal (fn [props] #jsx [pm/ProposalModal {:& props}])}
         [local setLocal] (createSignal {:modal {:comp nil
                                                 :visible? false
                                                 :ident nil}
@@ -40,8 +31,8 @@
                                                                :type :category
                                                                :props {:indent? false
                                                                        :open? true}
-                                                               :comp (fn [props] #jsx [cv/ui-category-view {:& (merge props {:indent? false
-                                                                                                                             :open? true})}])}]}]})]
+                                                               :comp (fn [props] #jsx [cv/CategoryView {:& (merge props {:indent? false
+                                                                                                                         :open? true})}])}]}]})]
     (createMemo (fn [] (when (:modal (local)) (initModals))))
     #jsx [:div {:class "flex flex-col w-full items-center"}
           [s/Split {:& {:extra-class "mt-2"}}
@@ -60,13 +51,10 @@
 
 (defn load-project [ctx ident]
   (cu/execute-eql-query ctx {ident ProjectReport.query}
-                        (fn [project] (println "project: " project) (t/add! ctx project {:replace [:component/id :header :active-project]
+                        (fn [project] (println "project: " project) (sqeave/add! ctx project {:replace [:component/id :header :active-project]
                                                                                          :check-session? false}))
-                        #_(fn [r] (let [c (u/nsd (get-in r [:node :category]) :category)
-                                        co (u/nsd (get-in r [:node :contract]) :contract)
-                                        project (u/nsd (get-in r [:node]) :project)
+                        #_(fn [r] (let [c (sqeave/nsd (get-in r [:node :category]) :category)
+                                        co (sqeave/nsd (get-in r [:node :contract]) :contract)
+                                        project (sqeave/nsd (get-in r [:node]) :project)
                                         project (assoc (assoc project :project/category c) :project/contract co)]
-                                    (t/add! ctx project)))))
-
-(def ui-project-report (comp/comp-factory ProjectReport AppContext))
-
+                                    (sqeave/add! ctx project)))))

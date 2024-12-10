@@ -2,9 +2,9 @@
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
             ["../components/evm/transaction_builder.cljs" :as tb]
             ["../evm/abi.cljs" :as abi]
-            ["../transact.cljs" :as t]
             ["flowbite" :as fb]
-            ["../Context.cljs" :refer [AppContext]]))
+            ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 
 ;; simulate a remote
 (def contract-gen
@@ -15,13 +15,13 @@
                                  :contract/address "0x0d4d1e9665a8BF75869A63e3F45AC465Bc291CBB" :contract/chain [:chain/id 11155111]
                                  :contract/abi (abi/indexed-abi abi/governor-abi)}}})
 
-(defn TransactionBuilderPage []
-  (let [{:keys [store setStore] :as ctx} (useContext AppContext)]
-    (onMount #(do (println "long add")
-                  (t/add! ctx contract-gen)
-                  (t/set-field! ctx [:pages/id :transaction-builder :contract] [:contract/id :codo])
-                  (t/set-field! ctx [:pages/id :transaction-builder :contracts] [[:contract/id :codo] [:contract/id :codo-governor]])
-                  (fb/initFlowbite)))
-    #jsx [tb/ui-transaction-builder {:& {:ident [:pages/id :transaction-builder]}}]))
-
-(def default TransactionBuilderPage)
+(defc TransactionBuilderPage [this {:keys [] :or {pages/id :transaction-builder
+                                                  contracts []
+                                                  contract nil
+                                                  transactions []}}]
+  (onMount #(do (println "long add")
+                (sqeave/add! ctx contract-gen)
+                (sqeave/set-field! ctx [:pages/id :transaction-builder :contract] [:contract/id :codo])
+                (sqeave/set-field! ctx [:pages/id :transaction-builder :contracts] [[:contract/id :codo] [:contract/id :codo-governor]])
+                (fb/initFlowbite)))
+  #jsx [tb/TransactionBuilder {:& {:ident [:pages/id :transaction-builder]}}])

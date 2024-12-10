@@ -1,12 +1,9 @@
 (ns pages.search
-  (:require ["solid-js" :refer [useContext createMemo Show onMount Index For]]
-            ["../comp.cljs" :as comp]
+  (:require ["@w3t-ab/sqeave" :as sqeave]
             ["@solidjs/router" :refer [A]]
             ["./blueprint/icons/web3.cljs" :as wi]
-            ["../utils.cljs" :as u]
-            ["./blueprint/button.cljs" :as b]
-            ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["./blueprint/button.cljs" :as b])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc ProjectItem [this {:project/keys [id name description {contract [:contract/id :contract/chain]}]
                          ;:local-storage/keys [bookmarked-projects]
@@ -41,5 +38,3 @@
            #_[:div {:tabindex 0 :class "focus:outline-none flex"}
               [For {:each (tags)}
                [:div {:class "py-2 px-4 text-xs leading-3 text-indigo-700 rounded-full bg-indigo-100"} "#dogecoin"]]]]]]])
-
-(def ui-project-item (comp/comp-factory ProjectItem AppContext))

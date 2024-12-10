@@ -3,12 +3,9 @@
             ["@solidjs/router" :refer [useSearchParams cache]]
             ["../components/project_list.cljs" :as p]
             ["../composedb/client.cljs" :as cli]
-            ["../utils.cljs" :as utils]
-            ["../transact.cljs" :as t]
-            ["graphql-tag" :as graphql-tag]
-            ["../comp.cljs" :as comp]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (def project-fragment "fragment ProjectFragment on Node {
   ...on Project {
@@ -69,11 +66,8 @@
                                                        (println "response: " response)
                                                        (doall (for [v res]
                                                                 (let [v (:node v)
-                                                                      val (assoc  (dissoc (utils/nsd v :project) :contract) :project/contract (utils/nsd (:contract v) :contract))]
-                                                                  (t/add! ctx [val] {:replace [:component/id :project-list :projects]}))))))))))))
+                                                                      val (assoc  (dissoc (sqeave/nsd v :project) :contract) :project/contract (sqeave/nsd (:contract v) :contract))]
+                                                                  (sqeave/add! ctx [val] {:replace [:component/id :project-list :projects]}))))))))))))
 
 (defc SearchPage [this {:keys [component/id projects]}]
-  #jsx [:div {}
-        [p/ui-project-list {:& {:ident [:component/id :project-list]}}]])
-
-(def ui-search-page (comp/comp-factory SearchPage AppContext))
+  #jsx [p/ProjectList {:& {:ident [:component/id :project-list]}}])

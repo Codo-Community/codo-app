@@ -1,9 +1,6 @@
 (ns co-who.components.evm.inputs
   (:require ["blo" :refer [blo]]
-            ["../../evm/util.cljs" :as eu]
-            ["../blueprint/input.cljs" :as i]
-            ["../../comp.cljs" :as comp])
-  (:require-macros [comp :refer [defc]]))
+            ["../blueprint/input.cljs" :as i]))
 
 (defn address-input [{:keys [name value readonly on-change] :as data :or {label "Address"
                                                                           value (fn [] "0x0")

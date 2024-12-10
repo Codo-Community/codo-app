@@ -1,7 +1,7 @@
 (ns graphql-eql-transform.core
   (:require ["graphql" :as graphql]
             [squint.string :as str]
-            ["./utils.cljs" :as utils]))
+            ["@w3t-ab/sqeave" :as sqeave]))
 
 (defn eql-key->field [key]
   (if (vector? key)
@@ -37,7 +37,7 @@
             k (if (= (count k) 2) k (first k))]
         (if (vector? k) (assoc (eql-key->field ["node" (second k)])
                                :selectionSet {:kind "SelectionSet"
-                                              :selections [(assoc (inline-fragment (utils/pascal-case (first (str/split (first k) "/"))))
+                                              :selections [(assoc (inline-fragment (sqeave/pascal-case (first (str/split (first k) "/"))))
                                                                   :selectionSet {:kind "SelectionSet"
                                                                                  :selections (let [d (mapv build-field v)
                                                                                                    a (println "df: " d)]

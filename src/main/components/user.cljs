@@ -3,21 +3,17 @@
             ["blo" :refer [blo]]
             ["./blueprint/tooltip.cljs" :as tt]
             ["./blueprint/button.cljs" :as b]
-            ["../comp.cljs" :as comp]
-            ["../transact.cljs" :as t]
-            ["../evm/client.cljs" :as ec :refer [wallet-client]]
+            ["@w3t-ab/sqeave" :as sqeave]
+            #_["../evm/client.cljs" :as ec :refer [wallet-client]]
             ["../evm/util.cljs" :as eu]
             ["../evm/gc_passport.cljs" :as gcp]
             ["../composedb/auth.cljs" :as cda]
-            ["../utils.cljs" :as utils]
             ["../composedb/client.cljs" :as cli]
             ["../composedb/util.cljs" :as cu]
-            ["../Context.cljs" :refer [AppContext]]
-            ["./alert.cljs" :as alert]
             ["flowbite" :refer [initDropdowns initTooltips]]
-            ["@tanstack/solid-query" :refer [createQuery]]
+            #_["@tanstack/solid-query" :refer [createQuery]]
             [squint.string :as string])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (def query-from-acc "query {
   viewer {
@@ -31,7 +27,7 @@
 }
 ")
 
-(declare User)
+(declare UserClass)
 
 (defn load-viewer-user [ctx]
   (cu/execute-gql-query ctx query-from-acc {}
@@ -40,15 +36,15 @@
                           (let [account-id (-> res :viewer :ceramic-account/id)
                                 address (nth (string/split account-id ":") 4)
 
-                                user (-> (or (-> res :viewer :user) (User.new-data))
+                                user (-> (or (-> res :viewer :user) (UserClass.new-data))
                                          (conj {:user/ethereum-address address
                                                 :user/account [:ceramic-account/id account-id]
                                                 :user/session (-> (:compose @cli/client) :did :_id)}))]
-                            (t/add! ctx (assoc (:viewer res) :ceramic-account/user user) {:check-session? false})
-                            (t/add! ctx user
+                            (sqeave/add! ctx (assoc (:viewer res) :ceramic-account/user user) {:check-session? false})
+                            (sqeave/add! ctx user
                                     {:replace [:component/id :header :user]
                                      :check-session? false})
-                            (t/add! ctx {:viewer/id 0
+                            (sqeave/add! ctx {:viewer/id 0
                                          :viewer/user [:user/id (:user/id user)]} {:check-session? false})))))
 
 (defn ^:async init-auth [ctx]
@@ -60,11 +56,11 @@
                     (-> @cli/apollo-client :cache (.reset)))))))
 
 (defc User [this {:user/keys [id name ethereum-address {account [:id]} avatar passport-score]
-                  :or {id (utils/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]
+                  :or {id (sqeave/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]
   (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]
                                                                           (.then (gcp/submit-passport-no-verify (ethereum-address))
                                                                                  (fn [score]
-                                                                                   (t/add! ctx {:user/id (id)
+                                                                                   (sqeave/add! ctx {:user/id (id)
                                                                                                 :user/passport-score (:score score)} {:after (fn []
                                                                                                                                               (initDropdowns) (initTooltips))})))
                                                                           (.then (eu/fetch-ens-name source)
@@ -73,7 +69,7 @@
                                                                                           (fn [avatar]
                                                                                             ((fn [score]
                                                                                                (let [data {:user/id (id) :user/name name :user/avatar avatar}]
-                                                                                                 (t/add! ctx data {:after (fn []
+                                                                                                 (sqeave/add! ctx data {:after (fn []
                                                                                                                             (initDropdowns) (initTooltips))}))))))))))
         score-colors (fn [score] (if (> score 19)
                                    "bg-green-400"
@@ -95,5 +91,3 @@
                                       (if (or (nil? (name)) (= (name) ""))
                                         (ethereum-address)
                                         (name))]}]]))
-
-(def ui-user (comp/comp-factory User AppContext))

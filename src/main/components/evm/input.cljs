@@ -1,5 +1,6 @@
 (ns components.evm.input
   (:require ["./inputs.cljs" :as i]
+            ["../../evm/util.cljs" :as eu]
             ["../blueprint/input.cljs" :as in]))
 
 (defn input [{:keys [type name] :as entry}]

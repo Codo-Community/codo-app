@@ -1,8 +1,7 @@
 (ns main.components.blueprint.stepper
-  (:require ["solid-js" :refer [createSignal Show createContext useContext For createMemo Index onMount lazy]]
-            ["../Context.cljs" :refer [AppContext]]
-            ["../comp.cljs" :as comp])
-  (:require-macros [comp :refer [defc]]))
+  (:require ["solid-js" :refer [Show]]
+            ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 
 (def icon-map {:check "i-tabler-check"
                :clipboard-document-list "i-tabler-file-info"
@@ -35,5 +34,3 @@
          [:p {:class (if active?
                        "text-sm text-black dark:text-white"
                        "text-sm")} details]]])
-
-(def ui-step (comp/comp-factory Step AppContext))

@@ -1,7 +1,5 @@
 (ns co-who.evm.lib
-  (:require ["viem" :as viem :refer [getContract getAbiItem]]
-            ["./client.cljs" :refer [wallet-client public-client]]
-            ["./abi.cljs" :refer [token-abi]]))
+  (:require ["viem" :as viem :refer [getContract]]))
 
 (defn get-contract [data]
   (getContract data))

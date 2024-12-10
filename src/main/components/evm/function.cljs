@@ -1,12 +1,8 @@
 (ns co-who.components.evm.function
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
-            ["../blueprint/button.cljs" :as b]
             ["./input.cljs" :as ein]
-            ["../../normad.cljs" :as n :refer [add]]
-            ["../blueprint/label.cljs" :as l]
-            ["../../Context.cljs" :as c]
-            ["../../comp.cljs" :as comp])
-  (:require-macros [comp :refer [defc]]))
+            ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 ;
 (defc Function [this {:keys [function/id name type stateMutability
                              {inputs [:internalType :type :name :value]}
@@ -28,5 +24,3 @@
            (fn [entry i]
              #jsx [ein/input {:& (conj entry {:value #(:value entry)
                                               :readonly true})}])]]]])
-
-(def ui-function (comp/comp-factory Function c/AppContext))

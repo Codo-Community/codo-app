@@ -1,30 +1,27 @@
 (ns main.composedb.util
-  (:require ["../utils.cljs" :as utils]
+  (:require ["@w3t-ab/sqeave" :as sqeave]
             ["./client.cljs" :as cli]
             ["../geql.cljs" :as geql]
             [squint.string :as str]
             ["lodash" :as l :refer [capitalize trim]]
-            ["../components/alert.cljs" :as alert]
-            ["../normad.cljs" :as n]
-            ["did-session" :refer [DIDSession]]
-            ["../transact.cljs" :as t]))
+            ["did-session" :refer [DIDSession]]))
 
 (defn handle-fn [ctx f {:keys [check-session?] :or {check-session? true}}]
   (fn [response]
     (println "rp: r " response)
     (let [res (-> response :data)
-          res2 (utils/add-ns res)]
+          res2 (sqeave/add-ns res)]
       (println "res3: " res)
       (println "res3: " res2)
       (if (first f)
         ((first f) res2)
-        (t/add! ctx res2 {:check-session? check-session?})))))
+        (sqeave/add! ctx res2 {:check-session? check-session?})))))
 
 (defn handle-fn-mutation [ctx f {:keys [check-session? tempid] :or {check-session? true}}]
   (fn [response]
     (let [mutation-name (first (keys (-> response :data)))
           res (get-in response [:data mutation-name :document])
-          res2 (utils/add-ns res)]
+          res2 (sqeave/add-ns res)]
       (println "res2:1: " res)
       (println "res2: " res2)
       (println "res2: "(js/typeof res2))
@@ -35,15 +32,15 @@
         ((first f) res2))
       (when tempid
         (println "swap: " tempid)
-        (t/swap-uuids! ctx [(str (l/lowerCase (:__typename res)) "/id") tempid] (:id res)))
-      #_(t/add! ctx res2 {:check-session? check-session?}))))
+        (sqeave/swap-uuids! ctx [(str (l/lowerCase (:__typename res)) "/id") tempid] (:id res)))
+      #_(sqeave/add! ctx res2 {:check-session? check-session?}))))
 
 (defn generic-mutation [mutation-name type]
-  (let [n (utils/pascal-case (str type " "  mutation-name))
+  (let [n (sqeave/pascal-case (str type " "  mutation-name))
         n (str/replace n #" " "")
         i (str n "Input")]
     (str "mutation " n "($i: " i "!) {"
-         (str/replace (utils/camel-case (str type " "  mutation-name)) #" " "") "(input: $i) {"
+         (str/replace (sqeave/camel-case (str type " "  mutation-name)) #" " "") "(input: $i) {"
          "document { id __typename } } }")))
 
 (defn execute-gql-query [ctx query vars & f]
@@ -52,26 +49,26 @@
                 (println "error: " err)
                 (println "query: " query)
                 (println "vars: " query)
-                (t/alert-error ctx err)))))
+                (sqeave/alert-error ctx err)))))
 
 (defn execute-gql-mutation-simple [ctx mutation-name vars {:keys [f check-session] :as opts}]
-  (let [vars (utils/remove-ns vars)
-        vars (utils/drop-false vars)
+  (let [vars (sqeave/remove-ns vars)
+        vars (sqeave/drop-false vars)
         id (:id vars)
-        vars (if (utils/uuid? id)
+        vars (if (sqeave/uuid? id)
                (dissoc vars :id)
                vars)
         vars {:i {:content vars}}
         mutation (if (string? mutation-name)
-                   (generic-mutation mutation-name (if (utils/uuid? id) "create" "update"))
+                   (generic-mutation mutation-name (if (sqeave/uuid? id) "create" "update"))
                    mutation-name)]
     (println "mutation: " mutation)
     (-> (.then (cli/exec-mutation mutation vars)
-               (handle-fn-mutation ctx f (if (utils/uuid? id)
+               (handle-fn-mutation ctx f (if (sqeave/uuid? id)
                                            (assoc opts :tempid id) opts)))
         (.catch (fn [err]
                 (println "error: " err)
-                (t/alert-error ctx err))))))
+                (sqeave/alert-error ctx err))))))
 
 (defn execute-gql-mutation [ctx mutation vars & f]
   (-> (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true}))
@@ -79,7 +76,7 @@
                 (println "error: " err)
                 (println "mutation: " mutation)
                 (println "vars: " mutation)
-                (t/alert-error ctx err)))))
+                (sqeave/alert-error ctx err)))))
 
 (defn ^:async has-session-for [account-id resources]
   (println "resources: " (js/typeof resources))
@@ -88,13 +85,13 @@
 (defn remap-query [query]
   (let [k (if (first (keys query)) (str/split (first (keys query)) ","))
                                         ;a (println "gql: " k)
-        query (if (utils/ident? k)
-                {(first (keys query)) (utils/remove-ns (first (vals query)))}
+        query (if (sqeave/ident? k)
+                {(first (keys query)) (sqeave/remove-ns (first (vals query)))}
                 query)
                                         ;a (println "gql: " query)
         query (geql/eql->graphql query)]
     #_(println "gql: " (first (keys query)))
-    #_(println "gql:f " (utils/remove-ns (first (vals query))))
+    #_(println "gql:f " (sqeave/remove-ns (first (vals query))))
 
     query))
 

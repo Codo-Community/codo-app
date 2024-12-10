@@ -5,7 +5,7 @@ comp_path=./src/main/composedb/model/
 out_path=./dist/
 
 ceramic_daemon () {
-    ceramic daemon --network inmemory
+    podman-compose down; podman-compose up > /dev/null
 }
 
 did_from_private_key() {

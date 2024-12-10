@@ -1,12 +1,9 @@
 (ns  main.components.project.proposal
-  (:require ["solid-js" :refer [createSignal Show For createMemo useContext]]
-            ["../utils.cljs" :as utils]
-            ["../comp.cljs" :as comp]
-            ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+  (:require ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc Comment [this {:comment/keys [id text author]
-                     :or {id (utils/uuid) content "Default comment" author {:name "Anonymous"}}}]
+                     :or {id (sqeave/uuid) content "Default comment" author {:name "Anonymous"}}}]
   #jsx [:div {:class "border border-gray-300 rounded-md p-2 mb-2"}
         [:p {:class "font-bold"} (:name author)]
         [:p {:class "text-sm"} content]
@@ -17,5 +14,3 @@
          [:span {:class "text-red-500"} downvotes]
          [:button {:class "text-red-500 hover:text-red-700"
                    :onClick #(println "Downvote comment" id)} "Downvote"]]])
-
-(def ui-comment (comp/comp-factory Comment AppContext))

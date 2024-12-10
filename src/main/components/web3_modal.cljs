@@ -1,12 +1,11 @@
 (ns main.components.web3-modal
   (:require ["solid-js" :refer [createSignal Switch Match onMount]]
-            ["../comp.cljs" :as comp]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["./blueprint/button.cljs" :as b]
             ["@web3modal/wagmi" :refer [createWeb3Modal]]
             ["@wagmi/core" :refer [getConnections]]
-            ["../evm/walletconnect.cljs" :refer [config project-id]]
-            ["../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["../evm/walletconnect.cljs" :refer [config project-id]])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc Web3Modal [this {:keys [] :or {}}]
   (let [modal (createWeb3Modal {:wagmiConfig config
@@ -29,5 +28,3 @@
                        :on-click #(if (:open? (local))
                                     (modal.close)
                                     (modal.open))}]]]]))
-
-(def ui-web3-modal (comp/comp-factory Web3Modal AppContext))

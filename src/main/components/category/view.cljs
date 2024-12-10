@@ -2,12 +2,11 @@
   (:require ["solid-js" :refer [For createSignal onMount createContext]]
             ["flowbite" :refer [initFlowbite]]
             ["./category.cljs" :as c]
-            ["../../comp.cljs" :as comp]
-            ["../../Context.cljs" :refer [AppContext]]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["./context.cljs" :refer [FilterContext]]
             ["../blueprint/input.cljs" :as in]
             ["../blueprint/button.cljs" :as b])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc CategoryView [this {:category/keys [id created] :as data :or {}
                           :local {show-proposals? true from nil}}]
@@ -39,7 +38,5 @@
                         :on-change (fn [e] #(setLocal (assoc (local) :from (-> e :target :value))))}]]]]
 
           [FilterContext.Provider {:value local}
-           [c/ui-category {:& (merge props {:show-proposals? #(:show-proposals? (local))
+           [c/Category {:& (merge props {:show-proposals? #(:show-proposals? (local))
                                             :from #(:from (local))})}]]]))
-
-(def ui-category-view (comp/comp-factory CategoryView AppContext))

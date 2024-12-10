@@ -1,22 +1,11 @@
 (ns components.category
   (:require ["solid-js" :refer [Show createSignal onMount useContext]]
-            ["@solid-primitives/active-element" :refer [createFocusSignal]]
-            ["../../comp.cljs" :as comp]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["./category.cljs" :as c]
             ["../blueprint/input.cljs" :as in]
             ["../blueprint/textarea.cljs" :as ta]
-            ["../../composedb/util.cljs" :as cu]
-            ["../../utils.cljs" :as u]
-            ["flowbite" :as fb]
-            ["./query.cljs" :as cq]
-            ["./menu.cljs" :as cm]
-            ["@solidjs/router" :refer [cache createAsync]]
-            ["../../transact.cljs" :as t]
-            ["../blueprint/button.cljs" :as b]
-            ["../../composedb/client.cljs" :as cli]
-            ["../../normad.cljs" :as normad]
-            ["../../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["../blueprint/button.cljs" :as b])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defc CategoryModal [this {:category/keys [id name {creator [:ceramic-account/id]} description] :as data
                            :or {id "" description ""}}]
@@ -26,19 +15,17 @@
          [:span {:class "flex  w-full gap-3"}
           [in/input {:label "Name"
                      :placeholder "Project Name"
-                     :readonly (not (comp/viewer? this (creator)))
+                     :readonly (not (sqeave/viewer? this (creator)))
                      :value name
-                     :on-change #(comp/set! this :category/name %)}]]
+                     :on-change #(sqeave/set! this :category/name %)}]]
          [ta/textarea {:title "Description"
                        :value description
-                       :readonly (not (comp/viewer? this (creator)))
-                       :on-change #(comp/set! this :category/description %)}]
+                       :readonly (not (sqeave/viewer? this (creator)))
+                       :on-change #(sqeave/set! this :category/description %)}]
          [:span {:class "flex w-full gap-3"}
-          [Show {:when (comp/viewer? this (creator))}
+          [Show {:when (sqeave/viewer? this (creator))}
            [b/button {:title "Submit"
                       :data-modal-hide "planner-modal"}]]
           [b/button {:title "Close"
                      :on-click #(.preventDefault %)
                      :data-modal-hide "planner-modal"}]]]])
-
-(def ui-category-modal (comp/comp-factory CategoryModal AppContext))

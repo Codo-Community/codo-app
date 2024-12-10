@@ -1,16 +1,13 @@
 (ns  main.components.project.proposal
   (:require ["solid-js" :refer [createSignal Show For createMemo useContext]]
-            ["../utils.cljs" :as utils]
-            ["../comp.cljs" :as comp]
-            ["../utils.cljs" :as u]
             ["./user.cljs" :as user]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["./blueprint/textarea.cljs" :as ta]
             ["./blueprint/button.cljs" :as b]
             ["../composedb/util.cljs" :as cu]
             ["./comment.cljs" :as comment]
-            ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (def create-mutation
   "mutation createPost($i: CreatePostInput!){
@@ -43,10 +40,10 @@
                                [ta/textarea {:label "Name"
                                              :placeholder "Title"
                                              :value body
-                                             :on-change #(comp/set! this :post/body %)}]
+                                             :on-change #(sqeave/set! this :post/body %)}]
                                [b/button {:title "Submit"}]]}
          [:div {:class "flex flex-row gap-3"}
-          [user/ui-user {:& {:user/id (or (:ceramic-account/user (author)) (u/uuid))
+          [user/User {:& {:user/id (or (:ceramic-account/user (author)) (sqeave/uuid))
                              :user/ethereum-address (nth (string/split (:ceramic-account/id (author)) ":") 4)}}]
           [:div {:class "flex flex-col max-w-full w-full overflow-x-hidden"}
            [:p {:class "dark:text-gray-700 text-sm font-bold"} (created)]
@@ -60,6 +57,4 @@
          [:h3 {:class "font-bold text-md mb-2"} "Comments"]
          #_[For {:each (comments)}
             (fn [comment _]
-              #jsx [comment/ui-comment comment])]]])
-
-(def ui-post (comp/comp-factory Post AppContext))
+              #jsx [comment/Comment comment])]]])

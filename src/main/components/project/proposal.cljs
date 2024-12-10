@@ -6,13 +6,10 @@
             ["./proposal_modal.cljs" :as modal]
             ["flowbite" :refer [initModals]]
             ["../blueprint/badge.cljs" :as ba]
-            ["../../utils.cljs" :as utils]
-            ["../../transact.cljs" :as t]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["../../composedb/util.cljs" :as cu]
-            ["../../comp.cljs" :as comp]
-            ["../editor_context.cljs" :refer [EditorContext]]
-            ["../../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["../editor_context.cljs" :refer [EditorContext]])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defn vote-count-query [id type]
   (str "query { voteCount(filters: {where: {parentID: {equalTo: \"" id "\"}, type: {equalTo: " (get {:up "UP" :down "DOWN"} type) "}}}) }"))
@@ -46,7 +43,7 @@
                   :onClick #(do
                               (if-not (utils/uuid? (id))
                                 (cu/execute-gql-query ctx (modal/query (id)
-                                                                       (second (comp/viewer-ident this)))))
+                                                                       (second (sqeave/viewer-ident this)))))
                               #_(cu/execute-eql-query ctx {[:proposal/id (id)] modal/ProposalModal.query})
                               ((:setProjectLocal props) (assoc-in ((:projectLocal props)) [:modal] {:comp :proposal
                                                                                                     :props {:parent (:parent props)}
@@ -59,14 +56,12 @@
             (str (count-up) #_(:up (vote-count)))
             [:button {:class "dark:text-green-400 dark:hover:text-green-200"
                       :onClick #(do
-                                  #_(comp/mutate! this {:add {:parentID (id) :type :up}})
+                                  #_(sqeave/mutate! this {:add {:parentID (id) :type :up}})
                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {} (fn [r] (println "vote answer: " r))))}
              [:div {:class "i-tabler-arrow-up h-8"}]]
             (str (count-down) #_(:down (vote-count)))
             [:button {:class "dark:text-red-400 dark:hover:text-red-200"
                       :onClick #(do
-                                  #_(comp/set-field! this {:add {:parentID (id) :type :down}})
+                                  #_(sqeave/set-field! this {:add {:parentID (id) :type :down}})
                                   (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {} (fn [r] (println "vote answer: " r))))}
              [:div {:class "i-tabler-arrow-down h-8"}]]]]]))
-
-(def ui-proposal (comp/comp-factory Proposal AppContext))

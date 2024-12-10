@@ -26,7 +26,7 @@
           [l/label {:title label}]
           [:span {:class "flex flex-row relative"}
            [Show {:when (if left-icon true)}
-            [:div {:class (str  "w-7 h-7 absolute left-2 top-2 ")}
+            [:div {:class (str  "w-7 h-7 absolute left-2 sqeave/op-2 ")}
              (left-icon value)]
             [Show {:when copy}
              [:button {:class (str  "w-5 h-5 absolute right-2 top-3 hover:text-white text-gray-400 i-tabler-clipboard")
@@ -63,7 +63,7 @@
                  :readonly readonly
                  :required required}]])
 
-#_(def number-input (comp/comp-factory NumberInput AppContext))
+#_(def number-input (sqeave/comp-factory NumberInput AppContext))
 
 (defn boolean-input [{:keys [ident label placeholder on-submit on-change readonly required value extra-class inline]
                       :or {required false extra-class "" readonly false value (fn [] "") on-change (fn [e]) inline false}}]

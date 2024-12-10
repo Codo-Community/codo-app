@@ -1,16 +1,13 @@
 (ns components.userprofile
-  (:require ["../comp.cljs" :as comp]
+  (:require ["@w3t-ab/sqeave" :as sqeave]
             ["./blueprint/input.cljs" :as in]
             ["./blueprint/textarea.cljs" :as ta]
-            ["../utils.cljs" :as utils]
-            ["../transact.cljs" :as t]
             ["./blueprint/button.cljs" :as b]
             ["../geql.cljs" :as geql]
             ["../composedb/client.cljs" :as cli]
             ["../composedb/util.cljs" :as cu]
-            ["../Context.cljs" :refer [AppContext]]
             [squint.string :as string])
-  (:require-macros [comp :refer [defc]]))
+  (:require-macros [sqeave :refer [defc]]))
 
 (def query-from-acc "query {
   viewer {
@@ -35,32 +32,33 @@
 
 #_(eql-gql/query->graphql query)
 
-(defn mutation-vars [{:user/keys [id firstName lastName introduction] :as data}]
-  {:i {:content (utils/drop-false {:firstName firstName :lastName lastName :introduction introduction})}})
+(defn mutation-vars [{:user/keys [id firstName lastName introduction account] :as data}]
+  {:i {:content (sqeave/drop-false {:firstName firstName :lastName lastName :introduction introduction})}})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
   (fn [e]
     (if e (.preventDefault e))
+    (println (data))
     (cu/execute-gql-mutation ctx (basic-profile-mutation {:document [:id :firstName :lastName :introduction]})
                              (mutation-vars (data))
                              (fn [response] (println response)))))
 
-(defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
+(defc UserProfile [this {:user/keys [id firstName lastName introduction {account [:ceramic/account-id]}] :as data}]
   #jsx [:form {:class "flex flex-col gap-4 px-4"
-               :onSubmit (on-click-mutation ctx data)}
+               :onSubmit (on-click-mutation ctx this.data)}
         [:span {:class "flex w-full gap-3"}
          [in/input {:label "First Name"
                     :placeholder "Your Name"
                     :value firstName
-                    :on-change #(comp/set! this :user/firstName %)}]
+                    :on-change #(sqeave/set! this :user/firstName %)}]
          [in/input {:label "Last Name"
                     :placeholder "Your Last Name"
                     :value lastName
-                    :on-change #(comp/set! this :user/lastName %)}]]
+                    :on-change #(sqeave/set! this :user/lastName %)}]]
         [ta/textarea {:title "Introduction"
                       :placeholder "Introduce yourself ..."
                       :value introduction
-                      :on-change #(comp/set! this :user/introduction %)}]
+                      :on-change #(sqeave/set! this :user/introduction %)}]
         [:span {:class "flex w-full gap-3"}
          [b/button {:title "Submit"}]]])
 
@@ -71,7 +69,4 @@
     (-> (cli/exec-query query)
         (.then (fn [response]
                  (let [res (-> response :data :node)]
-                   (t/add! ctx (utils/nsd res :user))))))))
-
-
-(def ui-user-profile (comp/comp-factory UserProfile AppContext))
+                   (sqeave/add! ctx (sqeave/nsd res :user))))))))

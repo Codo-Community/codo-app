@@ -6,9 +6,8 @@
             ["@apollo/client" :refer [ApolloClient, ApolloLink, InMemoryCache, Observable]]
             ["../../__generated__/definition.js" :refer [definition]]
             ["graphql" :as graphql]
-            ["../utils.cljs" :as u]
-            ["./auth.cljs" :as a]
-            [squint.string :as string]))
+            ["@w3t-ab/sqeave" :as sqeave]
+            ["./auth.cljs" :as a]))
 
 (defonce client (atom {:ceramic (CeramicClient. js/import.meta.env.VITE_CERAMIC_API)
                    :compose (ComposeClient. {:ceramic js/import.meta.env.VITE_CERAMIC_API
@@ -26,6 +25,7 @@
                                                  (.error observer error))))))))
 
 (defonce apollo-client (atom (ApolloClient. {:link link
+                                             :assumeImmutableResults true
                                              :cache (InMemoryCache.)})))
 
 (defn exec-query [q vars]
@@ -38,7 +38,7 @@
   (.mutate @apollo-client {:mutation (graphql-tag/gql mutation) :variables (or vars {})}))
 
 (defn ^:async get-stored-session-string [account-id]
-  (let [stored-sessions (u/get-item "codo:ceramic-sessions")]
+  (let [stored-sessions (sqeave/get-item "codo:ceramic-sessions")]
     (get stored-sessions account-id)))
 
 (defn ^:async get-session-from-string [session-string]
@@ -81,6 +81,6 @@
     (println (:compose @client))
     (println "composedb client init OK")
     (println "session: " session)
-    (println "dids: " (keys (u/get-item "ceramic-session-dids")))
+    (println "dids: " (keys (sqeave/get-item "ceramic-session-dids")))
     ;(u/set-item! "ceramic-session-dids" (assoc (if-let [dids (u/get-item "codo:ceramic-sessions")] dids {}) account-id (.serialize session)))
     session))

@@ -3,11 +3,8 @@
             ["../blueprint/button.cljs" :as b]
             ["../blueprint/dropdown.cljs" :as d]
             ["./inputs.cljs" :as in]
-            ["./transaction.cljs" :as tr]
-            ["../../normad.cljs" :as n :refer [add]]
-            ["../../Context.cljs" :refer [AppContext]]
-            ["../../comp.cljs" :as comp])
-  (:require-macros [comp :refer [defc]]))
+            ["@w3t-ab/sqeave" :as sqeave])
+  (:require-macros [sqeave :refer [defc]]))
 
 #_(defn select-on-change [{:keys [store setStore] :as ctx} ident]
   (fn [e]
@@ -18,10 +15,10 @@
 (defn add-transaction [{:keys [store setStore] :as ctx} local]
   (fn [e]
     (let [selected (:selected-function (local))
-          function-data (n/pull store (get-in store [:function/id selected]) [:name :inputs :outputs :stateMutability :type])
+          function-data (sqeave/pull store (get-in store [:function/id selected]) [:name :inputs :outputs :stateMutability :type])
           transaction-data {:transaction/id (js/crypto.randomUUID)
                             :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))}]
-      (add ctx transaction-data)
+      (sqeave/add! ctx transaction-data)
       (setStore :pages/id
                 (fn [x]
                   (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
@@ -44,5 +41,3 @@
           [:div {:class "flex items-end"}
            [b/button {:title "Add"
                       :on-click (add-transaction ctx local)}]]]))
-
-(def ui-contract (comp/comp-factory Contract AppContext))

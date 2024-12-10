@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
-import squint from "./vite-plugin-squint/index.mjs";
-//import squint from "vite-plugin-squint";
+import squint from "@w3t-ab/vite-plugin-squint"
 import solid from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
 import UnoCSS from 'unocss/vite'
+import path from "path";
 
 export default defineConfig({
 server: {
@@ -30,6 +30,7 @@ port: 3000,
   esbuild: {
       drop: ['console', 'debugger'],
   },
+
   optimizeDeps: {
       esbuildOptions: {
         target: "esnext",
@@ -41,6 +42,11 @@ port: 3000,
           bigint: true
         },
       },
+  },
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./src")
+    }
   },
   build: {
     outDir: "dist/",

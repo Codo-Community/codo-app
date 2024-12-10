@@ -1,6 +1,5 @@
 (ns components.blueprint.button
-  (:require ["solid-js" :refer [Show]]
-            ["../../utils.cljs" :as u]))
+  (:require ["solid-js" :refer [Show]]))
 
 (defn button [{:keys [title on-click color icon img img-class extra-class extra-attr class data-modal-hide] :as props :or {color "blue" extra-attr {}}}]
   #jsx [:button {:class (or class (str "flex items-center justify-center rounded-md overflow-hidden max-w-48 overflow-hidden bg-white

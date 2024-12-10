@@ -1,9 +1,7 @@
 (ns main.components.wizards.new-project.main
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["@solidjs/router" :refer [A useParams]]
-            ["flowbite" :as fb]
-            ["../../../utils.cljs" :as u]
-            ["../../../Context.cljs" :refer [AppContext]]
+            ["@w3t-ab/sqeave" :as sqeave]
             ["../../stepper.cljs" :as s]))
 
 (defn add-new-proj []
@@ -30,13 +28,13 @@
         params (useParams)]
     #jsx [:div {:class "flex justify-center w-screen px-4"}
           [:div {:class "mt-4 w-fit h-fit lt-md:hidden"}
-           [s/ui-stepper {:& (local)}]]
+           [s/Stepper {:& (local)}]]
           [:div {:class "md:ml-24 relative"}
            [:h1 {:class "text-2xl mb-4 mt-2"} "Create Project"]
 
            props.children
 
-           [Show {:when (not (u/uuid? (:id params)))}
+           [Show {:when (not (sqeave/uuid? (:id params)))}
             [:div {:class "flex flex-inline mt-6"}
              [Show {:when (not (nil? (get-in (:step-route (local)) [(:step (local)) :back])))}
               [A {:href (str "/wizards/new-project/" (:id params) (get-in (:step-route (local)) [(:step (local)) :back]))}
@@ -46,5 +44,3 @@
                                         ;:onClick #(setLocal :step )
                   }
                [:div {:class "i-tabler-arrow-right"}]]]]]]]))
-
-(def default WizardNewProject)

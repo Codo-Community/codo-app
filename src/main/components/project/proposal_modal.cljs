@@ -8,14 +8,10 @@
             ["../post.cljs" :as post]
             ["../blueprint/textarea.cljs" :as ta]
             ["../category/category.cljs" :as c]
-            ["lodash" :refer [escape unescape]]
             ["../editor_context.cljs" :refer [EditorContext]]
-            ["../../comp.cljs" :as comp]
-            ["../../transact.cljs" :as t]
-            ["../../utils.cljs" :as u]
-            ["../tiptap/editor.cljs" :as tt]
-            ["../../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["@w3t-ab/sqeave" :as sqeave]
+            ["../tiptap/editor.cljs" :as tt])
+  (:require-macros [sqeave :refer [defc]]))
 
 (def create-mutation
   "mutation createProposal($i: CreateProposalInput!){
@@ -32,36 +28,36 @@
 }")
 
 (defn add-proposal-remote [ctx {:proposal/keys [id name description parentID created] :as data}]
-  (let [vars (dissoc  (u/remove-ns data) :author)
+  (let [vars (dissoc  (sqeave/remove-ns data) :author)
         vars (assoc vars :description description)
         vars (dissoc vars :votes)
         vars (dissoc (dissoc vars :id) :posts)
-        vars (if-not (u/uuid? id) (dissoc vars :created) vars)
-        vars {:i {:content (u/drop-false vars)}}
+        vars (if-not (sqeave/uuid? id) (dissoc vars :created) vars)
+        vars {:i {:content (sqeave/drop-false vars)}}
         v (println "id:" id)
 
-        vars (if-not (u/uuid? id)
+        vars (if-not (sqeave/uuid? id)
                (assoc-in  vars [:i :id] id) vars)
 
-        vars (u/drop-false vars)
-        mutation (if (u/uuid? id)
+        vars (sqeave/drop-false vars)
+        mutation (if (sqeave/uuid? id)
                    {:name "createProposal"
                     :fn create-mutation}
                    {:name "updateProposal"
                     :fn update-mutation})]
     (println "v: " vars)
-    (cu/execute-gql-mutation ctx
+    (csqeave/execute-gql-mutation ctx
                              (:fn mutation)
                              vars
                              (fn [res]
                                (println "res: " res)
                                (let [stream-id (:proposal/id res)]
-                                 (t/add! ctx res)
-                                 (t/swap-uuids! ctx [:proposal/id id] stream-id)
+                                 (sqeave/add! ctx res)
+                                 (sqeave/swap-uuids! ctx [:proposal/id id] stream-id)
                                  )))))
 
 (defn remove-proposal-remote [ctx id]
-  (cu/execute-gql-mutation ctx update-mutation
+  (csqeave/execute-gql-mutation ctx update-mutation
                            {:i {:content {}
                                 :options {:shouldIndex false}
                                 :id id}} (fn [r])))
@@ -127,7 +123,7 @@
 (defc ProposalModal [this {:proposal/keys [id description name created status parentID count-up count-down
                                            {author [:ceramic-account/id]} {votes [:vote/type]}
                                            posts] :as data
-                           :or {id (u/uuid) author "Bramaputra" name "Proposal" created (.toLocaleDateString (js/Date.) "sv")
+                           :or {id (sqeave/uuid) author "Bramaputra" name "Proposal" created (.toLocaleDateString (js/Date.) "sv")
                                 status :EVALUATION posts []}
                            :local {new-post nil}}]
   (let [[open? setOpen] (createSignal true)
@@ -138,13 +134,13 @@
            [:div {:class "text-lg font-bold flex flex-col gap-2"}
             [:span {:class "flex flex-row gap-2 items-center w-full"}
              (str "Proposal ")
-             [:text {:class "dark:text-purple-600 text-purple-800"}  "#" (u/trunc-id (id))]
+             [:text {:class "dark:text-purple-600 text-purple-800"}  "#" (sqeave/trunc-id (id))]
              [:span {:class "flex flew-row justify-end w-full"}
               [b/button {:icon "i-tabler-x"
                          :on-click #(.preventDefault %)
                          :data-modal-hide "planner-modal"}]]]
             [:text {:class "truncate mb-2"} (str (name))]]
-           [Show {:when (not (u/uuid? (id)))}
+           [Show {:when (not (sqeave/uuid? (id)))}
             [:div {:class "grid grid-cols-2 w-full gap-2 items-center justify-items-stretch pb-2"}
              [:h1 {:class "text-lg font-bold"} "Votes"]
              [:div {:class ""} "Your vote: " (or (votes) "Vote below")]
@@ -153,66 +149,64 @@
                [:text {} (count-up)]
                [:button {:class "dark:text-green-400 dark:hover:text-green-200"
                          :onClick #(do
-                                     #_(comp/mutate! this {:add {:parentID (id) :type :up}})
-                                     (cu/execute-gql-mutation ctx (vote-mutation (id) :up) {}
+                                     #_(sqeave/mutate! this {:add {:parentID (id) :type :up}})
+                                     (csqeave/execute-gql-mutation ctx (vote-mutation (id) :up) {}
                                                               (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Up vote"]]
               [:span {:class "flex w-fit col-start-1 gap-2 items-center justify-end"}
                (str (count-down) #_(:down (vote-count)))
                [:button {:class "dark:text-red-400 dark:hover:text-red-200"
                          :onClick #(do
-                                     #_(comp/set-field! this {:add {:parentID (id) :type :down}})
-                                     (cu/execute-gql-mutation ctx (vote-mutation (id) :down) {}
+                                     #_(sqeave/set-field! this {:add {:parentID (id) :type :down}})
+                                     (csqeave/execute-gql-mutation ctx (vote-mutation (id) :down) {}
                                                               (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Down vote"]]]]]
            [:div {:class "max-h-[80vh] min-h-[40vh] pr-4"}
             [:hr {:class "border-zinc-400 mb-1"}]
             [:form {:class "flex flex-col gap-2"
                     :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data)))}
-             [Show {:when (comp/viewer? this (author))}
+             [Show {:when (sqeave/viewer? this (author))}
               [in/input {:label "Name"
                          :placeholder "Title"
                          :value name
-                         :on-change #(comp/set! this :proposal/name %)}]]
+                         :on-change #(sqeave/set! this :proposal/name %)}]]
              [tt/editor {:& {:element element
                              :menu menu
                              :label "Description"
                              :comp comp
-                             :editable? #(comp/viewer? this (author))
+                             :editable? #(sqeave/viewer? this (author))
                              :on-html-change (fn [html]
-                                               (comp/set! this :proposal/description html))}}]
+                                               (sqeave/set! this :proposal/description html))}}]
              [:span {:class "flex w-full gap-2 mx-auto flex-stretch mb-3"}
-              [Show {:when (comp/viewer? this (author))}
+              [Show {:when (sqeave/viewer? this (author))}
                [b/button {:title "Submit"
                           :data-modal-hide "planner-modal"}]
                [b/button {:title "Delete"
                           :extra-class "!dark:border-red-500 !dark:text-red-500 !dark:hover:border-red-400 !active:ring-red-400"
                           :on-click #(do (.preventDefault %)
                                          (println "id: " (:parent-id props))
-                                         (comp/mutate! this {:remove [:proposal/id (id)]
+                                         (sqeave/mutate! this {:remove [:proposal/id (id)]
                                                              :from [:category/id (:parent props) :category/proposals]
                                                              :cdb true})
-                                         (when (not (u/uuid? (id)))
+                                         (when (not (sqeave/uuid? (id)))
                                            (remove-proposal-remote ctx (id))))
                           :data-modal-hide "planner-modal"}]]]]
-            [Show {:when (not (u/uuid? (id)))}
+            [Show {:when (not (sqeave/uuid? (id)))}
              [:div {:class "flex flex-col gap-2"}
               [:h1 {:class "text-lg font-bold"} "Discussion"]
               [:hr {:class "border-zinc-400"}]
               [b/button {:title "Add Post"
                          :extra-class "mb-2"
                          :on-click (fn [e] (.preventDefault e)
-                                     (let [new-post (merge (post/Post.new-data) {:post/parentID (id)
+                                     (let [new-post (merge (post/PostClass.new-data) {:post/parentID (id)
                                                                                  :post/created (.toISOString (js/Date.))
                                                                                  :post/body "" #_(:new-post (local))
-                                                                                 :post/author (comp/viewer-ident this)})]
+                                                                                 :post/author (sqeave/viewer-ident this)})]
                                        #_(setLocal (assoc (local) :new-post nil))
-                                       (comp/mutate! this {:add new-post
+                                       (sqeave/mutate! this {:add new-post
                                                            :append [:proposal/id (id) :proposal/posts]})
                                        #_(post/add-post-remote ctx new-post)))}]]]
             [:div {:class "max-h-[30vh] overflow-y-auto overflow-x-hidden"}
              [For {:each (reverse (posts))}
               (fn [p _]
-                #jsx [post/ui-post {:& {:ident p}}])]]]]]))
-
-(def ui-proposal-modal (comp/comp-factory ProposalModal AppContext))
+                #jsx [post/Post {:& {:ident p}}])]]]]]))

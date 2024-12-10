@@ -1,7 +1,6 @@
 (ns Context
   (:require ["solid-js" :refer [createContext]]
-            ["solid-js/store" :refer [createStore]]
-            ["./normad.cljs" :as norm]))
+            ["solid-js/store" :refer [createStore]]))
 
 (def AppContext (createContext))
 
@@ -22,8 +21,8 @@
                                                                         :contract nil
                                                                         :transactions []}}})
         ctx {:store store :setStore setStore}]
-    (norm/add ctx)
-    (set! (.-store js/window) store)
+    #_(norm/add ctx)
+    #_(set! (.-store js/window) store)
     ctx))
 
 (def default AppContext)

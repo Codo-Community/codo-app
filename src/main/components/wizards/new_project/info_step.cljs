@@ -1,15 +1,11 @@
 (ns main.components.wizards.new-project.info-step
-  (:require ["../../../comp.cljs" :as comp]
+  (:require ["@w3t-ab/sqeave" :as sqeave]
             ["../../blueprint/input.cljs" :as in]
             ["../../blueprint/textarea.cljs" :as ta]
-            ["../../../utils.cljs" :as u]
             ["@solidjs/router" :refer [useNavigate useParams]]
-            ["../../../transact.cljs" :as t]
             ["../../blueprint/button.cljs" :as b]
-            ["../../../composedb/client.cljs" :as cli]
-            ["../../../composedb/util.cljs" :as cu]
-            ["../../../Context.cljs" :refer [AppContext]])
-  (:require-macros [comp :refer [defc]]))
+            ["../../../composedb/util.cljs" :as cu])
+  (:require-macros [sqeave :refer [defc]]))
 
 (defn category-mutation []
   (str "mutation CreateCategory($i: CreateCategoryInput!){
@@ -41,7 +37,7 @@
                                                         (mutation-vars (merge (data) {:project/categoryID (:category/id response) :project/created (.toLocaleDateString (js/Date.) "sv")}))
                                                         (fn [response]
                                                           (println "response: " response)
-                                                          (t/add! ctx response
+                                                          (sqeave/add! ctx response
                                                                   {:replace [:component/id :project-wizard :project]})
                                                           (navigate (str "/wizards/new-project/" (:project/id response)))))))))
 
@@ -54,18 +50,16 @@
            [in/input {:label "Name"
                       :placeholder "Project Name"
                       :value name
-                      :on-change #(comp/set! this :project/name %)}]
+                      :on-change #(sqeave/set! this :project/name %)}]
            [in/input {:label "Start"
                       :placeholder "Project Start Date"
                       :value start
                       :datepicker ""
                       :type "date"
-                      :on-change #(comp/set! this :project/start %)}]]
+                      :on-change #(sqeave/set! this :project/start %)}]]
           [ta/textarea {:title "Description"
                         :value description
-                        :on-change #(comp/set! this :project/description %)}]
-          [Show {:when (or (u/uuid? (:id params)) (nil? (:id params)))}
+                        :on-change #(sqeave/set! this :project/description %)}]
+          [Show {:when (or (sqeave/uuid? (:id params)) (nil? (:id params)))}
            [:span {:class "flex w-full gap-3"}
             [b/button {:title "Submit"}]]]]))
-
-(def ui-basic-info-step (comp/comp-factory BasicInfoStep AppContext))
