@@ -6,7 +6,7 @@
             ["flowbite" :refer [initDropdowns]])
   (:require-macros [sqeave :refer [defc]]))
 
-(defc UserDropdown [this {:user/keys [id name ethereum-address passport-score] :as data :or {id nil name "" passport-core 0}}]
+(defc UserDropdown [this {:user/keys [id name ethereum-address passport-score] :as data :or {id (sqeave/uuid) name "" passport-score 0}}]
   (do
     (onMount (fn [] (initDropdowns)))
     #jsx [dr/dropdown {:& {:id (:data-dropdown-id props)
@@ -14,10 +14,8 @@
                            :items (fn [] [{:value "My Projects" :href (str "/user/" (id) "/projects") :icon "i-tabler-stack"}
                                           {:value "Profile" :href (str "/user/" (id)) :icon "i-tabler-user-circle"}
                                           {:value "Submit Passport" :icon "i-tabler-user-scan"
-                                           :on-change (fn [ ]
+                                           :on-change (fn []
                                                         (.then (gcp/submit-passport-no-verify (ethereum-address))
                                                                (fn [data]
-                                                                 (println "data: " data)
                                                                  (sqeave/add! ctx {:user/id (id)
-                                                                              :user/passport-score score} {:after (fn [] (initDropdowns) (initTooltips))}))))}
-                                          ])}}]))
+                                                                                   :user/passport-score score} {:after (fn [] (initDropdowns) (initTooltips))}))))}])}}]))

@@ -41,6 +41,7 @@
 
 (defn create-project [{:keys [params location]}]
   (let [ctx (useContext AppContext)]
+
     (sqeave/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project] :check-session? false}))
   #_(create-p (:id params)))
 
@@ -48,7 +49,7 @@
 
 (defc Router [this {:keys []}]
   #jsx [r/Router {:root main/Main}
-        [Route {:path "/projects" :component sp/ui-search-page
+        [Route {:path "/projects" :component sp/SearchPage
                 :load (fn [{:keys [params location]}] (sp/load-projects sp/list-query))}]
         [Route {:path "/project/:id"}
          [Route {:path "/" :component (fn [props] (let [params (useParams)
@@ -62,7 +63,7 @@
                                                         ident (fn [] [:user/id (:id params)])]
                                                     #jsx [up/UserProfile {:& {:ident ident}}]))
                  :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
-         [Route {:path "/projects" :component sp/ui-search-page
+         [Route {:path "/projects" :component sp/SearchPage
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
         [Route {:path "/wizards/new-project/:id"
                 :component WizardNewProject}

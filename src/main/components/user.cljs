@@ -35,17 +35,17 @@
                           (println "r5:" res)
                           (let [account-id (-> res :viewer :ceramic-account/id)
                                 address (nth (string/split account-id ":") 4)
-
-                                user (-> (or (-> res :viewer :user) (UserClass.new-data))
+                                a (println "user:" (-> res :viewer :ceramic-account/user))
+                                user (-> (or (-> res :viewer :ceramic-account/user) (UserClass.new-data))
                                          (conj {:user/ethereum-address address
                                                 :user/account [:ceramic-account/id account-id]
                                                 :user/session (-> (:compose @cli/client) :did :_id)}))]
                             (sqeave/add! ctx (assoc (:viewer res) :ceramic-account/user user) {:check-session? false})
                             (sqeave/add! ctx user
-                                    {:replace [:component/id :header :user]
-                                     :check-session? false})
-                            (sqeave/add! ctx {:viewer/id 0
-                                         :viewer/user [:user/id (:user/id user)]} {:check-session? false})))))
+                                         {:replace [:component/id :header :user]
+                                          :check-session? false})
+                            #_(sqeave/add! ctx {:viewer/id 0
+                                                :viewer/user [:user/id (:user/id user)]} {:check-session? false})))))
 
 (defn ^:async init-auth [ctx]
   (.then (cda/init-auth)
@@ -57,20 +57,20 @@
 
 (defc User [this {:user/keys [id name ethereum-address {account [:id]} avatar passport-score]
                   :or {id (sqeave/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]
-  (let [[ens {:keys [mutate refetch]}] (createResource ethereum-address (fn ^:async [source  {:keys [value refetching]}]
-                                                                          (.then (gcp/submit-passport-no-verify (ethereum-address))
-                                                                                 (fn [score]
-                                                                                   (sqeave/add! ctx {:user/id (id)
-                                                                                                :user/passport-score (:score score)} {:after (fn []
-                                                                                                                                              (initDropdowns) (initTooltips))})))
-                                                                          (.then (eu/fetch-ens-name source)
-                                                                                 (fn [name]
-                                                                                   (.then (eu/fetch-ens-avatar name)
-                                                                                          (fn [avatar]
-                                                                                            ((fn [score]
-                                                                                               (let [data {:user/id (id) :user/name name :user/avatar avatar}]
-                                                                                                 (sqeave/add! ctx data {:after (fn []
-                                                                                                                            (initDropdowns) (initTooltips))}))))))))))
+  (let [[ens {:keys [mutate refetch]}] (createResource (ethereum-address) (fn ^:async [source  {:keys [value refetching]}]
+                                                                            (.then (gcp/submit-passport-no-verify (ethereum-address))
+                                                                                   (fn [score]
+                                                                                     (sqeave/add! ctx {:user/id (id)
+                                                                                                       :user/passport-score (:score score)} {:after (fn []
+                                                                                                                                                      (initDropdowns) (initTooltips))})))
+                                                                            (.then (eu/fetch-ens-name source)
+                                                                                   (fn [name]
+                                                                                     (.then (eu/fetch-ens-avatar name)
+                                                                                            (fn [avatar]
+                                                                                              ((fn [score]
+                                                                                                 (let [data {:user/id (id) :user/name name :user/avatar avatar}]
+                                                                                                   (sqeave/add! ctx data {:after (fn []
+                                                                                                                                   (initDropdowns) (initTooltips))}))))))))))
         score-colors (fn [score] (if (> score 19)
                                    "bg-green-400"
                                    (if (> score 10)

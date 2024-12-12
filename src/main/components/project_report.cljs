@@ -50,11 +50,6 @@
                                                             :ident (fn [] (-> (local) :modal :ident))} (-> (local) :modal :props))}]}}]]))
 
 (defn load-project [ctx ident]
-  (cu/execute-eql-query ctx {ident ProjectReport.query}
+  (cu/execute-eql-query ctx {ident ProjectReportClass.query}
                         (fn [project] (println "project: " project) (sqeave/add! ctx project {:replace [:component/id :header :active-project]
-                                                                                         :check-session? false}))
-                        #_(fn [r] (let [c (sqeave/nsd (get-in r [:node :category]) :category)
-                                        co (sqeave/nsd (get-in r [:node :contract]) :contract)
-                                        project (sqeave/nsd (get-in r [:node]) :project)
-                                        project (assoc (assoc project :project/category c) :project/contract co)]
-                                    (sqeave/add! ctx project)))))
+                                                                                         :check-session? false}))))

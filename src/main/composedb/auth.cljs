@@ -1,9 +1,5 @@
 (ns co-who.composedb.auth
-  (:require ["../evm/client.cljs" :refer [wallet-client]]
-            ["../evm/walletconnect.cljs" :refer [config]]
-            ["../evm/util.cljs" :as eu]
-            ["../evm/client.cljs" :as ec]
-            ["did-session" :refer [DIDSession]]
+  (:require ["../evm/client.cljs" :as ec]
             ["@didtools/pkh-ethereum" :refer [EthereumWebAuth getAccountId]]))
 
 (def addresses-resolver (atom nil))

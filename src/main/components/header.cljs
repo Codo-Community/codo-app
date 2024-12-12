@@ -9,7 +9,6 @@
             ["../composedb/client.cljs" :as cdb]
             ["./chain_menu.cljs" :as cm]
             ["./web3_modal.cljs" :as w3m]
-            ["../evm/client.cljs" :refer [wallet-client]]
             #_["../evm/walletconnect.cljs" :refer [config]]
             #_["@wagmi/core" :refer [getConnections]]
             ["./blueprint/button.cljs" :as b]
@@ -20,13 +19,13 @@
 
 (def codo-logo (str js/import.meta.env.VITE_PINATA_URL "/images/codo_new_black.svg"))
 
-(defc Header [this {:keys [component/id {user [:user/id :user/session]} chain {active-project [:project/id :project/name]}]
+(defc Header [this {:keys [component/id {user [:user/id :user/session]} #_{viewer {:viewer/ceramic-account {:ceramic-account/user [:user/id :user/session]}}} chain {active-project [:project/id :project/name]}]
                     :or {component/id :header
                          :chain {:chain/id 31337
                                  :chain/name "Hardhat"}
-                         :user {:user/id 0
-                                :user/ethereum-address "0x0"}}}]
-  (let [navigate (useNavigate)
+                         :viewer [:viewer/id 0]}}]
+  (let [;user (-> (viewer) :viewer/ceramic-account :ceramic-account/user)
+        navigate (useNavigate)
         location (useLocation)
         connection-context (useContext ConnectionContext)
         p (second (string/split location.pathname "/"))]
@@ -60,8 +59,8 @@
              [Show {:when (:user/session (user))
                     :fallback #jsx [Show {:when (not (empty? (keys ((-> connection-context :connections)))))}
                                     [b/button {:title "login"
-                                               :on-click #(do (println @wallet-client) (user/init-auth ctx))}]]}
+                                               :on-click #(user/init-auth ctx)}]]}
               [user/User {:& {:ident (fn [] [:user/id (:user/id (user))])
-                                 :data-dropdown-toggle "header-user-dropdown"}}]]]]
+                              :data-dropdown-toggle "header-user-dropdown"}}]]]]
            [userdd/UserDropdown {:& {:ident (fn [] [:user/id (:user/id (user))])
                                      :data-dropdown-id "header-user-dropdown"}}]]]))

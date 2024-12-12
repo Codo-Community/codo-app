@@ -21,7 +21,7 @@
 
 
 (defn mutation-vars [{:project/keys [id name description start categoryID created] :as data}]
-  {:i {:content {:name name :description description :start start :categoryID categoryID :created created}}})
+  {:name name :description description :start start :categoryID categoryID :created created})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} data navigate]
   (fn [e]
@@ -29,7 +29,7 @@
 
     ;; add category
     (cu/execute-gql-mutation ctx (category-mutation)
-                             {:i {:content {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}}}
+                             {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}
                              (fn [response]
                                (println "response: cat:" response)
                                ;; add project
@@ -45,7 +45,7 @@
   (let [navigate (useNavigate)
         params (useParams)]
     #jsx [:form {:class "flex flex-col gap-3"
-                 :onSubmit (on-click-mutation ctx data navigate)}
+                 :onSubmit (on-click-mutation ctx this.data navigate)}
           [:span {:class "flex  w-full gap-3"}
            [in/input {:label "Name"
                       :placeholder "Project Name"

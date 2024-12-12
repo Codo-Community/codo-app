@@ -5,7 +5,8 @@ comp_path=./src/main/composedb/model/
 out_path=./dist/
 
 ceramic_daemon () {
-    podman-compose down; podman-compose up > /dev/null
+    ~/Downloads/ceramic-one_x86_64-unknown-linux-gnu.bin/ceramic-one daemon --network dev-unstable --store-dir ~/.ceramic-one --p2p-key-dir ~/.ceramic-one
+    #podman-compose down; podman-compose up
 }
 
 did_from_private_key() {
@@ -41,5 +42,5 @@ deploy_composite() {
 }
 
 graphql_server() {
-     composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql dist/runtime-composite.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
+     composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
 }

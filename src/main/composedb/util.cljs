@@ -71,24 +71,35 @@
                 (sqeave/alert-error ctx err))))))
 
 (defn execute-gql-mutation [ctx mutation vars & f]
-  (-> (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true}))
-      (.catch (fn [err]
-                (println "error: " err)
-                (println "mutation: " mutation)
-                (println "vars: " mutation)
-                (sqeave/alert-error ctx err)))))
+  (let [a (println "vars2:" vars)
+        vars (sqeave/remove-ns vars)
+        vars (sqeave/drop-false vars)
+        id (:id vars)
+        a (println "vars1:" vars)
+        vars (if (sqeave/uuid? id)
+               (dissoc vars :id)
+               vars)
+        vars {:i {:content vars}}]
+    (println "vars:" vars)
+    (-> (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true}))
+        (.catch (fn [err]
+                  (println "error: " err)
+                  (println "mutation: " mutation)
+                  (println "vars: " vars)
+                  (sqeave/alert-error ctx err))))))
 
 (defn ^:async has-session-for [account-id resources]
   (println "resources: " (js/typeof resources))
   (.hasSessionFor DIDSession account-id {:resources resources}))
 
 (defn remap-query [query]
-  (let [k (if (first (keys query)) (str/split (first (keys query)) ","))
-                                        ;a (println "gql: " k)
+  (let [a (println "gql-1: " query)
+        k (if (first (keys query)) (str/split (first (keys query)) ","))
+        a (println "gql-k: " k " " (sqeave/get-ns (first k)))
         query (if (sqeave/ident? k)
-                {(first (keys query)) (sqeave/remove-ns (first (vals query)))}
+                {(first (str/split (first k) "/")) (sqeave/remove-ns (first (vals query)))}
                 query)
-                                        ;a (println "gql: " query)
+        a (println "gql-q: " query)
         query (geql/eql->graphql query)]
     #_(println "gql: " (first (keys query)))
     #_(println "gql:f " (sqeave/remove-ns (first (vals query))))

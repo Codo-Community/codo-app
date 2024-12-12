@@ -8,7 +8,7 @@
   #jsx [:ol {:class "select-none relative text-gray-500 border-l border-gray-200
                      dark:border-gray-700 dark:text-gray-400"}
         #_(println "da1 " (:steps (data)))
-        #jsx [For {:each (:steps (data))}
+        #jsx [For {:each (:steps (this.data))}
               (fn [step i]
                 #jsx [s/Step {:& (step)} ])]])
 

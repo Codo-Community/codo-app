@@ -10,13 +10,13 @@
             ["./auth.cljs" :as a]))
 
 (defonce client (atom {:ceramic (CeramicClient. js/import.meta.env.VITE_CERAMIC_API)
-                   :compose (ComposeClient. {:ceramic js/import.meta.env.VITE_CERAMIC_API
-                                             :definition definition})
-                   #_(js/Promise. (fn [resolve reject] (resolve) (reject)))
-                   :session nil}))
+                       :compose (ComposeClient. {:ceramic js/import.meta.env.VITE_CERAMIC_API
+                                                 :definition definition})
+                       #_(js/Promise. (fn [resolve reject] (resolve) (reject)))
+                       :session nil}))
 
 (defonce link (ApolloLink. (fn [operation]
-                         (Observable. (fn [observer]
+                             (Observable. (fn [observer]
                                         (.then (.execute (:compose @client) operation.query operation.variables)
                                                (fn [result]
                                                  (.next observer result)

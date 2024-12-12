@@ -14,7 +14,7 @@
                             :dark? dark?
                             :dark-toggle #(setDark (not (dark?)))}}]
           [:div {:class "flex h-screen w-sceen dark:(text-white bg-black) justify-center"}
-           [alert/Alert {:& {:ident [:component/id :alert]}}]
+           #_[alert/Alert {:& {:ident [:component/id :alert]}}]
 
            [Suspense {:fallback (fn [] #jsx [spinner/TailSpin])}
             props.children]
