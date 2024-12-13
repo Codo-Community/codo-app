@@ -2,6 +2,7 @@
   (:require ["../blueprint/dropdown.cljs" :as d]
             ["solid-js" :refer [onMount Show]]
             ["../blueprint/tooltip.cljs" :as to]
+            ["../../composedb/util.cljs" :as cu]
             ["@w3t-ab/sqeave" :as sqeave]
             ["flowbite" :refer [initDropdowns initTooltips]]
             ["./category.cljs" :as c])
@@ -23,7 +24,7 @@
                                                                         :color :gray
                                                                         :children []
                                                                         :link link-id
-                                                                        :creator (sqeave/viewer-ident this)
+                                                                        :creator (cu/viewer-ident this)
                                                                         :created (.toLocaleDateString (js/Date.) "sv")}})
                                   (sqeave/mutate! this {:add #:category-link{:id link-id
                                                                            :parentID (id)
@@ -34,7 +35,7 @@
            [:button {:class "i-tabler-plus dark:text-white dark:text-opacity-70 hover:text-opacity-100"
                      :onClick #(sqeave/add! ctx {:proposal/id (sqeave/uuid)
                                             :proposal/name "New proposal"
-                                            :proposal/author (sqeave/viewer-ident this)
+                                            :proposal/author (cu/viewer-ident this)
                                             :proposal/created (.toLocaleDateString (js/Date.) "sv")
                                             :proposal/status :EVALUATION
                                             :proposal/parentID (id)}
@@ -44,7 +45,7 @@
                        :data-dropdown-toggle "color-dropdown"
                        :data-tooltip-placement "top"
                        :data-dropdown-trigger "hover"}]
-           [Show {:when (sqeave/viewer? this (creator))}
+           [Show {:when (cu/viewer? this (creator))}
             [:button {:class "i-tabler-trash text-red-500"
                       :onClick #(do
                                   (sqeave/mutate! this {:remove [:category-link/id (:link props)]

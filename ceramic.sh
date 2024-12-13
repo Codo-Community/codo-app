@@ -42,5 +42,5 @@ deploy_composite() {
 }
 
 graphql_server() {
-     composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
+     composedb graphql:server --ceramic-url=${VITE_CERAMIC_API} --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005
 }

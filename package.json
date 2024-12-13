@@ -4,15 +4,12 @@
   "description": "",
   "type": "module",
   "private": true,
-  "workspaces": [
-    "../js-composedb/packages/*"
-  ],
   "scripts": {
     "start": "vite",
     "watch": "npx squint watch",
     "preview": "pnpm vite preview",
     "deploy-composite": "export VITE_CERAMIC_API=${CERAMIC_API} && export DID_PRIVATE_KEY=${DID_PRIVATE_KEY} && echo ${VITE_CERAMIC_API} && npx squint run src/dev/dev.cljs",
-    "dev": "concurrently --kill-others \"source ./.env.development && pnpm deploy-composite && pnpm dlx vite\" \"npx hardhat node\" ",
+    "dev": "concurrently --kill-others \"source ./.env.development && pnpm dlx vite\" \"npx hardhat node\" ",
     "build": "vite build",
     "serve": "vite preview",
     "graphql-server": "source ./ceramic.sh && npx composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql src/__generated__/merged-rt.json --did-private-key=${DID_PRIVATE_KEY} --port=5005"
@@ -20,13 +17,13 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.25.9",
+    "@ceramicnetwork/cli": "6.11.0",
+    "@ceramicnetwork/common": "6.4.0",
+    "@ceramicnetwork/http-client": "6.2.0",
     "@composedb/cli": "^0.7.1",
     "@composedb/devtools": "^0.7.1",
     "@composedb/devtools-node": "^0.7.1",
-    "@ceramicnetwork/cli": "6.2.0",
-    "@ceramicnetwork/common": "6.2.0",
-    "@ceramicnetwork/http-client": "6.2.0",
-    "@iconify-json/tabler": "^1.2.10",
+    "@iconify-json/tabler": "^1.2.11",
     "@julr/unocss-preset-flowbite": "^0.0.2",
     "@nomicfoundation/hardhat-viem": "^2.0.6",
     "@unocss/preset-icons": "^0.65.1",
@@ -35,14 +32,15 @@
     "@unocss/reset": "^0.65.1",
     "@unocss/transformer-compile-class": "^0.65.1",
     "@unocss/transformer-variant-group": "^0.65.1",
-    "@w3t-ab/sqeave": "^0.0.9",
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@w3t-ab/sqeave": "^0.1.0",
     "@w3t-ab/vite-plugin-squint": "^0.0.5",
     "concurrently": "^9.1.0",
     "dotenv": "^16.4.7",
     "hardhat": "^2.22.17",
     "key-did-provider-ed25519": "^4.0.2",
     "key-did-resolver": "^4.0.0",
-    "solid-devtools": "^0.30.1",
+    "solid-devtools": "^0.31.1",
     "squint-cljs": "^0.8.129",
     "uint8arrays": "^5.1.0",
     "unocss": "^0.65.1",
@@ -50,7 +48,7 @@
     "vite-plugin-solid": "^2.11.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.12.2",
+    "@apollo/client": "^3.12.3",
     "@ceramicnetwork/codecs": "^5.4.0",
     "@ceramicnetwork/http-client": "^6.4.0",
     "@ceramicnetwork/streamid": "^5.6.0",
@@ -59,7 +57,7 @@
     "@didtools/pkh-ethereum": "0.4.1",
     "@solid-primitives/active-element": "^2.0.20",
     "@solid-primitives/timer": "^1.3.10",
-    "@solidjs/router": "^0.15.1",
+    "@solidjs/router": "^0.15.2",
     "@tanstack/solid-query": "^5.62.7",
     "@thisbeyond/solid-dnd": "^0.7.5",
     "@tiptap/core": "^2.10.3",
@@ -68,8 +66,8 @@
     "@tiptap/extension-link": "^2.10.3",
     "@tiptap/pm": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
-    "@wagmi/connectors": "^5.5.3",
-    "@wagmi/core": "^2.15.2",
+    "@wagmi/connectors": "^5.6.1",
+    "@wagmi/core": "^2.16.0",
     "@web3modal/wagmi": "^5.1.11",
     "blo": "^1.2.0",
     "codeco": "^1.4.3",
@@ -86,6 +84,6 @@
     "solid-tiptap": "^0.7.0",
     "terracotta": "^1.0.6",
     "tiptap-markdown": "^0.8.10",
-    "viem": "^2.21.54"
+    "viem": "^2.21.55"
   }
 }

@@ -1,13 +1,13 @@
 (ns main.components.wizards.new-project.main
   (:require ["solid-js" :refer [useContext createMemo Show onMount Index For createSignal]]
             ["@solidjs/router" :refer [A useParams]]
+            ["./info_step.cljs" :refer [BasicInfoStepClass]]
             ["@w3t-ab/sqeave" :as sqeave]
-            ["../../stepper.cljs" :as s]))
+            ["../../stepper.cljs" :as s])
+  (:require-macros [sqeave :refer [defc]]))
 
-(defn add-new-proj []
-  )
-
-(defn WizardNewProject [props]
+(defc WizardNewProject [this {:keys [:component/id project] :as data
+                              :or {id :project-wizard project (BasicInfoStepClass.new-data)}}]
   (let [[local setLocal] (createSignal {:step :info
                                         :step-route {:info {:back nil
                                                             :forward "/contract"}
@@ -29,7 +29,7 @@
     #jsx [:div {:class "flex justify-center w-screen px-4"}
           [:div {:class "mt-4 w-fit h-fit lt-md:hidden"}
            [s/Stepper {:& (local)}]]
-          [:div {:class "md:ml-24 relative"}
+          [:div {:class "relative"}
            [:h1 {:class "text-2xl mb-4 mt-2"} "Create Project"]
 
            props.children

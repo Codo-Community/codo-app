@@ -55,7 +55,7 @@
                     (load-viewer-user ctx)
                     (-> @cli/apollo-client :cache (.reset)))))))
 
-(defc User [this {:user/keys [id name ethereum-address {account [:id]} avatar passport-score]
+(defc User [this {:user/keys [id firstName ethereum-address {account [:ceramic-account/id]} avatar passport-score]
                   :or {id (sqeave/uuid) name "" avatar nil passport-score 0 ethereum-address "0x0"}}]
   (let [[ens {:keys [mutate refetch]}] (createResource (ethereum-address) (fn ^:async [source  {:keys [value refetching]}]
                                                                             (.then (gcp/submit-passport-no-verify (ethereum-address))
@@ -84,10 +84,10 @@
            [:span {:class (str "absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white dark:text-white
                                 rounded-full -top-1 -left-1.5 border-zinc-400 border-1 " (score-colors (passport-score)))}]
            [b/button {:extra-class "!h-10 !w-10 !p-0 !border-0"
-                      :img-class ""
-                      :img (or (avatar) (blo (ethereum-address)))}]]
+                        :img-class ""
+                        :img (or (avatar) (blo (ethereum-address)))}]]
           [tt/tooltip {:id (str "user-tooltip-" (ethereum-address))
                        :content #jsx [:div {:class "px-2 dark:text-white text:sm"}
-                                      (if (or (nil? (name)) (= (name) ""))
+                                      (if (or (nil? (firstName)) (= (firstName) ""))
                                         (ethereum-address)
-                                        (name))]}]]))
+                                        (firstName))]}]]))

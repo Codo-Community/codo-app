@@ -21,7 +21,8 @@
 
 
 (defn mutation-vars [{:project/keys [id name description start categoryID created] :as data}]
-  {:name name :description description :start start :categoryID categoryID :created created})
+  {:i {:id id
+       :content {:name name :description description :start start :categoryID categoryID :created created}}})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} data navigate]
   (fn [e]
@@ -29,7 +30,7 @@
 
     ;; add category
     (cu/execute-gql-mutation ctx (category-mutation)
-                             {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}
+                             {:i {:content {:name "Root" :created (.toLocaleDateString (js/Date.) "sv")}}}
                              (fn [response]
                                (println "response: cat:" response)
                                ;; add project
@@ -38,7 +39,7 @@
                                                         (fn [response]
                                                           (println "response: " response)
                                                           (sqeave/add! ctx response
-                                                                  {:replace [:component/id :project-wizard :project]})
+                                                                       {:replace [:component/id :project-wizard :project]})
                                                           (navigate (str "/wizards/new-project/" (:project/id response)))))))))
 
 (defc BasicInfoStep [this {:project/keys [id name description start created] :or {name ""} :as data}]

@@ -16,12 +16,11 @@
                                  :contract/abi (abi/indexed-abi abi/governor-abi)}}})
 
 (defc TransactionBuilderPage [this {:keys [] :or {pages/id :transaction-builder
-                                                  contracts []
-                                                  contract nil
+                                                  contracts [[:contract/id :codo] [:contract/id :codo-governor]]
+                                                  contract [:contract/id :codo]
                                                   transactions []}}]
-  (onMount #(do (println "long add")
-                (sqeave/add! ctx contract-gen)
-                (sqeave/set-field! ctx [:pages/id :transaction-builder :contract] [:contract/id :codo])
-                (sqeave/set-field! ctx [:pages/id :transaction-builder :contracts] [[:contract/id :codo] [:contract/id :codo-governor]])
-                (fb/initFlowbite)))
-  #jsx [tb/TransactionBuilder {:& {:ident [:pages/id :transaction-builder]}}])
+  (do
+    (onMount #(do (println "long add")
+                  (sqeave/add! ctx contract-gen)
+                  (fb/initFlowbite)))
+    #jsx [tb/TransactionBuilder {:& {:ident [:pages/id :transaction-builder]}}]))

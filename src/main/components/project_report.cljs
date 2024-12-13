@@ -12,15 +12,39 @@
             ["./blueprint/modal.cljs" :as modal])
   (:require-macros [sqeave :refer [defc]]))
 
+(defn proj-query [id]
+  (str  "query {
+    node(id: \"" id "\") {
+      ... on Project {
+      id
+      name
+      category {
+        id
+        name
+        creator { id }
+      }
+      contract {
+        id
+      }
+      start
+      tags
+      created
+      description
+      image
+    }
+    }
+  }
+"))
+
 (defc ProjectReport [this {:project/keys [id name start description
                                           {category [:category/id :category/name {:category/creator [:ceramic-account/id]}
                                                      {:category/children [:category-link/id]}]}
-                                          {contract [:contract/id :contract/chain]}] :or {:id (sqeave/uuid)
-                                                                                          :name "Proj"
-                                                                                          :start "2021-01-01"
-                                                                                          :description "Desc"
-                                                                                          :category {:category/id (sqeave/uuid)
-                                                                                                     :category/name "Category"}}}]
+                                          {contract [:contract/id :contract/chain]}] :or {id (sqeave/uuid)
+                                          name "Proj"
+                                          start "2021-01-01"
+                                          description "Desc"
+                                          category {:category/id (sqeave/uuid)
+                                                    :category/name "Category"}}}]
   (let [comp-2-modal {:category (fn [props] #jsx [cm/CategoryModal {:& props}])
                       :proposal (fn [props] #jsx [pm/ProposalModal {:& props}])}
         [local setLocal] (createSignal {:modal {:comp nil
@@ -50,6 +74,13 @@
                                                             :ident (fn [] (-> (local) :modal :ident))} (-> (local) :modal :props))}]}}]]))
 
 (defn load-project [ctx ident]
-  (cu/execute-eql-query ctx {ident ProjectReportClass.query}
+  #_(println "project-ident: " ident)
+  #_(println "" ProjectReportClass.query)
+
+  (cu/execute-gql-query ctx (proj-query (second ident))
                         (fn [project] (println "project: " project) (sqeave/add! ctx project {:replace [:component/id :header :active-project]
-                                                                                         :check-session? false}))))
+                                                                                              :check-session? false})))
+
+  #_(cu/execute-eql-query ctx {ident ProjectReportClass.query}
+                          (fn [project] (println "project: " project) (sqeave/add! ctx project {:replace [:component/id :header :active-project]
+                                                                                                :check-session? false}))))

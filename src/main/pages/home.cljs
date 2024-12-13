@@ -11,6 +11,9 @@
           [:div {:class "grid h-fit xl:grid-cols-3 xl:grid-rows-4 md:(grid-cols-2 grid-rows-3 h-full) grid-flow-row w-full dark:(text-white) p-3 gap-3 w-screen"}
            [c/card {:& {:title "Activity"
                         :icon "i-tabler-activity"}}
+            [b/button {:icon "i-tabler-plus"
+                        :extra-class ""
+                        :on-click #(navigate "/projects")}]
             [:p {:class "text-zinc-400 ml-1"} "No recent activity."]]
 
            [c/card {:& {:title "Projects"

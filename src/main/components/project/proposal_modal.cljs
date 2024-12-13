@@ -46,7 +46,7 @@
                    {:name "updateProposal"
                     :fn update-mutation})]
     (println "v: " vars)
-    (csqeave/execute-gql-mutation ctx
+    (sqeave/execute-gql-mutation ctx
                              (:fn mutation)
                              vars
                              (fn [res]
@@ -57,7 +57,7 @@
                                  )))))
 
 (defn remove-proposal-remote [ctx id]
-  (csqeave/execute-gql-mutation ctx update-mutation
+  (sqeave/execute-gql-mutation ctx update-mutation
                            {:i {:content {}
                                 :options {:shouldIndex false}
                                 :id id}} (fn [r])))
@@ -150,22 +150,22 @@
                [:button {:class "dark:text-green-400 dark:hover:text-green-200"
                          :onClick #(do
                                      #_(sqeave/mutate! this {:add {:parentID (id) :type :up}})
-                                     (csqeave/execute-gql-mutation ctx (vote-mutation (id) :up) {}
-                                                              (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
+                                     (sqeave/execute-gql-mutation ctx (vote-mutation (id) :up) {}
+                                                              (fn [r] (sqeave/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Up vote"]]
               [:span {:class "flex w-fit col-start-1 gap-2 items-center justify-end"}
                (str (count-down) #_(:down (vote-count)))
                [:button {:class "dark:text-red-400 dark:hover:text-red-200"
                          :onClick #(do
                                      #_(sqeave/set-field! this {:add {:parentID (id) :type :down}})
-                                     (csqeave/execute-gql-mutation ctx (vote-mutation (id) :down) {}
-                                                              (fn [r] (t/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
+                                     (sqeave/execute-gql-mutation ctx (vote-mutation (id) :down) {}
+                                                              (fn [r] (sqeave/add! ctx r {:replace [:proposal/id (id) :proposal/votes]}))))}
                 " Down vote"]]]]]
            [:div {:class "max-h-[80vh] min-h-[40vh] pr-4"}
             [:hr {:class "border-zinc-400 mb-1"}]
             [:form {:class "flex flex-col gap-2"
                     :onSubmit (fn [e] (.preventDefault e) (add-proposal-remote ctx (data)))}
-             [Show {:when (sqeave/viewer? this (author))}
+             [Show {:when (cu/viewer? this (author))}
               [in/input {:label "Name"
                          :placeholder "Title"
                          :value name
@@ -174,11 +174,11 @@
                              :menu menu
                              :label "Description"
                              :comp comp
-                             :editable? #(sqeave/viewer? this (author))
+                             :editable? #(cu/viewer? this (author))
                              :on-html-change (fn [html]
                                                (sqeave/set! this :proposal/description html))}}]
              [:span {:class "flex w-full gap-2 mx-auto flex-stretch mb-3"}
-              [Show {:when (sqeave/viewer? this (author))}
+              [Show {:when (cu/viewer? this (author))}
                [b/button {:title "Submit"
                           :data-modal-hide "planner-modal"}]
                [b/button {:title "Delete"
@@ -201,7 +201,7 @@
                                      (let [new-post (merge (post/PostClass.new-data) {:post/parentID (id)
                                                                                  :post/created (.toISOString (js/Date.))
                                                                                  :post/body "" #_(:new-post (local))
-                                                                                 :post/author (sqeave/viewer-ident this)})]
+                                                                                 :post/author (cu/viewer-ident this)})]
                                        #_(setLocal (assoc (local) :new-post nil))
                                        (sqeave/mutate! this {:add new-post
                                                            :append [:proposal/id (id) :proposal/posts]})

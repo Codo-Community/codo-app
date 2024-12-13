@@ -72,14 +72,14 @@
 
 (defn execute-gql-mutation [ctx mutation vars & f]
   (let [a (println "vars2:" vars)
-        vars (sqeave/remove-ns vars)
-        vars (sqeave/drop-false vars)
+        vars (update-in vars [:i :content] sqeave/remove-ns)
+        vars (update-in vars [:i :content] sqeave/drop-false)
+        vars (update-in vars [:i :content] #(dissoc % :id))
         id (:id vars)
         a (println "vars1:" vars)
         vars (if (sqeave/uuid? id)
                (dissoc vars :id)
-               vars)
-        vars {:i {:content vars}}]
+               vars)]
     (println "vars:" vars)
     (-> (.then (cli/exec-mutation mutation vars) (handle-fn-mutation ctx f {:check-session? true}))
         (.catch (fn [err]
@@ -109,3 +109,13 @@
 (defn execute-eql-query [ctx query & f]
   (println "converted gql: " (remap-query query))
   (apply (partial execute-gql-query ctx (remap-query query) {}) f))
+
+(defn get-viewer-user [{:keys [store setStore] :as ctx}]
+  (sqeave/pull store [:component/id :header] {:user [:user/id {:user/account [:ceramic-account/id]}]}))
+
+(defn viewer-ident [this]
+  [:user/id (-> (get-viewer-user this.ctx) :user :user/account)])
+
+(defn viewer? [this acc]
+  (let [vid (second (viewer-ident this))]
+    (and (= vid acc) (not (nil? vid)) (not (nil? acc)))))

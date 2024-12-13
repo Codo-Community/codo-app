@@ -2,12 +2,12 @@
   (:require ["solid-js" :refer [onMount createSignal Show useContext]]
             ["@w3t-ab/sqeave" :as sqeave]
             ["./user.cljs" :as user]
-            ["../evm/util.cljs" :as eu]
-            ["../evm/client.cljs" :as ec]
+            #_["../evm/util.cljs" :as eu]
+            #_["../evm/client.cljs" :as ec]
             ["./user/user_dropdown.cljs" :as userdd]
             ["@solidjs/router" :refer [useNavigate useSearchParams useLocation cache]]
-            ["../composedb/client.cljs" :as cdb]
-            ["./chain_menu.cljs" :as cm]
+            #_["../composedb/client.cljs" :as cdb]
+            #_["./chain_menu.cljs" :as cm]
             ["./web3_modal.cljs" :as w3m]
             #_["../evm/walletconnect.cljs" :refer [config]]
             #_["@wagmi/core" :refer [getConnections]]
@@ -21,9 +21,9 @@
 
 (defc Header [this {:keys [component/id {user [:user/id :user/session]} #_{viewer {:viewer/ceramic-account {:ceramic-account/user [:user/id :user/session]}}} chain {active-project [:project/id :project/name]}]
                     :or {component/id :header
-                         :chain {:chain/id 31337
+                         chain {:chain/id 31337
                                  :chain/name "Hardhat"}
-                         :viewer [:viewer/id 0]}}]
+                         viewer [:viewer/id 0]}}]
   (let [;user (-> (viewer) :viewer/ceramic-account :ceramic-account/user)
         navigate (useNavigate)
         location (useLocation)
@@ -40,7 +40,7 @@
            [:div {:class "flex flex-row justify-between items-center mx-auto p-4"}
             [:span {:class "flex gap-3"}
              [:a {:draggable "false"
-                  :href "#" :class "flex items-center"}
+                  :href "/" :class "flex items-center"}
               [:img {:class (str "h-9 dark:invert") :alt "Codo Logo" :src codo-logo}]]
              [:span {:class "flex items-center dark:text-white font-bold max-w-2/3 "}
               [Show {:when (= p "project")}
@@ -54,8 +54,6 @@
              [:button {:class (str "lt-md:hidden text-gray-600 dark:(text-zinc-400 hover:text-white) w-7 h-7 " (if ((:dark? props)) "i-tabler-sun" "i-tabler-moon"))
                        :onClick (:dark-toggle props)}]
              [w3m/Web3Modal]
-             #_[cm/ChainMenu #_{:& {:ident chain}}]
-             #_(str "t:" (keys ((-> connection-context :connections))))
              [Show {:when (:user/session (user))
                     :fallback #jsx [Show {:when (not (empty? (keys ((-> connection-context :connections)))))}
                                     [b/button {:title "login"

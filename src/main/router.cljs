@@ -49,13 +49,15 @@
 
 (defc Router [this {:keys []}]
   #jsx [r/Router {:root main/Main}
-        [Route {:path "/projects" :component sp/SearchPage
+        [Route {:path "/projects" :component (fn [] #jsx [sp/SearchPage {:& {:ident [:component/id :search]}}])
                 :load (fn [{:keys [params location]}] (sp/load-projects sp/list-query))}]
         [Route {:path "/project/:id"}
          [Route {:path "/" :component (fn [props] (let [params (useParams)
                                                         ident [:project/id (:id params)]]
                                                     #jsx [pr/ProjectReport {:& {:ident ident}}]))
-                 :load load-project}]
+                 :load (fn [{:keys [params location]}] (let [params (useParams)
+                                                             ident [:project/id (:id params)]]
+                                                         (pr/load-project ctx ident)))}]
          #_[Route {:path "/transaction-builder" :component pr/Planner}]]
         [Route {:path "/transaction-builder" :component (fn [] #jsx [tbp/TransactionBuilderPage])}]
         [Route {:path "/user/:id"}
@@ -63,7 +65,7 @@
                                                         ident (fn [] [:user/id (:id params)])]
                                                     #jsx [up/UserProfile {:& {:ident ident}}]))
                  :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
-         [Route {:path "/projects" :component sp/SearchPage
+         [Route {:path "/projects" :component (fn [] #jsx [sp/SearchPage {:& {:ident [:component/id :search]}}])
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
         [Route {:path "/wizards/new-project/:id"
                 :component WizardNewProject}

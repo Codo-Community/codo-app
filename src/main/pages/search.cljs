@@ -3,6 +3,7 @@
             ["@solidjs/router" :refer [useSearchParams cache]]
             ["../components/project_list.cljs" :as p]
             ["../composedb/client.cljs" :as cli]
+            ["../components/project_item.cljs" :as pi]
             ["@w3t-ab/sqeave" :as sqeave]
             ["../Context.cljs" :refer [AppContext]])
   (:require-macros [sqeave :refer [defc]]))
@@ -67,7 +68,8 @@
                                                        (doall (for [v res]
                                                                 (let [v (:node v)
                                                                       val (assoc  (dissoc (sqeave/nsd v :project) :contract) :project/contract (sqeave/nsd (:contract v) :contract))]
-                                                                  (sqeave/add! ctx [val] {:replace [:component/id :project-list :projects]}))))))))))))
+                                                                  (sqeave/add! ctx val {:append [:component/id :search :projects]}))))))))))))
 
-(defc SearchPage [this {:keys [component/id projects]}]
-  #jsx [p/ProjectList {:& {:ident [:component/id :project-list]}}])
+(defc SearchPage [this {:keys [component/id projects]
+                        :or {component/id :search projects []}}]
+  #jsx [p/ProjectList {:& {:projects projects}}])

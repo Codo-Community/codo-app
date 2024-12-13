@@ -60,19 +60,16 @@
                                 :id link}} (fn [r])))
 
 (defn add-category-remote [ctx {:category/keys [id name color description] :as data} parent-id link]
-  (let [vars (dissoc (sqeave/remove-ns data) :creator)
-        vars (dissoc vars :id)
-        vars {:i {:content (utils/drop-false vars)}}
+  (let [vars (dissoc (dissoc (sqeave/remove-ns data) :creator) :children)
+        vars {:i {:content vars}}
         vars (if-not (sqeave/uuid? id)
                (assoc-in vars [:i :id] id)
                (assoc-in vars [:i :content :created] (.toLocaleDateString (js/Date.) "sv")))
-        vars (sqeave/drop-false vars)
         mutation (if (sqeave/uuid? id)
                    {:name "createCategory"
                     :fn create-mutation}
                    {:name "updateCategory"
                     :fn update-mutation})]
-    (println vars)
     (cu/execute-gql-mutation ctx
                              (:fn mutation)
                              vars
@@ -111,19 +108,29 @@
   (load-category-c id))
 
 (defc Category [this {:category/keys [id name color {children [:category-link/id]}
-                                      {creator [:ceramic-account/id]} proposals]
+                                      {creator [:ceramic-account/id]} {proposals [:proposal/id]}]
                       :or {id (sqeave/uuid) name "Category" children [] color :gray proposals []}
-                      :local {editing? false open? false hovering? false selected nil indent? true show-proposals? true}}]
+                      :local {editing? false open? true hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)
+        local this.local
+        setLocal #(this.set-local! this %)
+        a (println "local:" (local))
+        a (println "fitlers:" filters)
         ;components ()
         ;asd (createResource (fn [] (load-category ctx (id))))
         ]
     (onMount (fn [] (when (:open? props)
                       #_(println "loading category: " (id))
                       #_(load-category ctx (id))
-                      (setLocal (assoc (local) :open? (:open? props)))
+                      (this.set-local! (assoc (local) :open? (:open? props)))
                       (initModals))))
     #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
+          (comment (str "category-id: " (id))
+                   (str "open: " (:open? (local)))
+                   (str (:hovering? (local)) " " (not (:editing? (local))))
+                   (str "c " (creator) " " (cu/viewer? this (creator)))
+                   (str "a " (and (cu/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local)))))
+                   (str "p " ((:show-proposals? props))))
           [:span {:class "flex flex-inline gap-2 mouse-pointer"
                   :onMouseEnter #(setLocal (assoc (local) :hovering? true))
                   :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
@@ -131,16 +138,17 @@
             [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
                       :onClick (fn [e]
                                  (when (and (not (:open? (local))) (not (sqeave/uuid? (id))))
+                                   (println "category-id: " (id))
                                    (load-category ctx (id)))
                                  (setLocal (assoc (local) :open? (not (:open? (local))))))}]
-            [Show {:when (not (:editing? (local))) :fallback #jsx [in/input {:placeholder "Name ..."
-                                                                             :value name
-                                                                             :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
-                                                                             :on-change (fn [e]
-                                                                                          (setLocal (assoc (local) :editing? false))
-                                                                                          (sqeave/set! this (:ident props) :category/name e)
-                                        ; TODO: need to auto swap uuids for streamIDs
-                                                                                          (add-category-remote ctx (data) (:parent props) (:link props)))}]}
+            [Show {:when (not (:editing? (local))) :fallback (fn [] #jsx [in/input {:placeholder "Name ..."
+                                                                                    :value name
+                                                                                    :on-focus-out (fn [e] (setLocal (assoc (local) :editing? false)))
+                                                                                    :on-change (fn [e]
+                                                                                                 (setLocal (assoc (local) :editing? false))
+                                                                                                 (sqeave/set! this :category/name e)
+                                                                                                   ; TODO: need to auto swap uuids for streamIDs
+                                                                                                 (add-category-remote ctx (this.data) (:parent props) (:link props)))}])}
              [:span {:class "flex w-full gap-2"}
               [:button {:data-modal-target "planner-modal"
                         :data-modal-toggle "planner-modal"
@@ -152,14 +160,14 @@
                [:button {:class "h-7 w-fit text-sm relative border-gray-700 border-2 dark:text-gray-800
                               rounded-md flex gap-2 mr-10 items-center hover:(ring-blue-500 ring-1) p-1"
                          :onClick #(sqeave/add! ctx {:proposal/id (sqeave/uuid)
-                                                :proposal/name "New proposal"
-                                                :proposal/author (sqeave/viewer-ident this)
-                                                :proposal/created (.toLocaleDateString (js/Date.) "sv")
-                                                :proposal/status :EVALUATION
-                                                :proposal/parentID (id)}
-                                           {:append [:category/id (id) :category/proposals]})} "Add"]]]
+                                                     :proposal/name "New proposal"
+                                                     :proposal/author (cu/viewer-ident this)
+                                                     :proposal/created (.toLocaleDateString (js/Date.) "sv")
+                                                     :proposal/status :EVALUATION
+                                                     :proposal/parentID (id)}
+                                                {:append [:category/id (id) :category/proposals]})} "Add"]]]
 
-             #_[:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
+             [:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
                                                                                                                 :green "bg-green-800"
                                                                                                                 :blue "bg-blue-800"
                                                                                                                 :red "bg-red-800"
@@ -170,23 +178,26 @@
                       :onClick #(setLocal (assoc (local) :editing? true))}
                 [:h2 {:class "text-bold"} (name)]]]]
 
-           #_[cm/CategoryMenu {:&  {:ident (:ident props)
-                                        :parent (:parent props)}}]
-           [Show {:when (and (sqeave/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
+
+           [Show {:when (and (cu/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
             [cm/CategoryMenu {:& props}]]]
+
           [Show {:when (:open? (local))}
            [:div {:class "flex flex-col gap-1"}
-            [Show {:when (:show-proposals? (filters))}
+
+            [Show {:when ((:show-proposals? props))}
              [:div {:class "flex flex-col gap-1"}
               [For {:each (proposals)}
                (fn [proposal i]
-                 #jsx [pr/Proposal {:& {:ident proposal
-                                           :parent (id)
-                                           :projectLocal (:projectLocal props)
-                                           :setProjectLocal (:setProjectLocal props)}}])]]]
+                 #jsx [pr/Proposal {:& {:ident [:proposal/id proposal]
+                                        :parent (id)
+                                        :projectLocal (:projectLocal props)
+                                        :setProjectLocal (:setProjectLocal props)}}])]]]
+
             [For {:each (reverse (children))}
              (fn [entity i]
-               #jsx [cl/CategoryLink {:ident (fn [] [:category-link/id entity])
+               #jsx [cl/CategoryLink {:& {:ident (fn [] [:category-link/id entity])
                                           :setProjectLocal (:setProjectLocal props)
+                                          :show-proposals? (:show-proposals? props)
                                           :projectLocal (:projectLocal props)
-                                          :parent (id)}])]]]]))
+                                          :parent (id)}}])]]]]))

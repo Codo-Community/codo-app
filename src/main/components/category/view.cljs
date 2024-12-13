@@ -10,7 +10,11 @@
 
 (defc CategoryView [this {:category/keys [id created] :as data :or {}
                           :local {show-proposals? true from nil}}]
-  (let [Filters (createContext)]
+  (let [
+        [show-proposals? setshow-proposals?] (createSignal true)
+        [from setfrom] (createSignal)
+        FilterContext (createContext )
+        ]
     (onMount #(initFlowbite))
     #jsx [:div {:class "relative flex flex-col gap-2"}
 
@@ -28,8 +32,8 @@
             [:li {}
              [in/boolean-input {:label "Show proposals:"
                                 :inline true
-                                :value #(:show-proposals? (local))
-                                :on-change #(setLocal (assoc (local) :show-proposals? (not (:show-proposals? (local)))))}]]
+                                :value show-proposals? #_(:show-proposals? (local))
+                                :on-change #(setshow-proposals? (not (show-proposals?))) #_(setLocal (assoc (local) :show-proposals? (not (:show-proposals? (local)))))}]]
             #_[:li {}
              [in/input {:label "From"
                         :value #(:from (local))
@@ -37,6 +41,6 @@
                         :type "date"
                         :on-change (fn [e] #(setLocal (assoc (local) :from (-> e :target :value))))}]]]]
 
-          [FilterContext.Provider {:value local}
-           [c/Category {:& (merge props {:show-proposals? #(:show-proposals? (local))
-                                            :from #(:from (local))})}]]]))
+          [FilterContext.Provider {:value {:show-proposals? show-proposals? :from from}}
+           [c/Category {:& (merge props {:show-proposals? show-proposals? #_(:show-proposals? (local))
+                                         :from from #_(:from (local))})}]]]))

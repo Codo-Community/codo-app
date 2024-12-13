@@ -4,6 +4,11 @@ import solid from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
 import UnoCSS from 'unocss/vite'
 import path from "path";
+import basicSsl from '@vitejs/plugin-basic-ssl';
+
+const isDev = () => process.env.NODE_ENV === 'development';
+const isPreview = () => process.env.NODE_ENV === 'preview';
+
 
 export default defineConfig({
 server: {
@@ -26,6 +31,7 @@ port: 3000,
               }),
               squint({scan: true}),
               solid(),
+//              (isDev() || isPreview()) && basicSsl(),
           ],
   esbuild: {
       drop: ['console', 'debugger'],

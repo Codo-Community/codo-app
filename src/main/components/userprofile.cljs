@@ -41,7 +41,8 @@
 #_(eql-gql/query->graphql query)
 
 (defn mutation-vars [{:user/keys [id firstName lastName introduction] :as data}]
-  {:firstName firstName :lastName lastName :introduction introduction})
+  {:i {:id id
+       :content {:firstName firstName :lastName lastName :introduction introduction}}})
 
 (defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
   (fn [e]
