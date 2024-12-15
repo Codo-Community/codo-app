@@ -14,14 +14,13 @@
 (defonce unwatch-connections (atom nil))
 
 (defn ^:async init-clients []
-  (when (not (empty? (getConnections config)))
-    (let [wc  (js-await (getWalletClient config)) #_(js-await (getConnectorClient config))]
-      (println "cca:" wc)
-      (let [;wc (js-await (getWalletClient config))
-            pc (js-await (getPublicClient config))]
-        (println "init c:" wc pc)
-        (reset! wallet-client wc)
-        (reset! public-client pc)
-        wc))))
+  (let [wc  (js-await (getWalletClient config)) #_(js-await (getConnectorClient config))]
+    (println "cca:" wc)
+    (let [                              ;wc (js-await (getWalletClient config))
+          pc (js-await (getPublicClient config))]
+      (println "init c:" wc pc)
+      (reset! wallet-client wc)
+      (reset! public-client pc)
+      wc)))
 
 (def default wallet-client)

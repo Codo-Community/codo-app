@@ -5,6 +5,7 @@ import devtools from 'solid-devtools/vite';
 import UnoCSS from 'unocss/vite'
 import path from "path";
 import basicSsl from '@vitejs/plugin-basic-ssl';
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const isDev = () => process.env.NODE_ENV === 'development';
 const isPreview = () => process.env.NODE_ENV === 'preview';
@@ -32,6 +33,7 @@ port: 3000,
               squint({scan: true}),
               solid(),
 //              (isDev() || isPreview()) && basicSsl(),
+                nodePolyfills(),
           ],
   esbuild: {
       drop: ['console', 'debugger'],

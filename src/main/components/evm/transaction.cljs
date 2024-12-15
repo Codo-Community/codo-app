@@ -11,11 +11,12 @@
 
 (defn execute-transaction [{:keys [store setStore] :as ctx} contract transaction]
   (fn [e]
-    (let [{:contract/keys [abi address]} (sqeave/pull store contract [:contract/address {:contract/abi [:name :type :stateMutability :inputs :outputs]}])
+    (let [{:contract/keys [abi address]} (sqeave/pull store (contract) [:contract/address {:contract/abi [:name :type :stateMutability :inputs :outputs]}])
           {:keys [function/id type inputs name outputs stateMutability]} (:transaction/function (sqeave/pull store transaction {:transaction/function [:function/id :type :inputs :name :outputs :stateMutability]}))
           c (el/get-contract {:address address
                               :abi abi
                               :client {:public ec/public-client :wallet @ec/wallet-client}})
+          a (println "c" c)
           cf (if (= stateMutability "view") c.read c.write)
           function (aget cf name)
           args (mapv #(ein/convert-input-filter %) inputs)]
@@ -26,7 +27,7 @@
                  (ein/set-abi-field ctx [:function/id id :outputs 0 :value] r)))))))
 
 (defn remove-evm-transaction [{:keys [store setStore] :as ctx} ident]
-  (fn [e] (setStore :pages/id (fn [x]
+  (fn [e] (setStore :component/id (fn [x]
                                 (update-in x [:transaction-builder :transactions] #(filterv (fn [x] (not (= (second x)
                                                                                                  (second ident)))) %))))))
 
@@ -39,11 +40,10 @@
            [l/label {:title (id)}]]
           [Show {:when (open?)}
            [:div {}
-            [f/Function {:& {:ident function}}]
-            [:span {:class "flex gap-3"}
+            [f/Function {:& {:ident (function)}}]
+            [:span {:class "flex gap-3 mt-2"}
              [b/button {:title "Transact"
-                        :on-click #()       ;execute-fn
-                        }]
+                        :on-click (execute-transaction ctx (:contract props) [:transaction/id (id)])}]
              [b/button {:title "Remove"
                         :on-click (remove-evm-transaction ctx [:transaction/id (id)])
                         :extra-class "!dark:(ring-red-500 text-red-500 border-red-500)"}]]]]]))

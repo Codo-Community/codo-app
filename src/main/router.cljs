@@ -5,7 +5,7 @@
             ["./main.cljs" :as main]
             ["./Context.cljs" :refer [AppContext]]
 
-            ["./pages/tbpage.cljs" :as tbp]
+            ["./components/evm/transaction_builder.cljs" :as tbp]
             ["./pages/home.cljs" :as home]
             ["./pages/profile.cljs" :as profile]
             ["./pages/search.cljs" :as sp]
@@ -57,9 +57,9 @@
                                                     #jsx [pr/ProjectReport {:& {:ident ident}}]))
                  :load (fn [{:keys [params location]}] (let [params (useParams)
                                                              ident [:project/id (:id params)]]
-                                                         (pr/load-project ctx ident)))}]
-         #_[Route {:path "/transaction-builder" :component pr/Planner}]]
-        [Route {:path "/transaction-builder" :component (fn [] #jsx [tbp/TransactionBuilderPage])}]
+                                                         (println ident)
+                                                         (pr/load-project ctx ident)))}]]
+        [Route {:path "/transaction-builder" :component (fn [] #jsx [tbp/TransactionBuilder {:& {:ident [:component/id :transaction-builder]}}])}]
         [Route {:path "/user/:id"}
          [Route {:path "/" :component (fn [props] (let [params (useParams)
                                                         ident (fn [] [:user/id (:id params)])]
@@ -68,7 +68,8 @@
          [Route {:path "/projects" :component (fn [] #jsx [sp/SearchPage {:& {:ident [:component/id :search]}}])
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
         [Route {:path "/wizards/new-project/:id"
-                :component WizardNewProject}
+                :component (fn [props] #jsx [WizardNewProject {:& {:ident [:component/id :project-wizard]}}
+                                                props.children])}
          [Route {:path "/"
                  :component  (fn [props] (let [params (useParams)
                                                ident (fn [] [:project/id (:id params)])]

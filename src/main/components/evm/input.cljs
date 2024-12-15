@@ -13,6 +13,7 @@
     ""))
 
 (defn set-abi-field [{:keys [store setStore] :as ctx} path value & convert-fn]
+  (println path)
   (setStore (first path)
             (fn [x]
               (assoc-in x (rest path) value))))

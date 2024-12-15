@@ -13,29 +13,33 @@
             ["./evm/walletconnect.cljs" :refer [config]]
             ["./components/user.cljs" :as u]
             ["./Context.cljs" :as context :refer [AppContext ConnectionContext]]
+            ["./request/lib.cljs" :as req]
             ["flowbite" :as fb]
             ["@w3t-ab/sqeave" :as sqeave]
             ["solid-devtools"]
             ["@unocss/reset/tailwind.css"]
             ["virtual:uno.css"]
-            ["@tanstack/solid-query" :refer [QueryClientProvider]])
+            #_["@tanstack/solid-query" :refer [QueryClientProvider]])
   (:require-macros [sqeave :refer [defc]]))
 
 (defc Root [this {:keys [] :ctx (sqeave/init-ctx! AppContext)}]
   (let [;ctx  (context/init-context)
         connection-ctx (let [[connections setConnections] (createSignal (getConnections config))]
+                         (.then  (ec/init-clients) (fn [res]
+                                            (println "init-clients" res)
+                                            (req/init-request-client)))
                          {:connections connections
                           :setConnections setConnections})]
     (onMount #(do
                 #_(cdf/init-listeners ctx events/handle)
-                (.then  (ec/init-clients) (fn [res] (println "init-clients" res)))
-                (reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]
+
+                #_(reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]
                                                                             (println "change wallet: " client)
                                                                             (reset! ec/wallet-client client))}))
-                (reset! ec/unwatch-public (watchPublicClient config  {:onChange (fn [client]
+                #_(reset! ec/unwatch-public (watchPublicClient config  {:onChange (fn [client]
                                                                                   (println "change wallet: " client)
                                                                                   (reset! ec/public-client client))}))
-                (reset! ec/unwatch-connections (watchConnections config  {:onChange (fn [connections]
+                #_(reset! ec/unwatch-connections (watchConnections config  {:onChange (fn [connections]
                                                                                       (println "change connections: " connections)
                                                                                       ((:setConnections connection-ctx) connections)
                                                                                       (let [{:keys [accounts chainId]} (first connections)]
@@ -43,7 +47,7 @@
                                                                                         (if (empty? accounts)
                                                                                           (do
                                                                                             (sqeave/add! ctx {:viewer/id 0
-                                                                                                         :viewer/session nil})
+                                                                                                              :viewer/session nil})
                                                                                             (sqeave/add! ctx {:user/id 0 :user/ethereum-address "0x0" :user/session nil} {:replace [:component/id :header :user]})
                                                                                             (-> @cli/apollo-client :cache (.reset)))
                                                                                           (.then (getAccountId @ec/wallet-client (first accounts))
@@ -56,8 +60,9 @@
                 (fb/initFlowbite)))
     #jsx [AppContext.Provider {:value this.ctx}
           [ConnectionContext.Provider {:value connection-ctx}
-           [QueryClientProvider {:client queryClient}
-            [r/Router]]]]))
+           [r/Router]
+           #_[QueryClientProvider {:client queryClient}
+            ]]]))
 
 (let [e (js/document.getElementById "root")]                                ; 5
   (set! (aget e :innerHTML) "")

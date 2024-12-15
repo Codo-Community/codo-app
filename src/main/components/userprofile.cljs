@@ -3,6 +3,7 @@
             ["./blueprint/input.cljs" :as in]
             ["./blueprint/textarea.cljs" :as ta]
             ["./blueprint/button.cljs" :as b]
+            ["@solidjs/router" :refer [useNavigate useParams]]
             ["../geql.cljs" :as geql]
             ["../composedb/client.cljs" :as cli]
             ["../composedb/util.cljs" :as cu]
@@ -41,36 +42,38 @@
 #_(eql-gql/query->graphql query)
 
 (defn mutation-vars [{:user/keys [id firstName lastName introduction] :as data}]
-  {:i {:id id
-       :content {:firstName firstName :lastName lastName :introduction introduction}}})
+  {:i {:content {:firstName firstName :lastName lastName :introduction introduction}}})
 
-(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data}]
+(defn on-click-mutation [{:keys [store setStore] :as ctx} {:user/keys [id firstName lastName introduction] :as data} navigate]
   (fn [e]
     (if e (.preventDefault e))
-    (println (data))
     (cu/execute-gql-mutation ctx basic-profile-mutation
                              (mutation-vars (data))
-                             (fn [response] (println response)))))
+                             (fn [response]
+                               (when (sqeave/uuid? (:id (data)))
+                                 (println response)
+                                 (navigate (str "/user/" (:id response))))))))
 
 (defc UserProfile [this {:user/keys [id firstName lastName introduction] :as data}]
-  #jsx [:form {:class "flex flex-col gap-4 px-4"
-               :onSubmit (on-click-mutation ctx this.data)}
-        [:h1 {:class "text-xl"} "Profile"]
-        [:span {:class "flex w-full gap-3"}
-         [in/input {:label "First Name"
-                    :placeholder "Your Name"
-                    :value firstName
-                    :on-change #(sqeave/set! this :user/firstName %)}]
-         [in/input {:label "Last Name"
-                    :placeholder "Your Last Name"
-                    :value lastName
-                    :on-change #(sqeave/set! this :user/lastName %)}]]
-        [ta/textarea {:title "Introduction"
-                      :placeholder "Introduce yourself ..."
-                      :value introduction
-                      :on-change #(sqeave/set! this :user/introduction %)}]
-        [:span {:class "flex w-full gap-3"}
-         [b/button {:title "Submit"}]]])
+  (let [navigate (useNavigate)]
+    #jsx [:form {:class "flex flex-col gap-4 px-4"
+                 :onSubmit (on-click-mutation ctx this.data navigate)}
+          [:h1 {:class "text-xl"} "Profile"]
+          [:span {:class "flex w-full gap-3"}
+           [in/input {:label "First Name"
+                      :placeholder "Your Name"
+                      :value firstName
+                      :on-change #(sqeave/set! this :user/firstName %)}]
+           [in/input {:label "Last Name"
+                      :placeholder "Your Last Name"
+                      :value lastName
+                      :on-change #(sqeave/set! this :user/lastName %)}]]
+          [ta/textarea {:title "Introduction"
+                        :placeholder "Introduce yourself ..."
+                        :value introduction
+                        :on-change #(sqeave/set! this :user/introduction %)}]
+          [:span {:class "flex w-full gap-3"}
+           [b/button {:title "Submit"}]]]))
 
 (defn ^:async load-user-profile [{:keys [store setStore] :as ctx} ident]
   (cu/execute-gql-query ctx (profile-q (second ident)) {}

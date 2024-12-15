@@ -19,7 +19,7 @@
           transaction-data {:transaction/id (js/crypto.randomUUID)
                             :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))}]
       (sqeave/add! ctx transaction-data)
-      (setStore :pages/id
+      (setStore :component/id
                 (fn [x]
                   (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 

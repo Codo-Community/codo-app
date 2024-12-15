@@ -12,8 +12,10 @@
             ["./category_link.cljs" :as  cl]
             ["../blueprint/button.cljs" :as b]
             ["../../composedb/client.cljs" :as cli]
+            ["../../evm/client.cljs" :as ec]
             ["~/main/Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initModals]]
+            ["~/main/request/lib.cljs" :as req]
             ["@w3t-ab/sqeave" :as sqeave])
   (:require-macros [sqeave :refer [defc]]))
 
@@ -107,26 +109,27 @@
 (defn load-category-cache [id]
   (load-category-c id))
 
-(defc Category [this {:category/keys [id name color {children [:category-link/id]}
+(defc Category [this {:category/keys [id name color {children [:category-link/id]} request
                                       {creator [:ceramic-account/id]} {proposals [:proposal/id]}]
-                      :or {id (sqeave/uuid) name "Category" children [] color :gray proposals []}
+                      :or {id (sqeave/uuid) name "Category" children [] color :gray proposals [] request nil}
                       :local {editing? false open? true hovering? false selected nil indent? true show-proposals? true}}]
   (let [filters (useContext FilterContext)
+        [rqst setRequest] (createSignal)
         local this.local
         setLocal #(this.set-local! this %)
         a (println "local:" (local))
         a (println "fitlers:" filters)
-        ;components ()
-        ;asd (createResource (fn [] (load-category ctx (id))))
+                                        ;components ()
+                                        ;asd (createResource (fn [] (load-category ctx (id))))
         ]
     (onMount (fn [] (when (:open? props)
-                      #_(println "loading category: " (id))
+                      #_(println "loading category​ " (id))
                       #_(load-category ctx (id))
                       (this.set-local! (assoc (local) :open? (:open? props)))
                       (initModals))))
     #jsx [:div {:class (str "flex flex-col gap-1 " (if (:indent? (local)) "ml-1" ""))}
-          (comment (str "category-id: " (id))
-                   (str "open: " (:open? (local)))
+          (comment (str "category-id​ " (id))
+                   (str "open​ " (:open? (local)))
                    (str (:hovering? (local)) " " (not (:editing? (local))))
                    (str "c " (creator) " " (cu/viewer? this (creator)))
                    (str "a " (and (cu/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local)))))
@@ -135,10 +138,44 @@
                   :onMouseEnter #(setLocal (assoc (local) :hovering? true))
                   :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
            [:div {:class "flex gap-1 items-center"}
+            [:button {:onClick #(let [payee-identity "0x54FA297b2D63f72cf6c1187ddA9cb0a501F97e02"
+                                      payer-identity "0xa8172E99effDA57900e09150f37Fea5860b806B4"
+                                      payment-recipient payee-identity
+                                      fee-recipient "0x54FA297b2D63f72cf6c1187ddA9cb0a501F97e02"
+
+                                      expected-amount (* 0.01 1000000000000000000) ;; 0.01 ETH in wei
+                                      currency "ETH" #_"0x746d7b1dfcD1Cc2f4b7d09F3F1B9A21764FBeB33" ;; Example ERC20 token contract
+                                      network "sepolia"
+                                      reason "pizza"
+                                      due-date "2025.06.16"
+
+                                      fee-amount (* 0.01 expected-amount) ;; Fee amount
+                                      signer payer-identity
+                                      req-data (req/erc20-payment payee-identity payer-identity payment-recipient fee-recipient expected-amount currency network reason due-date signer fee-amount)
+
+                                      native-req-data (req/native-payment payment-recipient fee-recipient payee-identity payer-identity expected-amount network fee-amount)]
+                                  (.then (req/create-request @req/request-client native-req-data)
+                                         (fn [r]
+                                           (let [req-id (:requestId  r)]
+                                             (.then (.waitForConfirmation r) (fn [r] (println "req: c: " r)))
+                                             (setRequest r)
+                                             #_(sqeave/add! ctx (sqeave/nsd (assoc r :id req-id) :request) {:replace [:category/id (id) :category/request]})))))}
+             "Create Request"]
+            #_[:input {:onChange #(sqeave/set! this :category/request %)}]
+            [:button {:onClick #(let []
+                                  #_(.then (.fromRequestId @req/request-client))
+                                  #_(println "cur:" (req/get-eth-sepolia-currency))
+
+                                  (.then (req/from-req-id @req/request-client (:requestId (rqst))) (fn [r] (println "req:s:" r)
+                                                                                                     (let [req-data (.getData r)]
+                                                                                                       (.then (req/pay req-data @ec/wallet-client)
+                                                                                                              (fn [ra] (println "req2: " ra)))))))}
+             "Pay Request"]
+
             [:button {:class (if (:open? (local)) "i-tabler-chevron-down" "i-tabler-chevron-right")
                       :onClick (fn [e]
                                  (when (and (not (:open? (local))) (not (sqeave/uuid? (id))))
-                                   (println "category-id: " (id))
+                                   (println "category-id​ " (id))
                                    (load-category ctx (id)))
                                  (setLocal (assoc (local) :open? (not (:open? (local))))))}]
             [Show {:when (not (:editing? (local))) :fallback (fn [] #jsx [in/input {:placeholder "Name ..."
@@ -147,7 +184,7 @@
                                                                                     :on-change (fn [e]
                                                                                                  (setLocal (assoc (local) :editing? false))
                                                                                                  (sqeave/set! this :category/name e)
-                                                                                                   ; TODO: need to auto swap uuids for streamIDs
+                                        ; TODO​ need to auto swap uuids for streamIDs
                                                                                                  (add-category-remote ctx (this.data) (:parent props) (:link props)))}])}
              [:span {:class "flex w-full gap-2"}
               [:button {:data-modal-target "planner-modal"
@@ -168,16 +205,15 @@
                                                 {:append [:category/id (id) :category/proposals]})} "Add"]]]
 
              [:div {:class (str "flex flex-inline gap-2 rounded-md p-1 text-sm mouse-pointer focus:ring-2 " (condp = (color)
-                                                                                                                :green "bg-green-800"
-                                                                                                                :blue "bg-blue-800"
-                                                                                                                :red "bg-red-800"
-                                                                                                                :yellow "bg-yellow-800"
-                                                                                                                :gray "bg-zinc-800"
-                                                                                                                "bg-none"))
-                      :tabindex 0
-                      :onClick #(setLocal (assoc (local) :editing? true))}
-                [:h2 {:class "text-bold"} (name)]]]]
-
+                                                                                                              :green "bg-green-800"
+                                                                                                              :blue "bg-blue-800"
+                                                                                                              :red "bg-red-800"
+                                                                                                              :yellow "bg-yellow-800"
+                                                                                                              :gray "bg-zinc-800"
+                                                                                                              "bg-none"))
+                    :tabindex 0
+                    :onClick #(setLocal (assoc (local) :editing? true))}
+              [:h2 {:class "text-bold"} (name)]]]]
 
            [Show {:when (and (cu/viewer? this (creator)) (:hovering? (local)) (not (:editing? (local))))}
             [cm/CategoryMenu {:& props}]]]

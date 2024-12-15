@@ -10,4 +10,4 @@
           [:div {:class "flex flex-col gap-4"}
            [For {:each (projects)}
             (fn [entity i]
-              #jsx [:div {} (println "en:" entity) [pi/ProjectItem {:& {:ident entity}}]])]]]))
+              #jsx [pi/ProjectItem {:& {:ident entity}}])]]]))
