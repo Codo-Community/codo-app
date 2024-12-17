@@ -1,7 +1,7 @@
 (ns co-who.evm.client
   (:require ["viem" :as v :refer [createWalletClient createPublicClient custom http]]
             ["viem/chains" :refer [mainnet]]
-            ["@wagmi/core" :refer [getPublicClient getWalletClient watchClient watchPublicClient watchConnections getConnectorClient getConnections]]
+            ["@wagmi/core" :refer [getPublicClient getWalletClient watchClient watchPublicClient watchConnections getConnectorClient getConnections getAccount]]
             ["./walletconnect.cljs" :refer [config]]))
 
 (defonce wallet-client (atom nil))
@@ -15,12 +15,14 @@
 
 (defn ^:async init-clients []
   (let [wc  (js-await (getWalletClient config)) #_(js-await (getConnectorClient config))]
-    (println "cca:" wc)
-    (let [                              ;wc (js-await (getWalletClient config))
+    (let [;wc (js-await (getWalletClient config))
           pc (js-await (getPublicClient config))]
       (println "init c:" wc pc)
       (reset! wallet-client wc)
       (reset! public-client pc)
       wc)))
+
+(defn get-account []
+  (getAccount config))
 
 (def default wallet-client)

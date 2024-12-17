@@ -82,7 +82,7 @@
         currency)
       (throw (js/Error. "Currency not found!")))))
 
-(defn native-payment [payment-recipient fee-recipient payee-identity payer-identity expected-amount network fee-amount]
+(defn native-payment [payment-recipient fee-recipient payee-identity payer-identity expected-amount network fee-amount content-data]
   {:paymentNetwork {:id Types.Extension.PAYMENT_NETWORK_ID.ETH_FEE_PROXY_CONTRACT
                     :parameters {:paymentNetworkName network
                                  :paymentAddress payment-recipient
@@ -97,6 +97,7 @@
                          "value" payee-identity}
                  :payer {"type" Types.Identity.TYPE.ETHEREUM_ADDRESS
                          "value" payer-identity}}
+   :contentData (or content-data {})
    :signer {"type" Types.Identity.TYPE.ETHEREUM_ADDRESS
             "value" payer-identity}})
 

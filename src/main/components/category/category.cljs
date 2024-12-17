@@ -16,6 +16,7 @@
             ["~/main/Context.cljs" :refer [AppContext]]
             ["flowbite" :refer [initModals]]
             ["~/main/request/lib.cljs" :as req]
+            ["~/main/request/client.cljs" :as rc]
             ["@w3t-ab/sqeave" :as sqeave])
   (:require-macros [sqeave :refer [defc]]))
 
@@ -139,7 +140,7 @@
                   :onMouseLeave #(setLocal (assoc (local) :hovering? false))}
            [:div {:class "flex gap-1 items-center"}
             [:button {:onClick #(let [payee-identity "0x54FA297b2D63f72cf6c1187ddA9cb0a501F97e02"
-                                      payer-identity "0xa8172E99effDA57900e09150f37Fea5860b806B4"
+                                      payer-identity (:address (ec/get-account)) #_"0xa8172E99effDA57900e09150f37Fea5860b806B4"
                                       payment-recipient payee-identity
                                       fee-recipient "0x54FA297b2D63f72cf6c1187ddA9cb0a501F97e02"
 
@@ -153,8 +154,59 @@
                                       signer payer-identity
                                       req-data (req/erc20-payment payee-identity payer-identity payment-recipient fee-recipient expected-amount currency network reason due-date signer fee-amount)
 
-                                      native-req-data (req/native-payment payment-recipient fee-recipient payee-identity payer-identity expected-amount network fee-amount)]
-                                  (.then (req/create-request @req/request-client native-req-data)
+
+                                      content-data {
+  "meta" {
+    "format" "rnf_invoice",
+    "version" "0.0.3"
+  },
+  "creationDate" "2024-12-01T00:00:00Z",
+  "invoiceNumber" "INV-001",
+  "invoiceItems" [
+    {
+      "name" "Service Fee",
+      "quantity" 1,
+      "unitPrice" "1000",
+      "tax" {
+        "amount" "100",
+        "type" "fixed"
+      },
+      "currency" "USD"
+    }
+  ],
+  "sellerInfo" {
+    "email" "seller@example.com",
+    "firstName" "Alice",
+    "lastName" "Smith",
+    "businessName" "Seller Business LLC",
+    "phone" "+1234567890",
+    "address" {
+      "street" "123 Main Street",
+      "city" "New York",
+      "state" "NY",
+      "zipCode" "10001",
+      "country" "US"
+    },
+    "taxRegistration" "US123456789"
+  },
+  "buyerInfo" {
+    "email" "buyer@example.com",
+    "firstName" "Bob",
+    "lastName" "Johnson",
+    "businessName" "Buyer Corp.",
+    "phone" "+0987654321",
+    "address" {
+      "street" "456 Elm Street",
+      "city" "San Francisco",
+      "state" "CA",
+      "zipCode" "94105",
+      "country" "US"
+    },
+    "taxRegistration" "US987654321"
+  }
+}
+                                      native-req-data (req/native-payment payment-recipient fee-recipient payee-identity payer-identity expected-amount network fee-amount content-data)]
+                                  (.then (req/create-request @rc/client native-req-data)
                                          (fn [r]
                                            (let [req-id (:requestId  r)]
                                              (.then (.waitForConfirmation r) (fn [r] (println "req: c: " r)))
