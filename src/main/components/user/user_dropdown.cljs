@@ -12,6 +12,7 @@
     #jsx [dr/dropdown {:& {:id (:data-dropdown-id props)
                            :title (fn [] #jsx [:p {:class "flex flex-col gap-1"} [:text {} (name)] [:text {} (str "passport: " (passport-score))]])
                            :items (fn [] [{:value "My Projects" :href (str "/user/" (id) "/projects") :icon "i-tabler-stack"}
+                                          {:value "My Organizations" :href (str "/user/" (id) "/projects") :icon "i-fluent-organization-horizontal-16-regular"}
                                           {:value "Profile" :href (str "/user/" (id)) :icon "i-tabler-user-circle"}
                                           {:value "Submit Passport" :icon "i-tabler-user-scan"
                                            :on-change (fn []

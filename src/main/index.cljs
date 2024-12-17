@@ -8,8 +8,7 @@
             ["./evm/client.cljs" :as ec]
             #_["./composedb/data_feed.cljs" :as cdf]
             #_["./composedb/events.cljs" :as events]
-            ["./composedb/client.cljs" :as cli]
-            ["./composedb/util.cljs" :as cu]
+            ["./composedb/client.cljs" :as cdc]
             ["./evm/walletconnect.cljs" :refer [config]]
             ["./components/user.cljs" :as u]
             ["./Context.cljs" :as context :refer [AppContext ConnectionContext]]
@@ -25,13 +24,19 @@
 
 (defc Root [this {:keys [] :ctx (sqeave/init-ctx! AppContext)}]
   (let [[connections setConnections] (createSignal (getConnections config))]
-    (createEffect (fn []
-                    (.then (ec/init-clients) (fn [res]
+    #_(createEffect (fn []
+                    (.then (u/init-auth) (fn [res]
                                                (println "init-clients" @ec/wallet-client)
                                                (.then (rc/init-request-client @ec/wallet-client)
                                                       (fn [r] (println "init-clients" r)))
                                                ))))
     (onMount #(do
+
+                (.then (u/init-auth this.ctx) (fn [res]
+                                         (println "init-clients" @ec/wallet-client)
+                                         (.then (rc/init-request-client @ec/wallet-client)
+                                                (fn [r] (println "init-clients" r)))
+                                         ))
                 #_(cdf/init-listeners ctx events/handle)
 
                 #_(reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]

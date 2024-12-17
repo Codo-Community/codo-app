@@ -35,14 +35,16 @@
                                (println "response: cat:" response)
                                ;; add project
                                (cu/execute-gql-mutation ctx (basic-project-mutation)
-                                                        (mutation-vars (merge (data) {:project/categoryID (:category/id response) :project/created (.toLocaleDateString (js/Date.) "sv")}))
+                                                        (mutation-vars (merge (data) {:project/categoryID (:category/id response)
+                                                                                      :project/created (.toLocaleDateString (js/Date.) "sv")}))
                                                         (fn [response]
                                                           (println "response: " response)
                                                           (sqeave/add! ctx response
                                                                        {:replace [:component/id :project-wizard :project]})
                                                           (navigate (str "/wizards/new-project/" (:project/id response)))))))))
 
-(defc BasicInfoStep [this {:project/keys [id name description start created] :or {name ""} :as data}]
+(defc BasicInfoStep [this {:project/keys [id name description start created]
+                           :or {id (sqeave/uuid) created (.toLocaleDateString (js/Date.) "sv") name ""} :as data}]
   (let [navigate (useNavigate)
         params (useParams)]
     #jsx [:form {:class "flex flex-col gap-3"

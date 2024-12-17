@@ -2,6 +2,7 @@
   (:require ["@requestnetwork/request-client.js" :refer [RequestNetwork Types Utils]]
             ["@requestnetwork/payment-processor" :refer [payRequest]]
             ["@requestnetwork/web3-signature" :refer [Web3SignatureProvider]]
+            ["@requestnetwork/payment-processor/dist/payment/utils" :refer [getRequestPaymentValues]]
             #_["@requestnetwork/currency" :refer [CurrencyManager]]
             ["../evm/client.cljs" :as cli]
             ["@w3t-ab/sqeave" :as sqeave]
@@ -141,7 +142,6 @@
 (defn ^:async from-req-id [client id]
   (.fromRequestId client id))
 
-
 (defn ^:async pay [data wallet-client]
   (let [signer (wallet-client-to-signer wallet-client)]
     (println "req:" data)
@@ -160,3 +160,7 @@
 
       (let [request (js-await (create-escrow-request @request-client payer-safe payee-safe amount currency fee-amount fee-recipient-address))]
         (js-await (pay-escrow-request client (.-requestId request) payer-safe private-key)))))
+
+(defn propose-safe-transactions [requests]
+  (let [{:keys [paymentAddress paymentReference]} (getRequestPaymentValues request)]
+    ))

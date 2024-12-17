@@ -10,7 +10,7 @@
     ["key-did-resolver" :refer [getResolver]]
     ["uint8arrays/from-string" :refer [fromString]]))
 
-(def ceramic (let [url (or (-> js/process :env :CERAMIC_API) "http://localhost:7007")]
+(def ceramic (let [url (or (-> js/process :env :VITE_CERAMIC_API) "http://localhost:7007")]
                (CeramicClient. url)))
 
 (defn ^:async authenticate [ceramic]
@@ -42,11 +42,15 @@
         contractComposite (js-await (createComposite ceramic "./src/main/composedb/model/contract.graphql"))
         contract-id (aget (.-modelIDs contractComposite) 0)
 
+        organization-schema (.replace (.replace (readFileSync "./src/main/composedb/model/organization.graphql"  {:encoding "utf-8"}) "$USER_ID" user-id) "$CONTRACT_ID" contract-id)
+        organizationComposite (js-await (Composite.create  {:ceramic ceramic
+                                                            :schema organization-schema}))
+
         project-schema (.replace (.replace (readFileSync "./src/main/composedb/model/project.graphql"  {:encoding "utf-8"}) "$CATEGORY_ID" category-id) "$CONTRACT_ID" contract-id)
         projectComposite (js-await (Composite.create  {:ceramic ceramic
                                                        :schema project-schema}))
 
-        composite (js-await (Composite.from #js [userComposite postComposite proposalComposite categoryComposite contractComposite projectComposite]))
+        composite (js-await (Composite.from #js [userComposite postComposite proposalComposite categoryComposite contractComposite projectComposite organizationComposite]))
 
         asd (js-await (writeEncodedComposite composite "./src/__generated__/definition.json"))
 

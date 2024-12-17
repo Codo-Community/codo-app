@@ -3,31 +3,35 @@
             ["@safe-global/sdk-starter-kit" :refer [createSafeClient]]
             ["./client.cljs" :as cli]))
 
+(defonce client (atom nil))
+
+(defonce api-client (atom nil))
+
 ;; Constants
 (def signer-address "0xYourSignerAddress")
 (def signer-private-key "0xYourPrivateKey")
 (def rpc-url "https://rpc.ankr.com/eth_sepolia")
 (def safe-address "0xYourSafeAddress")
 
-;; Initialize the WalletClient
-#_(def wallet-client
-  (createWalletClient {:account signer-address
-                       :transport (httpTransport rpc-url)
-                       :privateKey signer-private-key}))
+(defn set-api [network address]
+  (reset! api-client "https://safe-transaction-{network}.safe.global/api/v1/safes/{safeAddress}/"))
 
 ;; Create SafeClient
-(defn ^:async create-safe-client [wallet-client]
+(defn ^:async create-safe-client [wallet-client safe-address]
   (js-await (createSafeClient
-              #js {:provider wallet-client
-                   :signer wallet-client
-                   :safeAddress safe-address})))
+             {:provider wallet-client
+              :signer wallet-client
+              :safeAddress safe-address})))
+
+(defn ^:async get-owners [safe-client]
+  (.getOwners safe-client))
 
 ;; Create Safe Transactions
-(defn ^:async send-safe-transaction [safe-client]
-  (let [transactions #js [{:to "0xRecipientAddress"
-                            :data "0x"
-                            :value "0"}]
-        tx-result (js-await (.send safe-client #js {:transactions transactions}))
+(defn ^:async send-safe-transaction [safe-client transactions]
+  (let [transactions [{:to "0xRecipientAddress"
+                       :data 0
+                       :value "0"}]
+        tx-result (js-await (.send safe-client {:transactions transactions}))
         safe-tx-hash (-> tx-result .-transactions .-safeTxHash)]
     (js/console.log (str "Safe Transaction Hash: " safe-tx-hash))
     safe-tx-hash))
@@ -38,11 +42,11 @@
         pending-results (-> pending-transactions .-results)]
     (doseq [transaction pending-results]
       (when (= (.-safeTxHash transaction) safe-tx-hash)
-        (let [confirmation (js-await (.confirm safe-client #js {:safeTxHash safe-tx-hash}))]
+        (let [confirmation (js-await (.confirm safe-client {:safeTxHash safe-tx-hash}))]
           (js/console.log (str "Transaction confirmed: " confirmation)))))))
 
 ;; Full Workflow
-(defn ^:async execute-safe-transaction []
+#_(defn ^:async execute-safe-transaction []
   (let [safe-client (js-await (create-safe-client))
         safe-tx-hash (js-await (send-safe-transaction safe-client))]
     ;; Assuming a single threshold

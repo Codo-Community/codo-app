@@ -1,7 +1,7 @@
 (ns co-who.components.evm.transaction
   (:require ["solid-js" :refer [createSignal Show]]
             ["./function.cljs" :as f]
-            ["./inputs.cljs" :as ein]
+            ["./input.cljs" :as ein]
             ["../blueprint/button.cljs" :as b]
             ["../blueprint/label.cljs" :as l]
             ["../../evm/client.cljs" :as ec]
@@ -16,10 +16,11 @@
           c (el/get-contract {:address address
                               :abi abi
                               :client {:public ec/public-client :wallet @ec/wallet-client}})
-          a (println "c" c)
+          a (println "c"  {:public @ec/public-client :wallet @ec/wallet-client} c)
           cf (if (= stateMutability "view") c.read c.write)
           function (aget cf name)
-          args (mapv #(ein/convert-input-filter %) inputs)]
+          args (mapv #(ein/convert-input-filter %) inputs)
+          a (println "f:" function "a: " args)]
       (.then (function args)
              (fn [r]
                (if (vector? r)

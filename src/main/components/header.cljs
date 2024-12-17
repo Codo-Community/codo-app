@@ -19,13 +19,15 @@
 
 (def codo-logo (str js/import.meta.env.VITE_PINATA_URL "/images/codo_new_black.svg"))
 
-(defc Header [this {:keys [component/id {user [:user/id :user/session]} #_{viewer {:viewer/ceramic-account {:ceramic-account/user [:user/id :user/session]}}} chain {active-project [:project/id :project/name]}]
+(defc Header [this {:keys [component/id
+                           {user [:user/id :user/session]}
+                           {organization [:organization/id :organization/name]}
+                           {project [:project/id :project/name]}]
                     :or {component/id :header
-                         chain {:chain/id 31337
-                                 :chain/name "Hardhat"}
-                         viewer [:viewer/id 0]}}]
-  (let [;user (-> (viewer) :viewer/ceramic-account :ceramic-account/user)
-        navigate (useNavigate)
+                         user []
+                         organization []
+                         project []}}]
+  (let [navigate (useNavigate)
         location (useLocation)
         connection-context (useContext ConnectionContext)
         p (second (string/split location.pathname "/"))]
@@ -43,10 +45,15 @@
                   :href "/" :class "flex items-center"}
               [:img {:class (str "h-9 dark:invert") :alt "Codo Logo" :src codo-logo}]]
              [:span {:class "flex items-center dark:text-white font-bold max-w-2/3 "}
+              [Show {:when (not (empty? (organization)))}
+               [:p {:class "flex flex-row gap-2"}
+                [:text {:class "lt-sm:hidden"} p]
+                [:text {:class "truncate"} (:organization/name (organization))]]]]
+             [:span {:class "flex items-center dark:text-white font-bold max-w-2/3 "}
               [Show {:when (= p "project")}
                [:p {:class "flex flex-row gap-2"}
                 [:text {:class "lt-sm:hidden"} p]
-                [:text {:class "truncate"} (:project/name (active-project))]]]]]
+                [:text {:class "truncate"} (:project/name (project))]]]]]
             [:div {:class "flex items-center md:order-2 gap-4"}
              #_[:span {:class "lt-md:hidden"}
                 [si/SearchInput {:& {:on-submit (fn [signal]

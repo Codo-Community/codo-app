@@ -16,7 +16,10 @@
             ;["./imports.cljs" :refer [WizardNewProject]]
             ["./components/wizards/new_project/main.cljs" :refer [WizardNewProject]]
             ["./components/wizards/new_project/info_step.cljs" :as istep]
-            ["./components/wizards/new_project/contract_step.cljs" :as cstep])
+            ["./components/wizards/new_project/contract_step.cljs" :as cstep]
+            ["./components/wizards/new_org/main.cljs" :refer [WizardNewOrganization]]
+            ["./components/wizards/new_org/info_step.cljs" :as orgistep]
+            ["./components/wizards/new_org/business_step.cljs" :as orgbstep])
   (:require-macros [sqeave :refer [defc]]))
 
 (def get-user (cache (fn [ident] (let [ctx (useContext AppContext)]
@@ -41,8 +44,12 @@
 
 (defn create-project [{:keys [params location]}]
   (let [ctx (useContext AppContext)]
+    (sqeave/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project]}))
+  #_(create-p (:id params)))
 
-    (sqeave/add! ctx {:project/id (:id params)} {:replace [:component/id :project-wizard :project] :check-session? false}))
+(defn create-organization [{:keys [params location]}]
+  (let [ctx (useContext AppContext)]
+    (sqeave/add! ctx (merge (orgistep/BasicInfoStepClass.new-data) {:organization/id (:id params)} ) {:replace [:component/id :organization-wizard :organization]}))
   #_(create-p (:id params)))
 
 #_(defn load-transactions)
@@ -67,9 +74,22 @@
                  :load (fn [{:keys [params location]}] (up/load-user-profile ctx [:user/id (:id (useParams))]))}]
          [Route {:path "/projects" :component (fn [] #jsx [sp/SearchPage {:& {:ident [:component/id :search]}}])
                  :load (fn [{:keys [params location]}] (sp/load-projects sp/my-projects))}]]
+        [Route {:path "/wizards/new-organization/:id"
+                :component (fn [props] #jsx [WizardNewOrganization {:& {:ident [:component/id :org-wizard]}}
+                                             props.children])}
+         [Route {:path "/"
+                 :component  (fn [props] (let [params (useParams)
+                                               ident (fn [] [:organization/id (:id params)])]
+                                           #jsx [orgistep/BasicInfoStep {:& {:ident ident}}]))
+                 :load create-organization}]
+         [Route {:path "/business"
+                 :component  (fn [props] (let [params (useParams)
+                                               ident (fn [] [:organization/id (:id params)])]
+                                           #jsx [orgistep/BasicInfoStep {:& {:ident ident}}]))
+                 :load create-organization}]]
         [Route {:path "/wizards/new-project/:id"
                 :component (fn [props] #jsx [WizardNewProject {:& {:ident [:component/id :project-wizard]}}
-                                                props.children])}
+                                             props.children])}
          [Route {:path "/"
                  :component  (fn [props] (let [params (useParams)
                                                ident (fn [] [:project/id (:id params)])]

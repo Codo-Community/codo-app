@@ -29,6 +29,12 @@
              [b/button {:icon "i-tabler-plus"
                         :extra-class ""
                         :on-click #(navigate (str "/wizards/new-project/" (js/crypto.randomUUID)))}]
+
+             [:h2 {:class "text-bold text-xl"} "Organization"]
+             [b/button {:icon "i-tabler-plus"
+                        :extra-class ""
+                        :on-click #(navigate (str "/wizards/new-organization/" (js/crypto.randomUUID)))}]
+
              #_[:h2 {:class "text-bold text-xl"} "Verification"]
              #_[:button {:class "hover:ring-2 ring-blue-500 bg-white rounded-md w-fit h-fit"}
               [A {:href (str "/wizards/verification/user/" "xyz")}

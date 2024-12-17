@@ -18,8 +18,8 @@
           function-data (sqeave/pull store (get-in store [:function/id selected]) [:name :inputs :outputs :stateMutability :type])
           transaction-data {:transaction/id (js/crypto.randomUUID)
                             :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))}]
-      (sqeave/add! ctx transaction-data)
-      (setStore :component/id
+      (sqeave/add! ctx transaction-data {:append [:component/id :transaction-builder :transactions]})
+      #_(setStore :component/id
                 (fn [x]
                   (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 
