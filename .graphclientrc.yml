@@ -1,0 +1,6 @@
+# .graphclientrc.yml
+sources:
+  - name: codo-token-sepolia
+    handler:
+      graphql:
+        endpoint: https://api.studio.thegraph.com/query/76884/codo/version/latest

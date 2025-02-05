@@ -35,7 +35,7 @@
                (initDropdowns)
                #_((user/init-auth ctx))
                #_(eu/add-accounts-changed (user/init-auth ctx))))
-    #jsx [:header {:class ""}
+    #jsx [:header {}
           [:nav {:class "text-gray-900
                     bg-[#f3f4f6] dark:bg-black select-none overflow-hidden
                     dark:border-gray-700 dark:text-gray-400"}

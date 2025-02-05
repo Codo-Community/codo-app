@@ -26,3 +26,34 @@
   (getAccount config))
 
 (def default wallet-client)
+
+;; Function to watch for wallet connection changes
+#_(defn watch-wallet-connection []
+  (let [unwatch (watchConnections
+                 (fn [connections]
+                   (println "Wallet connections updated:" connections)
+                   (if (seq connections)
+                     (do
+                       (js-await (init-clients))
+                       (println "Updated wallet-client:" @wallet-client))
+                     (do
+                       (reset! wallet-client nil)
+                       (reset! public-client nil)
+                       (println "Disconnected wallet")))))]
+    (reset! unwatch-connections unwatch)))
+
+;; Function to watch public client updates
+#_(defn watch-public-client []
+  (let [unwatch (watchPublicClient
+                  (fn [new-client]
+                    (println "Public client updated:" new-client)
+                    (reset! public-client new-client)))]
+    (reset! unwatch-public unwatch)))
+
+;; Function to watch wallet client updates
+#_(defn watch-wallet-client []
+  (let [unwatch (watchClient
+                  (fn [new-client]
+                    (println "Wallet client updated:" new-client)
+                    (reset! wallet-client new-client)))]
+    (reset! unwatch-wallet unwatch)))

@@ -29,7 +29,7 @@
     (if e (.preventDefault e))
     ;; add organization
     (cu/execute-gql-mutation ctx (basic-organization-mutation)
-                             (mutation-vars (merge (data) {:organization/categoryID (:category/id response) :organization/created (.toLocaleDateString (js/Date.) "sv")}))
+                             (mutation-vars (merge (data) {:organization/created (.toLocaleDateString (js/Date.) "sv")}))
                              (fn [response]
                                (println "response: " response)
                                (sqeave/add! ctx response

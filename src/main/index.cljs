@@ -25,30 +25,29 @@
 (defc Root [this {:keys [] :ctx (sqeave/init-ctx! AppContext)}]
   (let [[connections setConnections] (createSignal (getConnections config))]
     #_(createEffect (fn []
-                    (.then (u/init-auth) (fn [res]
-                                               (println "init-clients" @ec/wallet-client)
-                                               (.then (rc/init-request-client @ec/wallet-client)
-                                                      (fn [r] (println "init-clients" r)))
-                                               ))))
+                      (.then (u/init-auth) (fn [res]
+                                             (println "init-clients" @ec/wallet-client)
+                                             (.then (rc/init-request-client @ec/wallet-client)
+                                                    (fn [r] (println "init-clients" r)))))))
     (onMount #(do
 
                 (.then (u/init-auth this.ctx) (fn [res]
-                                         (println "init-clients" @ec/wallet-client)
-                                         (.then (rc/init-request-client @ec/wallet-client)
-                                                (fn [r] (println "init-clients" r)))
-                                         ))
+                                                (println "init-clients" @ec/wallet-client)
+                                                (.then (rc/init-request-client @ec/wallet-client)
+                                                       (fn [r] (println "init-clients" r)))))
                 #_(cdf/init-listeners ctx events/handle)
 
-                #_(reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]
-                                                                              (println "change wallet: " client)
-                                                                              (reset! ec/wallet-client client))}))
-                #_(reset! ec/unwatch-public (watchPublicClient config  {:onChange (fn [client]
-                                                                                    (println "change wallet: " client)
-                                                                                    (reset! ec/public-client client))}))
-                #_(reset! ec/unwatch-connections (watchConnections config  {:onChange (fn [connections]
-                                                                                        (println "change connections: " connections)
-                                                                                        ((:setConnections connection-ctx) connections)
-                                                                                        (let [{:keys [accounts chainId]} (first connections)]
+                (reset! ec/unwatch-wallet (watchClient config  {:onChange (fn [client]
+                                                                            (println "change wallet: " client)
+                                                                            (reset! ec/wallet-client client))}))
+                (reset! ec/unwatch-public (watchPublicClient config  {:onChange (fn [client]
+                                                                                  (println "change wallet: " client)
+                                                                                  (reset! ec/public-client client))}))
+                (reset! ec/unwatch-connections (watchConnections config  {:onChange (fn ^:async [connections]
+                                                                                      (println "change connections: " connections)
+                                                                                      (setConnections connections)
+                                                                                      (.then (ec/init-clients) (fn [r]))
+                                                                                      #_(let [{:keys [accounts chainId]} (first connections)]
                                                                                           (println "accounts: " accounts)
                                                                                           (if (empty? accounts)
                                                                                             (do

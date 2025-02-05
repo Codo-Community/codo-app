@@ -12,16 +12,26 @@
               (fn [x]
                 (assoc-in x [(second ident) :local/selected-function] e.target.value)))))
 
+(defn remove-array-suffix [s]
+  (if (and (>= (count s) 2)
+           (= "[]" (subs s (- (count s) 2))))
+    (subs s 0 (- (count s) 2))
+    false))
+
 (defn add-transaction [{:keys [store setStore] :as ctx} local]
   (fn [e]
     (let [selected (:selected-function (local))
           function-data (sqeave/pull store (get-in store [:function/id selected]) [:name :inputs :outputs :stateMutability :type])
+
           transaction-data {:transaction/id (js/crypto.randomUUID)
-                            :transaction/function (assoc function-data :function/id (js/crypto.randomUUID))}]
+                            :transaction/function (-> function-data
+                                                      (#(assoc-in % [:inputs] (mapv (fn [x] (if (remove-array-suffix (:type x)) (assoc x :value []) x)) (:inputs %))))
+                                                      (#(assoc % :function/id (js/crypto.randomUUID))))}
+          _ (println "td: " selected " " transaction-data)]
       (sqeave/add! ctx transaction-data {:append [:component/id :transaction-builder :transactions]})
       #_(setStore :component/id
-                (fn [x]
-                  (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
+                  (fn [x]
+                    (update-in x [:transaction-builder :transactions] conj [:transaction/id (:transaction/id transaction-data)]))))))
 
 (defc Contract [this {:contract/keys [id address chain name
                                       {abi [:name :type]}]}]

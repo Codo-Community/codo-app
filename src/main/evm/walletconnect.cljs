@@ -17,7 +17,7 @@
 
 (def chains (if js/import.meta.env.PROD
               [mainnet polygon arbitrum]
-              [sepolia hardhat]))
+              [sepolia hardhat polygon]))
 
 ;; 1. Get a project ID at https://cloud.walletconnect.com
 (def project-id js/import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID)
